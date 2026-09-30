@@ -1,8 +1,14 @@
 import {
   AdoptionRate, TrainingCompletion, CommunicationsSent, OpenRisks,
-  StakeholderEngagement, GenericWidget
+  StakeholderEngagement, SponsorCoalitionHealth, BarrierAnalysis,
+  QuickWinsLog, ReadinessScore, SustainmentHealth, Milestones,
+  RecentActivity, GenericWidget
 } from './widgets.jsx'
-import { healthMetrics, stakeholderGroups, milestones, recentActivity } from '../data/mockData.js'
+import {
+  healthMetrics, stakeholderGroups, milestones, recentActivity,
+  sponsorCoalition, barrierAnalysis, quickWins, readinessScore,
+  sustainmentHealth
+} from '../data/mockData.js'
 
 // Renders a widget by ID, pulling tooltip translations from registry
 export default function WidgetRenderer({ id, registry }) {
@@ -23,10 +29,20 @@ export default function WidgetRenderer({ id, registry }) {
       return <OpenRisks data={healthMetrics.openRisks} tooltip={tooltip} />
     case 'stakeholder_engagement':
       return <StakeholderEngagement groups={stakeholderGroups} tooltip={tooltip} />
+    case 'sponsor_coalition_health':
+      return <SponsorCoalitionHealth data={sponsorCoalition} tooltip={tooltip} />
+    case 'barrier_analysis':
+      return <BarrierAnalysis data={barrierAnalysis} tooltip={tooltip} />
+    case 'quick_wins_log':
+      return <QuickWinsLog data={quickWins} tooltip={tooltip} />
+    case 'readiness_score':
+      return <ReadinessScore data={readinessScore} tooltip={tooltip} />
+    case 'sustainment_health':
+      return <SustainmentHealth data={sustainmentHealth} tooltip={tooltip} />
     case 'milestones':
-      return <GenericWidget title={title} tooltip={tooltip} body={milestones.map(m => `${m.title} — ${m.date} (${m.status})`).join(' • ')} />
+      return <Milestones data={milestones} tooltip={tooltip} />
     case 'recent_activity':
-      return <GenericWidget title={title} tooltip={tooltip} body={recentActivity.map(a => a.text).join(' • ')} />
+      return <RecentActivity data={recentActivity} tooltip={tooltip} />
     default:
       return <GenericWidget title={title} tooltip={tooltip} />
   }

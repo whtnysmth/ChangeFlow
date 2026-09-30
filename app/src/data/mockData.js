@@ -36,3 +36,43 @@ export const recentActivity = [
   { text: 'Risk logged: Vendor onboarding delay', meta: 'Risk #R-023 • 8h ago', tone: 'yellow' },
   { text: '24 employees completed training module', meta: 'Training Plan • 12h ago', tone: 'green' }
 ]
+
+export const sponsorCoalition = {
+  score: 88,
+  sponsors: [
+    { name: 'Sarah K.', role: 'Executive Sponsor', status: 'Active' },
+    { name: 'David M.', role: 'IT Lead', status: 'Active' },
+    { name: 'Priya R.', role: 'Ops Lead', status: 'At Risk' },
+    { name: 'James L.', role: 'Comms Lead', status: 'Active' }
+  ]
+}
+
+export const barrierAnalysis = [
+  { stage: 'Awareness', percent: 85 },
+  { stage: 'Desire', percent: 72 },
+  { stage: 'Knowledge', percent: 64 },
+  { stage: 'Ability', percent: 55 },
+  { stage: 'Reinforcement', percent: 41 }
+]
+
+export const quickWins = [
+  { title: 'Pilot team fully migrated', date: 'Oct 28', impact: 'High' },
+  { title: 'Training completion hit 60%', date: 'Nov 4', impact: 'Medium' },
+  { title: 'Support tickets down 18%', date: 'Nov 10', impact: 'High' }
+]
+
+export const readinessScore = {
+  value: 74,
+  note: 'Assessed Oct 1, pre-launch',
+  dimensions: [
+    { label: 'Leadership alignment', value: 88 },
+    { label: 'Team capacity', value: 66 },
+    { label: 'Tech readiness', value: 71 }
+  ]
+}
+
+export const sustainmentHealth = {
+  value: 68,
+  trend: '+4% this month',
+  reversionRate: 6
+}

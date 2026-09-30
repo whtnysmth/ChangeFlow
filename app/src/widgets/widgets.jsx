@@ -71,6 +71,134 @@ export function StakeholderEngagement({ groups, tooltip }) {
   )
 }
 
+export function SponsorCoalitionHealth({ data, tooltip }) {
+  const dot = s => s === 'Active' ? 'bg-emerald-400' : s === 'At Risk' ? 'bg-amber-400' : 'bg-white/30'
+  return (
+    <Card title="Sponsor Coalition Health" tooltip={tooltip} footer={`${data.score}% health`}>
+      <div className="text-4xl font-bold mb-3">{data.score}%</div>
+      <div className="space-y-2">
+        {data.sponsors.map(s => (
+          <div key={s.name} className="flex items-center gap-2 text-xs">
+            <span className={`w-2 h-2 rounded-full ${dot(s.status)}`} />
+            <span className="text-white/85">{s.name}</span>
+            <span className="text-white/40">• {s.role}</span>
+          </div>
+        ))}
+      </div>
+    </Card>
+  )
+}
+
+export function BarrierAnalysis({ data, tooltip }) {
+  const min = Math.min(...data.map(d => d.percent))
+  const barrier = data.find(d => d.percent === min).stage
+  return (
+    <Card title="Barrier Analysis" tooltip={tooltip} footer={`Biggest barrier: ${barrier}`}>
+      <div className="space-y-2">
+        {data.map(d => (
+          <div key={d.stage}>
+            <div className="flex justify-between text-xs mb-1">
+              <span className={d.percent === min ? 'text-amber-300 font-medium' : 'text-white/75'}>{d.stage}</span>
+              <span className="text-white/50">{d.percent}%</span>
+            </div>
+            <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+              <div className={`h-full rounded-full ${d.percent === min ? 'bg-amber-400/90' : 'bg-teal-400/70'}`} style={{ width: `${d.percent}%` }} />
+            </div>
+          </div>
+        ))}
+      </div>
+    </Card>
+  )
+}
+
+export function QuickWinsLog({ data, tooltip }) {
+  return (
+    <Card title="Quick Wins Log" tooltip={tooltip} footer={`${data.length} wins logged`}>
+      <div className="space-y-2.5">
+        {data.map((w, i) => (
+          <div key={i} className="text-xs">
+            <div className="text-white/85">✓ {w.title}</div>
+            <div className="text-white/40 mt-0.5">{w.date} • {w.impact} impact</div>
+          </div>
+        ))}
+      </div>
+    </Card>
+  )
+}
+
+export function ReadinessScore({ data, tooltip }) {
+  return (
+    <Card title="Readiness Score" tooltip={tooltip} footer={data.note}>
+      <div className="text-4xl font-bold">{data.value}%</div>
+      <div className="mt-3 space-y-1.5">
+        {data.dimensions.map(d => (
+          <div key={d.label} className="flex justify-between text-xs">
+            <span className="text-white/55">{d.label}</span>
+            <span className="text-white/85">{d.value}%</span>
+          </div>
+        ))}
+      </div>
+    </Card>
+  )
+}
+
+export function SustainmentHealth({ data, tooltip }) {
+  return (
+    <Card title="Sustainment Health" tooltip={tooltip} footer={data.trend}>
+      <div className="text-4xl font-bold">{data.value}%</div>
+      <div className="mt-2 h-2 bg-white/10 rounded-full overflow-hidden">
+        <div className="h-full bg-emerald-400/80 rounded-full" style={{ width: `${data.value}%` }} />
+      </div>
+      <div className="mt-2 text-xs text-white/50">Reversion rate: {data.reversionRate}%</div>
+    </Card>
+  )
+}
+
+export function Milestones({ data, tooltip }) {
+  const pill = s => s === 'Scheduled'
+    ? 'bg-teal-400/15 text-teal-200'
+    : s === 'In Progress'
+      ? 'bg-indigo-400/15 text-indigo-200'
+      : 'bg-white/10 text-white/60'
+  return (
+    <Card title="Milestones" tooltip={tooltip}>
+      <div className="space-y-3">
+        {data.map((m, i) => (
+          <div key={i} className="text-xs">
+            <div className="text-white/85 font-medium">{m.title}</div>
+            <div className="mt-1 flex items-center gap-2">
+              <span className="text-white/40">{m.date}</span>
+              <span className={`px-2 py-0.5 rounded-full ${pill(m.status)}`}>{m.status}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </Card>
+  )
+}
+
+export function RecentActivity({ data, tooltip }) {
+  const dot = t => ({
+    purple: 'bg-purple-400', teal: 'bg-teal-400',
+    yellow: 'bg-amber-400', green: 'bg-emerald-400'
+  }[t] || 'bg-white/40')
+  return (
+    <Card title="Recent Activity" tooltip={tooltip} footer="Last 24 hours">
+      <div className="space-y-2.5">
+        {data.map((a, i) => (
+          <div key={i} className="flex gap-2.5 text-xs">
+            <span className={`mt-1 w-2 h-2 rounded-full shrink-0 ${dot(a.tone)}`} />
+            <div>
+              <div className="text-white/85">{a.text}</div>
+              <div className="text-white/40 mt-0.5">{a.meta}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </Card>
+  )
+}
+
 export function GenericWidget({ title, tooltip, body = 'Widget content goes here.' }) {
   return (
     <Card title={title} tooltip={tooltip}>
