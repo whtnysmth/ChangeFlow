@@ -19,7 +19,8 @@ the dashboard reads live from Postgres and Custom layouts save to the database.
 ## 3. Get the credentials
 
 1. Go to **Project Settings → API**.
-2. Copy the **Project URL** and the **anon public** key.
+2. Copy the **Project URL** and the **Publishable** key
+   (`sb_publishable_…` — Supabase's current name for the old anon key).
 
 ## 4. Wire the app
 
@@ -40,7 +41,7 @@ The header badge switches from "○ Mock data" to "● Live data" when connected
 
 ## Notes
 
-- The anon key is safe to expose in a frontend; the **service_role** key is not.
+- The publishable key is safe to expose in a frontend; the **secret** key is not.
   Never paste the service_role key anywhere in this app.
 - RLS policies are wide open for solo development (`supabase/schema.sql`).
   Before sharing the app with anyone else, add auth and tighten the policies —
