@@ -1,1 +1,144 @@
-{"info_icon_spec":{"behavior":"Hovering (or tapping on mobile) the ⓘ next to any phase or widget label opens a tooltip. Tooltip shows: what this is called in the other two frameworks, plus a one-line plain-English definition.","example":{"label":"Barrier Analysis ⓘ","tooltip":"ADKAR: Shows which of Awareness / Desire / Knowledge / Ability / Reinforcement is blocking each group. Kotter equivalent: Barrier removal under 'Enable Action'. Lewin equivalent: Readiness gaps in 'Unfreeze'."},"placement":"To the right of the label, 16px, muted color, keyboard-focusable for accessibility."},"widgets":[{"id":"adoption_rate","info_icon":{"adkar":"Lagging indicator of Ability","kotter":"Evidence for Wins and Institute steps","lewin":"Core metric of Change phase"},"label":"Adoption Rate","plain_english":"What percent of people are actually using the new way."},{"id":"training_completion","info_icon":{"adkar":"Feeds Knowledge and Ability","kotter":"Supports Enable Action","lewin":"Part of Change"},"label":"Training Completion","plain_english":"Who finished the training they were assigned."},{"id":"communications_sent","info_icon":{"adkar":"Drives Awareness and Desire","kotter":"Supports Vision and Volunteers","lewin":"Part of Unfreeze and Change"},"label":"Communications Sent","plain_english":"Messages sent, opened, and pending."},{"id":"open_risks","info_icon":{"adkar":"Risks to Reinforcement","kotter":"Risks to momentum","lewin":"Risks to Refreeze"},"label":"Open Risks","plain_english":"What could derail the change, and how severe."},{"id":"stakeholder_engagement","info_icon":{"adkar":"Engagement per ADKAR stage","kotter":"Coalition + volunteer engagement","lewin":"Readiness and adoption by group"},"label":"Stakeholder Engagement","plain_english":"How engaged each group is, by group."},{"id":"sponsor_coalition_health","info_icon":{"adkar":"Sponsor effectiveness","kotter":"Guiding coalition health","lewin":"Champion coverage"},"label":"Sponsor Coalition Health","plain_english":"Are your sponsors / coalition active and aligned."},{"id":"barrier_analysis","info_icon":{"adkar":"Primary view: which ADKAR element is the blocker","kotter":"Maps to Enable Action barriers","lewin":"Maps to Unfreeze gaps"},"label":"Barrier Analysis","plain_english":"Where people are stuck, and why."},{"id":"quick_wins_log","info_icon":{"adkar":"Proof of Ability and Reinforcement","kotter":"Hero widget for Generate Short-Term Wins","lewin":"Momentum in Change"},"label":"Quick Wins Log","plain_english":"Early successes logged and communicated."},{"id":"readiness_score","info_icon":{"adkar":"Precursor to Awareness","kotter":"Urgency + Vision clarity","lewin":"Core metric of Unfreeze"},"label":"Readiness Score","plain_english":"How ready the org is before the change starts."},{"id":"sustainment_health","info_icon":{"adkar":"Reinforcement tracking","kotter":"Sustain Acceleration + Institute","lewin":"Core metric of Refreeze"},"label":"Sustainment Health","plain_english":"Is the change sticking after go-live."},{"id":"milestones","info_icon":{"adkar":"Milestones per ADKAR stage","kotter":"Milestones per 8 steps","lewin":"Milestones per 3 phases"},"label":"Milestones","plain_english":"Upcoming key dates and their status."},{"id":"recent_activity","info_icon":{"adkar":"Activity feeds ADKAR progress","kotter":"Activity feeds momentum","lewin":"Activity feeds phase progress"},"label":"Recent Activity","plain_english":"What happened in the last 24 hours."}]}
+{
+  "info_icon_spec": {
+    "behavior": "Hovering (or tapping on mobile) the \u24d8 next to any phase or widget label opens a tooltip. Tooltip shows: what this is called in the other two frameworks, plus a one-line plain-English definition.",
+    "example": {
+      "label": "Barrier Analysis \u24d8",
+      "tooltip": "ADKAR: Shows which of Awareness / Desire / Knowledge / Ability / Reinforcement is blocking each group. Kotter equivalent: Barrier removal under 'Enable Action'. Lewin equivalent: Readiness gaps in 'Unfreeze'."
+    },
+    "placement": "To the right of the label, 16px, muted color, keyboard-focusable for accessibility."
+  },
+  "widgets": [
+    {
+      "id": "adoption_rate",
+      "info_icon": {
+        "adkar": "Lagging indicator of Ability",
+        "kotter": "Evidence for Wins and Institute steps",
+        "lewin": "Core metric of Change phase"
+      },
+      "label": "Adoption Rate",
+      "plain_english": "What percent of people are actually using the new way.",
+      "modality": "adopt"
+    },
+    {
+      "id": "training_completion",
+      "info_icon": {
+        "adkar": "Feeds Knowledge and Ability",
+        "kotter": "Supports Enable Action",
+        "lewin": "Part of Change"
+      },
+      "label": "Training Completion",
+      "plain_english": "Who finished the training they were assigned.",
+      "modality": "enable"
+    },
+    {
+      "id": "communications_sent",
+      "info_icon": {
+        "adkar": "Drives Awareness and Desire",
+        "kotter": "Supports Vision and Volunteers",
+        "lewin": "Part of Unfreeze and Change"
+      },
+      "label": "Communications Sent",
+      "plain_english": "Messages sent, opened, and pending.",
+      "modality": "mobilize"
+    },
+    {
+      "id": "open_risks",
+      "info_icon": {
+        "adkar": "Risks to Reinforcement",
+        "kotter": "Risks to momentum",
+        "lewin": "Risks to Refreeze"
+      },
+      "label": "Open Risks",
+      "plain_english": "What could derail the change, and how severe.",
+      "modality": "sustain"
+    },
+    {
+      "id": "stakeholder_engagement",
+      "info_icon": {
+        "adkar": "Engagement per ADKAR stage",
+        "kotter": "Coalition + volunteer engagement",
+        "lewin": "Readiness and adoption by group"
+      },
+      "label": "Stakeholder Engagement",
+      "plain_english": "How engaged each group is, by group.",
+      "modality": "assess"
+    },
+    {
+      "id": "sponsor_coalition_health",
+      "info_icon": {
+        "adkar": "Sponsor effectiveness",
+        "kotter": "Guiding coalition health",
+        "lewin": "Champion coverage"
+      },
+      "label": "Sponsor Coalition Health",
+      "plain_english": "Are your sponsors / coalition active and aligned.",
+      "modality": "mobilize"
+    },
+    {
+      "id": "barrier_analysis",
+      "info_icon": {
+        "adkar": "Primary view: which ADKAR element is the blocker",
+        "kotter": "Maps to Enable Action barriers",
+        "lewin": "Maps to Unfreeze gaps"
+      },
+      "label": "Barrier Analysis",
+      "plain_english": "Where people are stuck, and why.",
+      "modality": "adopt"
+    },
+    {
+      "id": "quick_wins_log",
+      "info_icon": {
+        "adkar": "Proof of Ability and Reinforcement",
+        "kotter": "Hero widget for Generate Short-Term Wins",
+        "lewin": "Momentum in Change"
+      },
+      "label": "Quick Wins Log",
+      "plain_english": "Early successes logged and communicated.",
+      "modality": "adopt"
+    },
+    {
+      "id": "readiness_score",
+      "info_icon": {
+        "adkar": "Precursor to Awareness",
+        "kotter": "Urgency + Vision clarity",
+        "lewin": "Core metric of Unfreeze"
+      },
+      "label": "Readiness Score",
+      "plain_english": "How ready the org is before the change starts.",
+      "modality": "assess"
+    },
+    {
+      "id": "sustainment_health",
+      "info_icon": {
+        "adkar": "Reinforcement tracking",
+        "kotter": "Sustain Acceleration + Institute",
+        "lewin": "Core metric of Refreeze"
+      },
+      "label": "Sustainment Health",
+      "plain_english": "Is the change sticking after go-live.",
+      "modality": "sustain"
+    },
+    {
+      "id": "milestones",
+      "info_icon": {
+        "adkar": "Milestones per ADKAR stage",
+        "kotter": "Milestones per 8 steps",
+        "lewin": "Milestones per 3 phases"
+      },
+      "label": "Milestones",
+      "plain_english": "Upcoming key dates and their status.",
+      "modality": "sustain"
+    },
+    {
+      "id": "recent_activity",
+      "info_icon": {
+        "adkar": "Activity feeds ADKAR progress",
+        "kotter": "Activity feeds momentum",
+        "lewin": "Activity feeds phase progress"
+      },
+      "label": "Recent Activity",
+      "plain_english": "What happened in the last 24 hours.",
+      "modality": null
+    }
+  ]
+}

@@ -13,9 +13,9 @@ function Card({ title, tooltip, children, footer }) {
   )
 }
 
-export function AdoptionRate({ data, tooltip }) {
+export function AdoptionRate({ data, tooltip, title }) {
   return (
-    <Card title="Adoption Rate" tooltip={tooltip} footer={data.delta}>
+    <Card title={title || "Adoption Rate"} tooltip={tooltip} footer={data.delta}>
       <div className="text-4xl font-bold">{data.value}%</div>
       <div className="mt-2 h-2 bg-white/10 rounded-full overflow-hidden">
         <div className="h-full bg-teal-400/80 rounded-full" style={{ width: `${data.value}%` }} />
@@ -24,9 +24,9 @@ export function AdoptionRate({ data, tooltip }) {
   )
 }
 
-export function TrainingCompletion({ data, tooltip }) {
+export function TrainingCompletion({ data, tooltip, title }) {
   return (
-    <Card title="Training Completion" tooltip={tooltip} footer={data.delta}>
+    <Card title={title || "Training Completion"} tooltip={tooltip} footer={data.delta}>
       <div className="text-4xl font-bold">{data.value}%</div>
       <div className="mt-2 h-2 bg-white/10 rounded-full overflow-hidden">
         <div className="h-full bg-indigo-400/80 rounded-full" style={{ width: `${data.value}%` }} />
@@ -35,25 +35,25 @@ export function TrainingCompletion({ data, tooltip }) {
   )
 }
 
-export function CommunicationsSent({ data, tooltip }) {
+export function CommunicationsSent({ data, tooltip, title }) {
   return (
-    <Card title={`Communications Sent`} tooltip={tooltip} footer={`${data.pending} pending`}>
+    <Card title={title || "Communications Sent"} tooltip={tooltip} footer={`${data.pending} pending`}>
       <div className="text-4xl font-bold">{data.sent}<span className="text-lg text-white/50">/{data.total}</span></div>
     </Card>
   )
 }
 
-export function OpenRisks({ data, tooltip }) {
+export function OpenRisks({ data, tooltip, title }) {
   return (
-    <Card title="Open Risks" tooltip={tooltip} footer={`${data.highPriority} high priority`}>
+    <Card title={title || "Open Risks"} tooltip={tooltip} footer={`${data.highPriority} high priority`}>
       <div className="text-4xl font-bold">{data.percent}%</div>
     </Card>
   )
 }
 
-export function StakeholderEngagement({ groups, tooltip }) {
+export function StakeholderEngagement({ groups, tooltip, title }) {
   return (
-    <Card title="Stakeholder Engagement" tooltip={tooltip} footer="Overall engagement +6% this month">
+    <Card title={title || "Stakeholder Engagement"} tooltip={tooltip} footer="Overall engagement +6% this month">
       <div className="space-y-3">
         {groups.map(g => (
           <div key={g.group}>
@@ -71,10 +71,10 @@ export function StakeholderEngagement({ groups, tooltip }) {
   )
 }
 
-export function SponsorCoalitionHealth({ data, tooltip }) {
+export function SponsorCoalitionHealth({ data, tooltip, title }) {
   const dot = s => s === 'Active' ? 'bg-emerald-400' : s === 'At Risk' ? 'bg-amber-400' : 'bg-white/30'
   return (
-    <Card title="Sponsor Coalition Health" tooltip={tooltip} footer={`${data.score}% health`}>
+    <Card title={title || "Sponsor Coalition Health"} tooltip={tooltip} footer={`${data.score}% health`}>
       <div className="text-4xl font-bold mb-3">{data.score}%</div>
       <div className="space-y-2">
         {data.sponsors.map(s => (
@@ -89,11 +89,11 @@ export function SponsorCoalitionHealth({ data, tooltip }) {
   )
 }
 
-export function BarrierAnalysis({ data, tooltip }) {
+export function BarrierAnalysis({ data, tooltip, title }) {
   const min = Math.min(...data.map(d => d.percent))
   const barrier = data.find(d => d.percent === min).stage
   return (
-    <Card title="Barrier Analysis" tooltip={tooltip} footer={`Biggest barrier: ${barrier}`}>
+    <Card title={title || "Barrier Analysis"} tooltip={tooltip} footer={`Biggest barrier: ${barrier}`}>
       <div className="space-y-2">
         {data.map(d => (
           <div key={d.stage}>
@@ -111,9 +111,9 @@ export function BarrierAnalysis({ data, tooltip }) {
   )
 }
 
-export function QuickWinsLog({ data, tooltip }) {
+export function QuickWinsLog({ data, tooltip, title }) {
   return (
-    <Card title="Quick Wins Log" tooltip={tooltip} footer={`${data.length} wins logged`}>
+    <Card title={title || "Quick Wins Log"} tooltip={tooltip} footer={`${data.length} wins logged`}>
       <div className="space-y-2.5">
         {data.map((w, i) => (
           <div key={i} className="text-xs">
@@ -126,9 +126,9 @@ export function QuickWinsLog({ data, tooltip }) {
   )
 }
 
-export function ReadinessScore({ data, tooltip }) {
+export function ReadinessScore({ data, tooltip, title }) {
   return (
-    <Card title="Readiness Score" tooltip={tooltip} footer={data.note}>
+    <Card title={title || "Readiness Score"} tooltip={tooltip} footer={data.note}>
       <div className="text-4xl font-bold">{data.value}%</div>
       <div className="mt-3 space-y-1.5">
         {data.dimensions.map(d => (
@@ -142,9 +142,9 @@ export function ReadinessScore({ data, tooltip }) {
   )
 }
 
-export function SustainmentHealth({ data, tooltip }) {
+export function SustainmentHealth({ data, tooltip, title }) {
   return (
-    <Card title="Sustainment Health" tooltip={tooltip} footer={data.trend}>
+    <Card title={title || "Sustainment Health"} tooltip={tooltip} footer={data.trend}>
       <div className="text-4xl font-bold">{data.value}%</div>
       <div className="mt-2 h-2 bg-white/10 rounded-full overflow-hidden">
         <div className="h-full bg-emerald-400/80 rounded-full" style={{ width: `${data.value}%` }} />
@@ -154,14 +154,14 @@ export function SustainmentHealth({ data, tooltip }) {
   )
 }
 
-export function Milestones({ data, tooltip }) {
+export function Milestones({ data, tooltip, title }) {
   const pill = s => s === 'Scheduled'
     ? 'bg-teal-400/15 text-teal-200'
     : s === 'In Progress'
       ? 'bg-indigo-400/15 text-indigo-200'
       : 'bg-white/10 text-white/60'
   return (
-    <Card title="Milestones" tooltip={tooltip}>
+    <Card title={title || "Milestones"} tooltip={tooltip}>
       <div className="space-y-3">
         {data.map((m, i) => (
           <div key={i} className="text-xs">
@@ -177,13 +177,13 @@ export function Milestones({ data, tooltip }) {
   )
 }
 
-export function RecentActivity({ data, tooltip }) {
+export function RecentActivity({ data, tooltip, title }) {
   const dot = t => ({
     purple: 'bg-purple-400', teal: 'bg-teal-400',
     yellow: 'bg-amber-400', green: 'bg-emerald-400'
   }[t] || 'bg-white/40')
   return (
-    <Card title="Recent Activity" tooltip={tooltip} footer="Last 24 hours">
+    <Card title={title || "Recent Activity"} tooltip={tooltip} footer="Last 24 hours">
       <div className="space-y-2.5">
         {data.map((a, i) => (
           <div key={i} className="flex gap-2.5 text-xs">

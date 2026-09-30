@@ -1,19 +1,20 @@
 import { useState, useEffect } from 'react'
-import FrameworkToggle from './components/FrameworkToggle.jsx'
+import Sidebar from './components/Sidebar.jsx'
+import FrameworkLens from './components/FrameworkLens.jsx'
 import DashboardEngine from './components/DashboardEngine.jsx'
-import CustomBuilder from './components/CustomBuilder.jsx'
 import { getDashboardData } from './lib/data.js'
 
-import adkar from '../../frameworks/adkar.json'
-import kotter from '../../frameworks/kotter.json'
-import lewin from '../../frameworks/lewin.json'
 import registry from '../../widgets/registry.json'
 
-const FRAMEWORKS = { adkar, kotter, lewin }
+const MODE_KEY = 'changeflow_mode'
 
 export default function App() {
-  const [frameworkId, setFrameworkId] = useState('adkar')
-  const [customIds, setCustomIds] = useState(null)
+  const [activeTab, setActiveTab] = useState('dashboard')
+  const [mode, setMode] = useState(() => {
+    try { return localStorage.getItem(MODE_KEY) || 'guided' } catch { return 'guided' }
+  })
+  const [lens, setLens] = useState('adkar')
+  const [customHomeIds, setCustomHomeIds] = useState([])
   const [data, setData] = useState(null)
   const [source, setSource] = useState('loading')
   const [campaignId, setCampaignId] = useState(null)
@@ -26,23 +27,15 @@ export default function App() {
     })
   }, [])
 
-  const isCustom = frameworkId === 'custom'
-  const baseId = isCustom ? 'adkar' : frameworkId
-  const frameworkDef = FRAMEWORKS[baseId]
-  const defaultIds = frameworkDef.default_widgets
-
-  const activeIds = isCustom ? (customIds || defaultIds) : defaultIds
-
-  const handleFrameworkChange = (id) => {
-    setFrameworkId(id)
-    if (id === 'custom' && !customIds) setCustomIds(defaultIds)
+  const handleMode = (m) => {
+    setMode(m)
+    try { localStorage.setItem(MODE_KEY, m) } catch { /* private mode */ }
   }
 
-  const toggleWidget = (id) => {
-    setCustomIds(prev => {
-      const cur = prev || defaultIds
-      return cur.includes(id) ? cur.filter(w => w !== id) : [...cur, id]
-    })
+  const toggleCustomWidget = (id) => {
+    setCustomHomeIds(prev =>
+      prev.includes(id) ? prev.filter(w => w !== id) : [...prev, id]
+    )
   }
 
   if (!data) {
@@ -59,44 +52,54 @@ export default function App() {
     : <span className="text-xs font-normal px-2 py-0.5 rounded-full bg-white/10 text-white/50 border border-white/10">○ Mock data</span>
 
   return (
-    <div className="min-h-screen p-6 max-w-7xl mx-auto">
-      <header className="flex flex-wrap items-center justify-between gap-4 mb-6">
-        <div>
-          <div className="flex items-center gap-2 text-xl font-bold">
-            <span>ChangeFlow</span>
-            <span className="text-xs font-normal px-2 py-0.5 rounded-full bg-emerald-400/20 text-emerald-200 border border-emerald-300/30">
-              • {campaign.status}
-            </span>
-            {sourceBadge}
+    <div className="min-h-screen flex bg-slate-950 text-white">
+      <Sidebar activeTab={activeTab} onTab={setActiveTab} mode={mode} onMode={handleMode} />
+
+      <div className="flex-1 min-w-0">
+        <div className="max-w-7xl mx-auto p-6">
+          <header className="flex flex-wrap items-center justify-between gap-4 mb-2">
+            <div>
+              <div className="flex items-center gap-2 text-xl font-bold">
+                <span>{campaign.name}</span>
+                <span className="text-xs font-normal px-2 py-0.5 rounded-full bg-emerald-400/20 text-emerald-200 border border-emerald-300/30">
+                  • {campaign.status}
+                </span>
+                {sourceBadge}
+              </div>
+              <div className="text-sm text-white/60 mt-1">
+                {campaign.type || 'Campaign'} • {campaign.state} • Started {campaign.start} • Target: {campaign.target}
+              </div>
+            </div>
+            <FrameworkLens lens={lens} onChange={setLens} />
+          </header>
+
+          <div className="no-print text-xs text-white/40 mb-6">
+            {mode === 'guided'
+              ? 'Guided mode: plain language, step-by-step. Switch to Expert in the sidebar for the full practitioner view.'
+              : 'Expert mode: full widget library and framework terminology.'}
+            {' '}The framework lens only adjusts terminology — your data never moves.
+            Hover any ⓘ for cross-framework translations.
           </div>
-          <div className="text-sm text-white/60 mt-1">
-            {campaign.name} • {campaign.state} • Started {campaign.start} • Target: {campaign.target}
-          </div>
+
+          <DashboardEngine
+            tab={activeTab}
+            data={data}
+            registry={registry}
+            mode={mode}
+            lens={lens}
+            onSelectModality={setActiveTab}
+            customWidgetIds={customHomeIds}
+            onToggleCustomWidget={toggleCustomWidget}
+            onResetCustomWidgets={() => setCustomHomeIds([])}
+            campaignId={campaignId}
+            onApplyTemplate={setCustomHomeIds}
+          />
+
+          <footer className="mt-10 text-xs text-white/30">
+            ChangeFlow — {source === 'supabase' ? 'Connected to Supabase.' : 'Mock data — connect Supabase to go live.'} Free-first stack: Vite + React + Tailwind + Supabase.
+          </footer>
         </div>
-        <FrameworkToggle active={frameworkId} onChange={handleFrameworkChange} />
-      </header>
-
-      <div className="text-xs text-white/40 mb-4">
-        Viewing as: <span className="text-white/70 font-medium">{isCustom ? 'Custom (based on ADKAR)' : frameworkDef.name}</span>
-        {' '}— data is preserved when you toggle. Hover any ⓘ for cross-framework translations.
       </div>
-
-      <DashboardEngine frameworkDef={frameworkDef} widgetIds={activeIds} registry={registry} data={data} />
-
-      {isCustom && (
-        <CustomBuilder
-          registry={registry}
-          activeIds={activeIds}
-          onToggle={toggleWidget}
-          onReset={() => setCustomIds(defaultIds)}
-          campaignId={campaignId}
-          onApplyTemplate={(ids) => setCustomIds(ids)}
-        />
-      )}
-
-      <footer className="mt-10 text-xs text-white/30">
-        ChangeFlow MVP — Phase 5 (backend). {source === 'supabase' ? 'Connected to Supabase.' : 'Mock data — connect Supabase to go live.'} Free-first stack: Vite + React + Tailwind + Supabase.
-      </footer>
     </div>
   )
 }

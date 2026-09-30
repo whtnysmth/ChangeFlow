@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ChangeFlow — Q4 Platform Migration</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      @media print {
+        aside, .no-print { display: none !important; }
+        body { background: #fff !important; }
+        body * { color: #111 !important; border-color: #ddd !important; }
+      }
+    </style>
   </head>
   <body class="bg-slate-950 text-white">
     <div id="root"></div>
