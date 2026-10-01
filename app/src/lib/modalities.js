@@ -13,7 +13,7 @@ export const MODALITIES = [
   {
     id: 'assess',
     label: 'Assess',
-    tagline: 'Know where you stand',
+    tagline: 'Diagnose before you prescribe',
     coaching:
       'Before you change anything, understand what the change will ask of each group. ' +
       'Readiness and stakeholder insight keep you from flying blind.',
@@ -23,7 +23,7 @@ export const MODALITIES = [
   {
     id: 'mobilize',
     label: 'Mobilize',
-    tagline: 'Line up backing',
+    tagline: 'Turn leaders into sponsors',
     coaching:
       'Change needs visible backing. Get sponsors active and communications planned ' +
       'before the rollout starts — this is the most skipped step in failed transformations.',
@@ -42,7 +42,7 @@ export const MODALITIES = [
   {
     id: 'adopt',
     label: 'Adopt',
-    tagline: 'Make it real',
+    tagline: 'Where the change lives or dies',
     coaching:
       'This is where the change lives or dies. Watch where people get stuck, and make early wins visible to build momentum.',
     docsHint:
