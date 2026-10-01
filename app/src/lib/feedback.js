@@ -1,6 +1,6 @@
-// Click feedback: a soft synthesized tap + a light haptic where supported.
-// No audio assets — the Web Audio API builds the sound on the fly, so the
-// tap is always the same and costs nothing to ship.
+// Click feedback: currently haptic-only. The tap sound was removed 2026-09-30
+// (Whitney wants to revisit sound options later) — this keeps the wiring so a
+// sound can be dropped back in without touching App.jsx.
 let ctx = null
 
 function audio() {
@@ -24,23 +24,7 @@ export function softTap() {
     if (navigator.vibrate) navigator.vibrate(8)
   } catch {}
 
-  const ac = audio()
-  if (!ac) return
-  try {
-    const t = ac.currentTime
-    // "Bubble" (Whitney's pick): a short, playful upward blip —
-    // sine gliding 480 -> 920 Hz, ~90ms, quiet by design.
-    const osc = ac.createOscillator()
-    const gain = ac.createGain()
-    osc.type = 'sine'
-    osc.frequency.setValueAtTime(480, t)
-    osc.frequency.exponentialRampToValueAtTime(920, t + 0.054)
-    gain.gain.setValueAtTime(0.0001, t)
-    gain.gain.exponentialRampToValueAtTime(0.15, t + 0.012)
-    gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.09)
-    osc.connect(gain)
-    gain.connect(ac.destination)
-    osc.start(t)
-    osc.stop(t + 0.12)
-  } catch {}
+  // Sound: parked for now — Whitney will revisit. (Previous winner of the
+  // sound audition was "Bubble": sine 480→920Hz, ~90ms.)
+  void audio
 }
