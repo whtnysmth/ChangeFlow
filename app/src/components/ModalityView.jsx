@@ -10,7 +10,7 @@ export default function ModalityView({ modality, widgetIds, registry, data, lens
       <div>
         <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
           <h2 className="text-xl font-semibold">
-            {mode === 'guided' && <span className="text-teal-300">Step {stepIndex}: </span>}
+            {mode === 'guided' && <span className="text-teal-300">Phase {stepIndex}: </span>}
             {modality.label}
           </h2>
           <span className="text-sm text-white/50">{modality.tagline}</span>

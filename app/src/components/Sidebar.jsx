@@ -87,7 +87,7 @@ export default function Sidebar({ activeTab, onTab, mode, onMode }) {
               <span className={active ? 'text-teal-300' : 'text-white/40'}>{ICONS[t.id]}</span>
               <span className="flex-1 text-left">{t.label}</span>
               {mode === 'guided' && t.step && (
-                <span className="text-[10px] text-white/30">Step {t.step}</span>
+                <span className="text-[10px] text-white/30">Phase {t.step}</span>
               )}
             </button>
           )
@@ -109,7 +109,7 @@ export default function Sidebar({ activeTab, onTab, mode, onMode }) {
                   ? 'bg-indigo-400/25 text-indigo-100 border border-indigo-300/30'
                   : 'text-white/50 hover:text-white'
               }`}
-              title={m.id === 'guided' ? 'Plain-language, step-by-step' : 'Full practitioner depth'}
+              title={m.id === 'guided' ? 'Plain-language, phase-by-phase' : 'Full practitioner depth'}
             >
               {m.label}
             </button>
@@ -117,7 +117,7 @@ export default function Sidebar({ activeTab, onTab, mode, onMode }) {
         </div>
         <div className="mt-2 text-[11px] text-white/35 leading-snug">
           {mode === 'guided'
-            ? 'Guided: plain language, coached steps.'
+            ? 'Guided: plain language, coached phases.'
             : 'Expert: full library, framework terms.'}
         </div>
       </div>
