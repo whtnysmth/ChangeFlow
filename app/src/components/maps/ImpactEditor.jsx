@@ -6,7 +6,7 @@ import { inputCls, SectionTitle, Field, ConfirmButton } from './shared.jsx'
 
 const LEVELS = [
   { id: 'none', label: 'None', cls: 'bg-slate-100 text-slate-500 border-slate-200' },
-  { id: 'low', label: 'Low', cls: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
+  { id: 'low', label: 'Low', cls: 'bg-[#e6f9ef] text-[#00854d] border-[#9ae6b8]' },
   { id: 'medium', label: 'Medium', cls: 'bg-amber-50 text-amber-700 border-amber-200' },
   { id: 'high', label: 'High', cls: 'bg-rose-50 text-rose-700 border-rose-200' },
 ]
@@ -111,7 +111,7 @@ export default function ImpactEditor({ content, onChange }) {
                   <button
                     onClick={() => { if (newElement.trim()) { setContent({ elements: [...elements, newElement.trim()] }); setNewElement('') } }}
                     disabled={!newElement.trim()}
-                    className="px-2 py-1 text-xs font-medium rounded-lg bg-teal-600 text-white hover:bg-teal-700 transition disabled:opacity-40 shrink-0"
+                    className="px-2 py-1 text-xs font-medium rounded-lg bg-[#0073ea] text-white hover:bg-[#0060c9] transition disabled:opacity-40 shrink-0"
                   >
                     Add
                   </button>
@@ -140,7 +140,7 @@ export default function ImpactEditor({ content, onChange }) {
                     <td key={e} className="p-1">
                       <button
                         onClick={() => setSelCell(selected ? null : { g, e })}
-                        className={`w-full rounded-lg border px-2 py-1.5 text-left transition ${meta.cls} ${selected ? 'ring-2 ring-teal-500' : ''}`}
+                        className={`w-full rounded-lg border px-2 py-1.5 text-left transition ${meta.cls} ${selected ? 'ring-2 ring-[#0085ff]' : ''}`}
                         title={note || 'Click to add a note'}
                       >
                         <select
@@ -172,7 +172,7 @@ export default function ImpactEditor({ content, onChange }) {
                   <button
                     onClick={() => { if (newGroup.trim()) { setContent({ groups: [...groups, newGroup.trim()] }); setNewGroup('') } }}
                     disabled={!newGroup.trim()}
-                    className="px-2.5 py-1.5 text-xs font-medium rounded-lg bg-teal-600 text-white hover:bg-teal-700 transition disabled:opacity-40 shrink-0"
+                    className="px-2.5 py-1.5 text-xs font-medium rounded-lg bg-[#0073ea] text-white hover:bg-[#0060c9] transition disabled:opacity-40 shrink-0"
                   >
                     Add
                   </button>

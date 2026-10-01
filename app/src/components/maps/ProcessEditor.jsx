@@ -41,7 +41,7 @@ function StepColumn({ title, accent, steps, onSteps }) {
                   value={s.step}
                   onChange={e => patch(s.id, { step: e.target.value })}
                   placeholder="Step description"
-                  className="w-full px-2 py-1 text-xs font-medium rounded-lg border border-transparent hover:border-slate-200 focus:border-teal-500 outline-none text-slate-900"
+                  className="w-full px-2 py-1 text-xs font-medium rounded-lg border border-transparent hover:border-slate-200 focus:border-[#0085ff] outline-none text-slate-900"
                 />
                 <div className="flex gap-1.5">
                   <input
@@ -59,8 +59,8 @@ function StepColumn({ title, accent, steps, onSteps }) {
                 </div>
               </div>
               <div className="flex flex-col items-center shrink-0">
-                <button onClick={() => move(s.id, -1)} disabled={i === 0} className="text-slate-400 hover:text-teal-700 disabled:opacity-25 text-xs px-1" title="Move up">↑</button>
-                <button onClick={() => move(s.id, 1)} disabled={i === steps.length - 1} className="text-slate-400 hover:text-teal-700 disabled:opacity-25 text-xs px-1" title="Move down">↓</button>
+                <button onClick={() => move(s.id, -1)} disabled={i === 0} className="text-slate-400 hover:text-[#0060c9] disabled:opacity-25 text-xs px-1" title="Move up">↑</button>
+                <button onClick={() => move(s.id, 1)} disabled={i === steps.length - 1} className="text-slate-400 hover:text-[#0060c9] disabled:opacity-25 text-xs px-1" title="Move down">↓</button>
                 <ConfirmButton onConfirm={() => onSteps(steps.filter(x => x.id !== s.id))} label="×" className="text-sm px-1" />
               </div>
             </div>
@@ -105,11 +105,11 @@ export default function ProcessEditor({ content, onChange }) {
           onSteps={next => onChange({ ...(content || {}), current: next })}
         />
         <div className="hidden lg:flex items-center">
-          <span className="text-teal-600 text-xl font-bold">→</span>
+          <span className="text-[#0073ea] text-xl font-bold">→</span>
         </div>
         <StepColumn
           title="Future state"
-          accent="bg-teal-50/60 border-teal-200"
+          accent="bg-[#e8f1fd]/60 border-[#a9ccf7]"
           steps={future}
           onSteps={next => onChange({ ...(content || {}), future: next })}
         />

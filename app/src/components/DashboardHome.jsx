@@ -20,7 +20,7 @@ export default function DashboardHome({
         <div className="flex items-center gap-3">
           <button
             onClick={() => window.print()}
-            className="no-print text-sm text-teal-700 hover:text-teal-800 underline underline-offset-4"
+            className="no-print text-sm text-[#0060c9] hover:text-[#0053a6] underline underline-offset-4"
           >
             View full report →
           </button>

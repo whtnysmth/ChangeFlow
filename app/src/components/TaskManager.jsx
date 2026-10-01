@@ -16,7 +16,7 @@ const STATUS_META = {
   todo:        { label: 'To do',         pill: 'bg-slate-100 text-slate-600 border-slate-200' },
   in_progress: { label: 'Working on it', pill: 'bg-amber-100 text-amber-700 border-amber-200' },
   stuck:       { label: 'Stuck',         pill: 'bg-rose-100 text-rose-700 border-rose-200' },
-  done:        { label: 'Done',          pill: 'bg-emerald-100 text-emerald-700 border-emerald-200' },
+  done:        { label: 'Done',          pill: 'bg-[#c9f3dc] text-[#00854d] border-[#9ae6b8]' },
 }
 
 const PRIORITY_META = {
@@ -25,13 +25,13 @@ const PRIORITY_META = {
   high:   { label: 'High',   pill: 'bg-rose-100 text-rose-700 border-rose-200' },
 }
 
-const BUILTIN_GROUP_COLORS = { 'To-Do': '#0d9488', 'Completed': '#10b981' }
-const CUSTOM_GROUP_PALETTE = ['#8b5cf6', '#3b82f6', '#f59e0b', '#f43f5e', '#6366f1', '#06b6d4']
+const BUILTIN_GROUP_COLORS = { 'To-Do': '#0073ea', 'Completed': '#00c875' }
+const CUSTOM_GROUP_PALETTE = ['#0073ea', '#a253ff', '#fdab3d', '#e2445c', '#0085ff', '#4eccc6', '#ffcb00', '#784bd1']
 
 const COLUMN_TYPE_META = [
-  { type: 'status',   label: 'Status',   dot: 'bg-emerald-500' },
+  { type: 'status',   label: 'Status',   dot: 'bg-[#00c875]' },
   { type: 'text',     label: 'Text',     dot: 'bg-amber-400' },
-  { type: 'people',   label: 'People',   dot: 'bg-sky-400' },
+  { type: 'people',   label: 'People',   dot: 'bg-[#4d97ec]' },
   { type: 'date',     label: 'Date',     dot: 'bg-violet-500' },
   { type: 'numbers',  label: 'Numbers',  dot: 'bg-amber-300' },
   { type: 'files',    label: 'Files',    dot: 'bg-rose-400' },
@@ -40,7 +40,7 @@ const COLUMN_TYPE_META = [
 ]
 
 const STATUS_BAR_COLORS = {
-  todo: '#cbd5e1', in_progress: '#fbbf24', stuck: '#fb7185', done: '#34d399',
+  todo: '#0085ff', in_progress: '#fdab3d', stuck: '#e2445c', done: '#00c875',
 }
 
 const fmtDate = (iso) => {
@@ -78,7 +78,7 @@ const isOverdue = (task) =>
   task.due_date && task.status !== 'done' && task.due_date < todayStr()
 
 const inputCls =
-  'px-2 py-1 text-xs rounded-lg bg-white border border-slate-300 text-slate-900 placeholder-slate-400 outline-none focus:border-teal-500'
+  'px-2 py-1 text-xs rounded-lg bg-white border border-slate-300 text-slate-900 placeholder-slate-400 outline-none focus:border-[#0085ff]'
 
 // --- Click-to-edit text cell -----------------------------------------------
 function EditableText({ value, onCommit, placeholder = '—', className = '' }) {
@@ -107,7 +107,7 @@ function EditableText({ value, onCommit, placeholder = '—', className = '' }) 
       onChange={e => setDraft(e.target.value)}
       onBlur={commit}
       onKeyDown={e => { if (e.key === 'Enter') commit(); if (e.key === 'Escape') setEditing(false) }}
-      className="w-full px-1.5 py-0.5 text-xs rounded border border-teal-500 outline-none text-slate-900 bg-white"
+      className="w-full px-1.5 py-0.5 text-xs rounded border border-[#0085ff] outline-none text-slate-900 bg-white"
     />
   )
 }
@@ -196,7 +196,7 @@ function FilesCell({ task, columnId = null, live, fileCount = 0, onFilesChanged 
     <>
       <button
         onClick={toggle}
-        className="flex items-center gap-1 text-slate-400 hover:text-teal-700 transition"
+        className="flex items-center gap-1 text-slate-400 hover:text-[#0060c9] transition"
         title={live ? 'View files' : 'File upload needs the live database'}
       >
         <span className="text-sm">📎</span>
@@ -220,7 +220,7 @@ function FilesCell({ task, columnId = null, live, fileCount = 0, onFilesChanged 
                 <div key={f.id} className="flex items-center justify-between gap-2 px-1 py-1.5 border-b border-slate-100 last:border-0">
                   <button
                     onClick={() => handleDownload(f)}
-                    className="text-left text-[11px] text-teal-700 hover:underline truncate"
+                    className="text-left text-[11px] text-[#0060c9] hover:underline truncate"
                     title="Download"
                   >
                     📎 {f.file_name}{f.file_size != null ? ` (${fmtSize(f.file_size)})` : ''}
@@ -240,7 +240,7 @@ function FilesCell({ task, columnId = null, live, fileCount = 0, onFilesChanged 
             <button
               disabled={!live || uploading}
               onClick={() => fileRef.current?.click()}
-              className="mt-2 w-full px-2 py-1.5 text-[11px] rounded-lg bg-teal-600/10 text-teal-700 border border-teal-600/20 disabled:opacity-40 hover:bg-teal-600/20 transition"
+              className="mt-2 w-full px-2 py-1.5 text-[11px] rounded-lg bg-[#0073ea]/10 text-[#0060c9] border border-[#0073ea]/20 disabled:opacity-40 hover:bg-[#0073ea]/20 transition"
             >
               {uploading ? 'Uploading…' : '+ Attach file'}
             </button>
@@ -292,7 +292,7 @@ function CustomCell({ col, task, live, fileCount, onPatch, onFilesChanged }) {
           type="checkbox"
           checked={!!val}
           onChange={e => onPatch({ [col.id]: e.target.checked })}
-          className="h-4 w-4 accent-teal-600 cursor-pointer"
+          className="h-4 w-4 accent-[#0073ea] cursor-pointer"
         />
       )
     case 'files':
@@ -317,7 +317,7 @@ function AddColumnPicker({ onAdd, onClose }) {
           value={name}
           onChange={e => setName(e.target.value)}
           placeholder="Search or describe your column"
-          className="w-full px-3 py-1.5 text-xs rounded-lg bg-white border border-slate-300 text-slate-900 placeholder-slate-400 outline-none focus:border-teal-500"
+          className="w-full px-3 py-1.5 text-xs rounded-lg bg-white border border-slate-300 text-slate-900 placeholder-slate-400 outline-none focus:border-[#0085ff]"
         />
         <div className="text-[11px] uppercase tracking-widest text-slate-400 mt-3 mb-1 px-1">Column types</div>
         <div className="grid grid-cols-2 gap-1">
@@ -404,7 +404,7 @@ function GroupSection({
                       checked={allSelected}
                       ref={el => { if (el) el.indeterminate = !allSelected && someSelected }}
                       onChange={onToggleSelectAll}
-                      className="h-4 w-4 accent-teal-600 cursor-pointer"
+                      className="h-4 w-4 accent-[#0073ea] cursor-pointer"
                       title="Select all in group"
                     />
                   </th>
@@ -434,7 +434,7 @@ function GroupSection({
                   <th className="w-12 px-2 py-2">
                     <button
                       onClick={onPickerOpen}
-                      className="h-6 w-6 rounded-full border border-slate-200 text-slate-400 hover:text-teal-600 hover:border-teal-500 transition text-sm leading-none"
+                      className="h-6 w-6 rounded-full border border-slate-200 text-slate-400 hover:text-[#0073ea] hover:border-[#0085ff] transition text-sm leading-none"
                       title="Add column"
                     >
                       +
@@ -461,7 +461,7 @@ function GroupSection({
                           type="checkbox"
                           checked={!!selectable[task.id]}
                           onChange={() => onToggleSelect(task.id)}
-                          className="h-4 w-4 accent-teal-600 cursor-pointer"
+                          className="h-4 w-4 accent-[#0073ea] cursor-pointer"
                         />
                       </td>
                       <td className="px-3 py-2">
@@ -506,7 +506,7 @@ function GroupSection({
                         <select
                           value={task.modality || ''}
                           onChange={e => onField(task, { modality: e.target.value || null })}
-                          className="text-[11px] rounded-full px-2 py-1 border outline-none cursor-pointer appearance-none bg-teal-50 text-teal-700 border-teal-200"
+                          className="text-[11px] rounded-full px-2 py-1 border outline-none cursor-pointer appearance-none bg-[#e8f1fd] text-[#0060c9] border-[#a9ccf7]"
                           title="Phase"
                         >
                           <option value="">—</option>
@@ -565,12 +565,12 @@ function GroupSection({
                   if (e.key === 'Escape') onQuickAddCancel()
                 }}
                 placeholder={`+ Add a task to ${group.name} — press Enter`}
-                className="w-full px-2 py-1.5 text-xs rounded-lg border border-teal-500 outline-none text-slate-900 placeholder-slate-400"
+                className="w-full px-2 py-1.5 text-xs rounded-lg border border-[#0085ff] outline-none text-slate-900 placeholder-slate-400"
               />
             ) : (
               <button
                 onClick={onQuickAddOpen}
-                className="text-xs text-slate-400 hover:text-teal-700 transition"
+                className="text-xs text-slate-400 hover:text-[#0060c9] transition"
               >
                 + Add task
               </button>
@@ -843,7 +843,7 @@ export default function TaskManager({ campaignId, live }) {
       <div className="flex flex-wrap items-center gap-2 mb-4">
         <button
           onClick={() => { setQuickAddFor('To-Do'); setQuickTitle('') }}
-          className="px-3 py-1.5 text-xs font-medium rounded-lg bg-teal-600 text-white hover:bg-teal-700 transition"
+          className="px-3 py-1.5 text-xs font-medium rounded-lg bg-[#0073ea] text-white hover:bg-[#0060c9] transition"
         >
           New task
         </button>
@@ -924,12 +924,12 @@ export default function TaskManager({ campaignId, live }) {
                   if (e.key === 'Escape') { setAddingGroup(false); setNewGroupName('') }
                 }}
                 placeholder="Group name — press Enter"
-                className="px-3 py-1.5 text-xs rounded-lg border border-teal-500 outline-none text-slate-900 placeholder-slate-400 bg-white w-64"
+                className="px-3 py-1.5 text-xs rounded-lg border border-[#0085ff] outline-none text-slate-900 placeholder-slate-400 bg-white w-64"
               />
             ) : (
               <button
                 onClick={() => { setAddingGroup(true); setNewGroupName('') }}
-                className="px-3 py-1.5 text-xs rounded-lg border border-slate-300 text-slate-600 hover:border-teal-500 hover:text-teal-700 transition bg-white"
+                className="px-3 py-1.5 text-xs rounded-lg border border-slate-300 text-slate-600 hover:border-[#0085ff] hover:text-[#0060c9] transition bg-white"
               >
                 + Add new group
               </button>

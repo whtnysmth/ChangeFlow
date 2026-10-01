@@ -11,11 +11,11 @@ import {
 import { MODALITIES, modalityById } from '../lib/modalities.js'
 
 const inputCls =
-  'px-2 py-1.5 text-xs rounded-lg bg-white border border-slate-300 text-slate-900 placeholder-slate-400 outline-none focus:border-teal-500 w-full'
+  'px-2 py-1.5 text-xs rounded-lg bg-white border border-slate-300 text-slate-900 placeholder-slate-400 outline-none focus:border-[#0085ff] w-full'
 const btnPrimary =
-  'px-4 py-2 text-sm font-medium rounded-lg bg-teal-600 text-white hover:bg-teal-700 transition disabled:opacity-40 disabled:cursor-not-allowed'
+  'px-4 py-2 text-sm font-medium rounded-lg bg-[#0073ea] text-white hover:bg-[#0060c9] transition disabled:opacity-40 disabled:cursor-not-allowed'
 const btnGhost =
-  'px-3 py-1.5 text-xs font-medium rounded-lg border border-slate-300 text-slate-600 hover:border-teal-500 hover:text-teal-700 transition'
+  'px-3 py-1.5 text-xs font-medium rounded-lg border border-slate-300 text-slate-600 hover:border-[#0085ff] hover:text-[#0060c9] transition'
 
 const MAX_CSV_BYTES = 5 * 1024 * 1024
 
@@ -63,13 +63,13 @@ function ConfirmButton({ onConfirm, label = 'Delete', className = '' }) {
 function SourceBadge({ survey }) {
   if (survey.source === 'link') {
     return (
-      <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200">
+      <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-[#f3edff] text-[#6e2fd6] border border-[#cdb0ff]">
         Live link
       </span>
     )
   }
   return (
-    <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-teal-50 text-teal-700 border border-teal-200">
+    <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-[#e8f1fd] text-[#0060c9] border border-[#a9ccf7]">
         CSV import
       </span>
   )
@@ -121,7 +121,7 @@ function QuestionCard({ header, values }) {
           </ul>
         )}
         {nonEmpty.length > 50 && (
-          <button onClick={() => setExpanded(v => !v)} className="mt-2 text-[11px] text-teal-700 hover:text-teal-800 font-medium">
+          <button onClick={() => setExpanded(v => !v)} className="mt-2 text-[11px] text-[#0060c9] hover:text-[#0053a6] font-medium">
             {expanded ? 'Show less' : `Show all ${nonEmpty.length}`}
           </button>
         )}
@@ -184,7 +184,7 @@ function ResultsView({ responses }) {
       <div className="bg-white border border-slate-200 shadow-sm rounded-xl p-4">
         <button
           onClick={() => setShowRaw(v => !v)}
-          className="text-xs font-semibold text-slate-700 hover:text-teal-700 transition"
+          className="text-xs font-semibold text-slate-700 hover:text-[#0060c9] transition"
         >
           {showRaw ? '▾ Hide raw responses' : '▸ Show raw responses'}
         </button>
@@ -301,7 +301,7 @@ function CsvImport({ survey, campaignId, live, onDone, onCancel, mode = 'initial
         />
         <button
           onClick={() => fileRef.current?.click()}
-          className="w-full border-2 border-dashed border-slate-200 hover:border-teal-400 rounded-xl px-4 py-6 text-center transition"
+          className="w-full border-2 border-dashed border-slate-200 hover:border-[#4d97ec] rounded-xl px-4 py-6 text-center transition"
         >
           <div className="text-xs font-medium text-slate-700">{fileName || 'Choose a CSV file'}</div>
           <div className="text-[11px] text-slate-400 mt-1">First row should be the question headers · 5 MB max</div>
@@ -410,7 +410,7 @@ function SurveyDetail({ survey, campaignId, live, onBack, onChanged, onDeleted }
 
   return (
     <div className="space-y-4">
-      <button onClick={onBack} className="text-xs text-slate-500 hover:text-teal-700 transition">← All surveys</button>
+      <button onClick={onBack} className="text-xs text-slate-500 hover:text-[#0060c9] transition">← All surveys</button>
 
       <div className="bg-white border border-slate-200 shadow-sm rounded-xl p-5">
         <div className="flex items-start justify-between gap-3">
@@ -428,7 +428,7 @@ function SurveyDetail({ survey, campaignId, live, onBack, onChanged, onDeleted }
                 </span>
               )}
               {pl && (
-                <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-teal-50 text-teal-700 border border-teal-200">
+                <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-[#e8f1fd] text-[#0060c9] border border-[#a9ccf7]">
                   {pl} phase
                 </span>
               )}
@@ -747,8 +747,8 @@ export default function SurveyHub({ campaignId, live }) {
               onClick={() => setPhaseFilter(f.id)}
               className={`text-[11px] font-medium px-2.5 py-1 rounded-full border transition ${
                 phaseFilter === f.id
-                  ? 'bg-teal-600 text-white border-teal-600'
-                  : 'bg-white text-slate-500 border-slate-200 hover:border-teal-400'
+                  ? 'bg-[#0073ea] text-white border-[#0073ea]'
+                  : 'bg-white text-slate-500 border-slate-200 hover:border-[#4d97ec]'
               }`}
             >
               {f.label}
@@ -777,7 +777,7 @@ export default function SurveyHub({ campaignId, live }) {
               <button
                 key={s.id}
                 onClick={() => openDetail(s)}
-                className="text-left bg-white border border-slate-200 shadow-sm rounded-xl p-4 hover:border-teal-400 hover:shadow transition"
+                className="text-left bg-white border border-slate-200 shadow-sm rounded-xl p-4 hover:border-[#4d97ec] hover:shadow transition"
               >
                 <div className="flex items-start justify-between gap-2">
                   <h3 className="text-sm font-semibold text-slate-900 leading-snug">{s.title}</h3>
@@ -790,7 +790,7 @@ export default function SurveyHub({ campaignId, live }) {
                     </span>
                   )}
                   {pl && (
-                    <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-teal-50 text-teal-700 border border-teal-200">
+                    <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-[#e8f1fd] text-[#0060c9] border border-[#a9ccf7]">
                       {pl}
                     </span>
                   )}

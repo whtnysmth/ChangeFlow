@@ -53,7 +53,7 @@ export default function CustomBuilder({ registry, activeIds, onToggle, onReset, 
             onClick={() => onToggle(w.id)}
             className={`px-3 py-1.5 text-xs rounded-full border transition ${
               on
-                ? 'bg-teal-600 text-white border-teal-600'
+                ? 'bg-[#0073ea] text-white border-[#0073ea]'
                 : 'bg-slate-50 text-slate-600 border-slate-200 hover:text-slate-900 hover:border-slate-300'
             }`}
           >
@@ -95,12 +95,12 @@ export default function CustomBuilder({ registry, activeIds, onToggle, onReset, 
           onChange={e => setName(e.target.value)}
           onKeyDown={e => { if (e.key === 'Enter') handleSave() }}
           placeholder="Name this layout (e.g. Exec view)"
-          className="px-3 py-1.5 text-xs rounded-lg bg-white border border-slate-300 text-slate-900 placeholder-slate-400 outline-none focus:border-teal-500 w-52"
+          className="px-3 py-1.5 text-xs rounded-lg bg-white border border-slate-300 text-slate-900 placeholder-slate-400 outline-none focus:border-[#0085ff] w-52"
         />
         <button
           onClick={handleSave}
           disabled={!name.trim() || saving}
-          className="px-3 py-1.5 text-xs rounded-lg bg-teal-600 text-white border border-teal-600 disabled:opacity-40 hover:bg-teal-700 transition"
+          className="px-3 py-1.5 text-xs rounded-lg bg-[#0073ea] text-white border border-[#0073ea] disabled:opacity-40 hover:bg-[#0060c9] transition"
         >
           {saving ? 'Saving…' : 'Save layout'}
         </button>

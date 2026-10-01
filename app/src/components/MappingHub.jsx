@@ -14,8 +14,8 @@ import ImpactEditor from './maps/ImpactEditor.jsx'
 import { inputCls, btnPrimary, ConfirmButton } from './maps/shared.jsx'
 
 const TYPE_META = {
-  stakeholder: { label: 'Stakeholder', desc: 'Influence × interest grid — who needs what attention', badge: 'bg-teal-100 text-teal-700 border-teal-200' },
-  journey: { label: 'Journey', desc: 'What people experience before, during, after', badge: 'bg-sky-100 text-sky-700 border-sky-200' },
+  stakeholder: { label: 'Stakeholder', desc: 'Influence × interest grid — who needs what attention', badge: 'bg-[#cfe3fb] text-[#0060c9] border-[#a9ccf7]' },
+  journey: { label: 'Journey', desc: 'What people experience before, during, after', badge: 'bg-[#cfe3fb] text-[#0060c9] border-[#a9ccf7]' },
   process: { label: 'Process', desc: 'Current-state vs future-state workflows', badge: 'bg-amber-100 text-amber-700 border-amber-200' },
   impact: { label: 'Impact', desc: 'Which groups are touched by which changes', badge: 'bg-rose-100 text-rose-700 border-rose-200' },
 }
@@ -87,7 +87,7 @@ function NewMapChooser({ campaignId, live, onCreate, onCancel }) {
           <button
             key={id}
             onClick={() => setMapType(id)}
-            className={`text-left p-3 rounded-xl border transition ${mapType === id ? 'border-teal-500 ring-1 ring-teal-500 bg-teal-50/50' : 'border-slate-200 hover:border-slate-300 bg-white'}`}
+            className={`text-left p-3 rounded-xl border transition ${mapType === id ? 'border-[#0085ff] ring-1 ring-[#0085ff] bg-[#e8f1fd]/50' : 'border-slate-200 hover:border-slate-300 bg-white'}`}
           >
             <span className={`inline-block text-[11px] font-semibold px-2 py-0.5 rounded-full border ${m.badge}`}>{m.label}</span>
             <p className="text-[11px] text-slate-500 mt-1.5">{m.desc}</p>
@@ -107,7 +107,7 @@ function NewMapChooser({ campaignId, live, onCreate, onCancel }) {
                   disabled={disabled}
                   onClick={() => setSource(id)}
                   title={disabled ? 'Upload needs the live database' : m.desc}
-                  className={`text-left p-3 rounded-xl border transition ${source === id ? 'border-teal-500 ring-1 ring-teal-500 bg-teal-50/50' : 'border-slate-200 bg-white'} ${disabled ? 'opacity-40 cursor-not-allowed' : 'hover:border-slate-300'}`}
+                  className={`text-left p-3 rounded-xl border transition ${source === id ? 'border-[#0085ff] ring-1 ring-[#0085ff] bg-[#e8f1fd]/50' : 'border-slate-200 bg-white'} ${disabled ? 'opacity-40 cursor-not-allowed' : 'hover:border-slate-300'}`}
                 >
                   <div className="text-xs font-semibold text-slate-800">{m.label}</div>
                   <p className="text-[11px] text-slate-500 mt-1">{disabled ? 'Needs the live database' : m.desc}</p>
@@ -139,7 +139,7 @@ function NewMapChooser({ campaignId, live, onCreate, onCancel }) {
                 type="file"
                 accept="image/*,.pdf"
                 onChange={e => setFile(e.target.files?.[0] || null)}
-                className="text-xs text-slate-600 file:mr-3 file:px-3 file:py-1.5 file:text-xs file:font-medium file:rounded-lg file:border-0 file:bg-teal-600 file:text-white hover:file:bg-teal-700"
+                className="text-xs text-slate-600 file:mr-3 file:px-3 file:py-1.5 file:text-xs file:font-medium file:rounded-lg file:border-0 file:bg-[#0073ea] file:text-white hover:file:bg-[#0060c9]"
               />
             </label>
           )}
@@ -228,7 +228,7 @@ function MapDetail({ map, campaignId, onBack, onSaved, onDeleted }) {
 
   return (
     <div className="space-y-4 max-w-5xl">
-      <button onClick={onBack} className="text-xs text-slate-500 hover:text-teal-700">← All maps</button>
+      <button onClick={onBack} className="text-xs text-slate-500 hover:text-[#0060c9]">← All maps</button>
 
       {error && <p className="text-xs text-rose-600 bg-rose-50 border border-rose-200 rounded-lg px-3 py-2">{error}</p>}
 
@@ -239,7 +239,7 @@ function MapDetail({ map, campaignId, onBack, onSaved, onDeleted }) {
             {SOURCE_META[map.source]?.label || map.source}
           </span>
           {phaseLabel(map.modality) && (
-            <span className="text-[11px] px-2 py-0.5 rounded-full bg-teal-50 text-teal-700 border border-teal-200">
+            <span className="text-[11px] px-2 py-0.5 rounded-full bg-[#e8f1fd] text-[#0060c9] border border-[#a9ccf7]">
               {phaseLabel(map.modality)} phase
             </span>
           )}
@@ -249,7 +249,7 @@ function MapDetail({ map, campaignId, onBack, onSaved, onDeleted }) {
         <input
           value={title}
           onChange={e => setTitle(e.target.value)}
-          className="w-full text-lg font-semibold text-slate-900 bg-transparent border border-transparent hover:border-slate-200 focus:border-teal-500 rounded-lg px-2 py-1 outline-none"
+          className="w-full text-lg font-semibold text-slate-900 bg-transparent border border-transparent hover:border-slate-200 focus:border-[#0085ff] rounded-lg px-2 py-1 outline-none"
         />
 
         <label className="block max-w-xs">
@@ -276,7 +276,7 @@ function MapDetail({ map, campaignId, onBack, onSaved, onDeleted }) {
                 href={map.url}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-block px-4 py-2 text-sm font-medium rounded-lg bg-teal-600 text-white hover:bg-teal-700 transition"
+                className="inline-block px-4 py-2 text-sm font-medium rounded-lg bg-[#0073ea] text-white hover:bg-[#0060c9] transition"
               >
                 Open board ↗
               </a>
@@ -294,7 +294,7 @@ function MapDetail({ map, campaignId, onBack, onSaved, onDeleted }) {
                   {map.file_name} {map.file_size ? `· ${(map.file_size / 1024).toFixed(0)} KB` : ''}
                 </div>
                 {signedUrl && (
-                  <a href={signedUrl} target="_blank" rel="noreferrer" className="text-xs font-medium text-teal-700 hover:text-teal-800">
+                  <a href={signedUrl} target="_blank" rel="noreferrer" className="text-xs font-medium text-[#0060c9] hover:text-[#0053a6]">
                     Download / view
                   </a>
                 )}
@@ -399,7 +399,7 @@ export default function MappingHub({ campaignId, live }) {
               <button
                 key={t}
                 onClick={() => setTypeFilter(t)}
-                className={`text-xs font-medium px-3 py-1.5 rounded-full border transition ${typeFilter === t ? 'bg-teal-600 text-white border-teal-600' : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300'}`}
+                className={`text-xs font-medium px-3 py-1.5 rounded-full border transition ${typeFilter === t ? 'bg-[#0073ea] text-white border-[#0073ea]' : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300'}`}
               >
                 {t === 'all' ? 'All' : TYPE_META[t].label}
               </button>
@@ -433,13 +433,13 @@ export default function MappingHub({ campaignId, live }) {
                   <button
                     key={m.id}
                     onClick={() => { setSelectedId(m.id); setView('detail') }}
-                    className="text-left bg-white rounded-xl border border-slate-200 shadow-sm p-4 hover:border-teal-400 hover:shadow transition"
+                    className="text-left bg-white rounded-xl border border-slate-200 shadow-sm p-4 hover:border-[#4d97ec] hover:shadow transition"
                   >
                     <div className="flex items-center gap-2 mb-2">
                       <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full border ${tm.badge}`}>{tm.label}</span>
                       <span className="text-[10px] text-slate-400">{SOURCE_META[m.source]?.label || m.source}</span>
                       {phaseLabel(m.modality) && (
-                        <span className="text-[10px] text-teal-700 ml-auto">{phaseLabel(m.modality)}</span>
+                        <span className="text-[10px] text-[#0060c9] ml-auto">{phaseLabel(m.modality)}</span>
                       )}
                     </div>
                     <div className="text-sm font-semibold text-slate-900 truncate">{m.title}</div>

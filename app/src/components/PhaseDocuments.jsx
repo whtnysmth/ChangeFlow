@@ -125,7 +125,7 @@ export default function PhaseDocuments({ campaignId, modality, live }) {
                     <button
                       onClick={() => handleDownload(item)}
                       disabled={downloadingId === item.id}
-                      className="text-[11px] text-teal-700 hover:text-teal-900 underline disabled:opacity-50"
+                      className="text-[11px] text-[#0060c9] hover:text-[#0b3d6e] underline disabled:opacity-50"
                       title={item.file_path || ''}
                     >
                       {downloadingId === item.id ? 'Preparing…' : `📎 ${item.file_name}`}{item.file_size != null ? ` (${fmtSize(item.file_size)})` : ''}
@@ -152,7 +152,7 @@ export default function PhaseDocuments({ campaignId, modality, live }) {
             value={title}
             onChange={e => setTitle(e.target.value)}
             placeholder="Title — e.g. Sponsor sync 9/30, Training deck v2"
-            className="px-3 py-1.5 text-xs rounded-lg bg-white border border-slate-300 text-slate-900 placeholder-slate-400 outline-none focus:border-teal-500"
+            className="px-3 py-1.5 text-xs rounded-lg bg-white border border-slate-300 text-slate-900 placeholder-slate-400 outline-none focus:border-[#0085ff]"
           />
           <input
             ref={fileRef}
@@ -160,7 +160,7 @@ export default function PhaseDocuments({ campaignId, modality, live }) {
             disabled={!live}
             onChange={e => setFile(e.target.files?.[0] || null)}
             title={live ? 'Attach a file' : 'File upload needs the live database'}
-            className="px-3 py-1.5 text-xs rounded-lg bg-white border border-slate-300 text-slate-500 outline-none file:mr-2 file:px-2 file:py-1 file:text-[11px] file:rounded file:border-0 file:bg-teal-600/10 file:text-teal-700 disabled:opacity-40"
+            className="px-3 py-1.5 text-xs rounded-lg bg-white border border-slate-300 text-slate-500 outline-none file:mr-2 file:px-2 file:py-1 file:text-[11px] file:rounded file:border-0 file:bg-[#0073ea]/10 file:text-[#0060c9] disabled:opacity-40"
           />
         </div>
         <textarea
@@ -168,7 +168,7 @@ export default function PhaseDocuments({ campaignId, modality, live }) {
           onChange={e => setNotes(e.target.value)}
           placeholder="Notes — decisions, follow-ups, context the next person needs…"
           rows={2}
-          className="mt-2 w-full px-3 py-1.5 text-xs rounded-lg bg-white border border-slate-300 text-slate-900 placeholder-slate-400 outline-none focus:border-teal-500 resize-y"
+          className="mt-2 w-full px-3 py-1.5 text-xs rounded-lg bg-white border border-slate-300 text-slate-900 placeholder-slate-400 outline-none focus:border-[#0085ff] resize-y"
         />
         {error && <p className="mt-2 text-xs text-red-600">{error}</p>}
         <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
@@ -179,7 +179,7 @@ export default function PhaseDocuments({ campaignId, modality, live }) {
           <button
             type="submit"
             disabled={saving}
-            className="px-3 py-1.5 text-xs rounded-lg bg-teal-400/20 text-teal-200 border border-teal-300/30 disabled:opacity-40 hover:bg-teal-400/30 transition"
+            className="px-3 py-1.5 text-xs rounded-lg bg-[#4d97ec]/20 text-[#a9ccf7] border border-[#7db3f2]/30 disabled:opacity-40 hover:bg-[#4d97ec]/30 transition"
           >
             {saving ? 'Saving…' : live ? 'Save note / upload' : 'Save note'}
           </button>

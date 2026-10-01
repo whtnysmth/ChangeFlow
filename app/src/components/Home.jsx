@@ -131,14 +131,14 @@ export default function Home({ campaignId, bundle, onSelectModality }) {
   const TONE = {
     rose: 'border-rose-300 bg-rose-50',
     amber: 'border-amber-300 bg-amber-50',
-    indigo: 'border-indigo-300 bg-indigo-50',
-    teal: 'border-teal-300 bg-teal-50',
+    indigo: 'border-[#b183ff] bg-[#f3edff]',
+    teal: 'border-[#7db3f2] bg-[#e8f1fd]',
   }
   const KIND_PILL = {
     Task: 'bg-amber-100 text-amber-700',
-    Document: 'bg-sky-100 text-sky-700',
+    Document: 'bg-[#cfe3fb] text-[#0060c9]',
     Map: 'bg-violet-100 text-violet-700',
-    Note: 'bg-teal-100 text-teal-700',
+    Note: 'bg-[#cfe3fb] text-[#0060c9]',
   }
 
   return (

@@ -45,20 +45,20 @@ export default function JourneyEditor({ content, onChange }) {
               <input
                 value={s.name}
                 onChange={e => patchStage(s.id, { name: e.target.value })}
-                className="flex-1 px-2 py-1 text-sm font-semibold rounded-lg border border-transparent hover:border-slate-200 focus:border-teal-500 outline-none text-slate-900"
+                className="flex-1 px-2 py-1 text-sm font-semibold rounded-lg border border-transparent hover:border-slate-200 focus:border-[#0085ff] outline-none text-slate-900"
                 placeholder="Stage name"
               />
               <div className="flex items-center gap-0.5 shrink-0">
                 <button
                   onClick={() => moveStage(s.id, -1)}
                   disabled={i === 0}
-                  className="px-1.5 py-0.5 text-slate-400 hover:text-teal-700 disabled:opacity-25 text-sm"
+                  className="px-1.5 py-0.5 text-slate-400 hover:text-[#0060c9] disabled:opacity-25 text-sm"
                   title="Move left"
                 >←</button>
                 <button
                   onClick={() => moveStage(s.id, 1)}
                   disabled={i === stages.length - 1}
-                  className="px-1.5 py-0.5 text-slate-400 hover:text-teal-700 disabled:opacity-25 text-sm"
+                  className="px-1.5 py-0.5 text-slate-400 hover:text-[#0060c9] disabled:opacity-25 text-sm"
                   title="Move right"
                 >→</button>
                 <ConfirmButton
@@ -92,7 +92,7 @@ export default function JourneyEditor({ content, onChange }) {
                 onChange={e => patchStage(s.id, { opportunities: e.target.value })}
                 rows={2}
                 placeholder="Moments to support, delight, or win…"
-                className={`${inputCls} border-emerald-200 focus:border-emerald-400`}
+                className={`${inputCls} border-[#9ae6b8] focus:border-[#33d17a]`}
               />
             </Field>
           </div>
@@ -110,7 +110,7 @@ export default function JourneyEditor({ content, onChange }) {
             <button
               onClick={addStage}
               disabled={!newName.trim()}
-              className="w-full px-3 py-1.5 text-xs font-medium rounded-lg bg-teal-600 text-white hover:bg-teal-700 transition disabled:opacity-40"
+              className="w-full px-3 py-1.5 text-xs font-medium rounded-lg bg-[#0073ea] text-white hover:bg-[#0060c9] transition disabled:opacity-40"
             >
               + Add stage
             </button>

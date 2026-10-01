@@ -2,7 +2,8 @@
 // SVG ring metrics in the approved mockup's visual language.
 import { MODALITIES, modalityHealth, healthBand } from '../lib/modalities.js'
 
-const BAND_STROKE = { teal: '#0d9488', amber: '#f59e0b', rose: '#f43f5e', white: '#94a3b8' }
+// monday.com palette: blue = on track, amber = at risk, rose = off track
+const BAND_STROKE = { teal: '#0073ea', amber: '#fdab3d', rose: '#e2445c', white: '#94a3b8' }
 
 export function Ring({ value, size = 120, stroke = 10, color = '#0d9488', children }) {
   const r = (size - stroke) / 2
@@ -34,7 +35,7 @@ export default function ModalityRings({ data, onSelect }) {
           <button
             key={m.id}
             onClick={() => onSelect && onSelect(m.id)}
-            className="bg-white border border-slate-200 shadow-sm rounded-xl p-5 flex flex-col items-center gap-2 hover:border-teal-300 transition text-center"
+            className="bg-white border border-slate-200 shadow-sm rounded-xl p-5 flex flex-col items-center gap-2 hover:border-[#7db3f2] transition text-center"
             title={`${m.label}: ${band.label}${score != null ? ` (${score}%)` : ''} — open ${m.label} tab`}
           >
             <Ring value={score} color={stroke}>
@@ -44,7 +45,7 @@ export default function ModalityRings({ data, onSelect }) {
             <div
               className={`text-xs px-2 py-0.5 rounded-full border ${
                 band.color === 'teal'
-                  ? 'bg-teal-100 text-teal-700 border-teal-200'
+                  ? 'bg-[#cfe3fb] text-[#0060c9] border-[#a9ccf7]'
                   : band.color === 'amber'
                     ? 'bg-amber-100 text-amber-700 border-amber-200'
                     : band.color === 'rose'

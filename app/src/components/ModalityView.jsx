@@ -11,14 +11,14 @@ export default function ModalityView({ modality, widgetIds, registry, data, lens
       <div>
         <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
           <h2 className="text-xl font-semibold text-slate-900">
-            {mode === 'guided' && <span className="text-teal-600">Phase {stepIndex}: </span>}
+            {mode === 'guided' && <span className="text-[#0073ea]">Phase {stepIndex}: </span>}
             {modality.label}
           </h2>
           <span className="text-sm text-slate-500">{modality.tagline}</span>
         </div>
         {mode === 'guided' && (
-          <div className="mt-3 p-4 rounded-xl bg-white border border-teal-200 shadow-sm text-sm text-slate-700 leading-relaxed">
-            <span className="text-teal-700 font-medium">Why this matters: </span>
+          <div className="mt-3 p-4 rounded-xl bg-white border border-[#a9ccf7] shadow-sm text-sm text-slate-700 leading-relaxed">
+            <span className="text-[#0060c9] font-medium">Why this matters: </span>
             {modality.coaching}
           </div>
         )}

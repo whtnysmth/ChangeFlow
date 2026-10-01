@@ -54,7 +54,7 @@ export default function ExecutiveSummary({ data }) {
       <ul className="space-y-2">
         {lines.map((l, i) => (
           <li key={i} className="text-sm text-slate-600 leading-relaxed flex gap-2">
-            <span className="text-teal-600 mt-0.5">▸</span>
+            <span className="text-[#0073ea] mt-0.5">▸</span>
             <span>{l}</span>
           </li>
         ))}

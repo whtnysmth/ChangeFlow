@@ -2,13 +2,13 @@
 import { useState } from 'react'
 
 export const inputCls =
-  'px-2 py-1.5 text-xs rounded-lg bg-white border border-slate-300 text-slate-900 placeholder-slate-400 outline-none focus:border-teal-500 w-full'
+  'px-2 py-1.5 text-xs rounded-lg bg-white border border-slate-300 text-slate-900 placeholder-slate-400 outline-none focus:border-[#0085ff] w-full'
 
 export const btnPrimary =
-  'px-4 py-2 text-sm font-medium rounded-lg bg-teal-600 text-white hover:bg-teal-700 transition disabled:opacity-40 disabled:cursor-not-allowed'
+  'px-4 py-2 text-sm font-medium rounded-lg bg-[#0073ea] text-white hover:bg-[#0060c9] transition disabled:opacity-40 disabled:cursor-not-allowed'
 
 export const btnGhost =
-  'px-3 py-1.5 text-xs font-medium rounded-lg border border-slate-300 text-slate-600 hover:border-teal-500 hover:text-teal-700 transition'
+  'px-3 py-1.5 text-xs font-medium rounded-lg border border-slate-300 text-slate-600 hover:border-[#0085ff] hover:text-[#0060c9] transition'
 
 export function uid() {
   return (typeof crypto !== 'undefined' && crypto.randomUUID)

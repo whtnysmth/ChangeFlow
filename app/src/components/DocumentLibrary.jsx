@@ -28,12 +28,12 @@ const fmtSize = (bytes) => {
 const TYPE_META = {
   pdf:  { label: 'PDF',  cls: 'bg-rose-100 text-rose-700' },
   doc:  { label: 'DOC',  cls: 'bg-blue-100 text-blue-700' },
-  xls:  { label: 'XLS',  cls: 'bg-emerald-100 text-emerald-700' },
+  xls:  { label: 'XLS',  cls: 'bg-[#c9f3dc] text-[#00854d]' },
   ppt:  { label: 'PPT',  cls: 'bg-amber-100 text-amber-700' },
   img:  { label: 'IMG',  cls: 'bg-violet-100 text-violet-700' },
   txt:  { label: 'TXT',  cls: 'bg-slate-200 text-slate-600' },
   zip:  { label: 'ZIP',  cls: 'bg-slate-200 text-slate-600' },
-  file: { label: 'FILE', cls: 'bg-teal-100 text-teal-700' },
+  file: { label: 'FILE', cls: 'bg-[#cfe3fb] text-[#0060c9]' },
 }
 
 function typeOf(doc) {
@@ -52,7 +52,7 @@ function typeOf(doc) {
 function sourceBadge(doc) {
   const phaseLabel = doc.modality ? modalityById(doc.modality)?.label : null
   if (doc.source === 'phase') {
-    return { text: phaseLabel ? `${phaseLabel} phase` : 'Phase', cls: 'bg-indigo-100 text-indigo-700' }
+    return { text: phaseLabel ? `${phaseLabel} phase` : 'Phase', cls: 'bg-[#e6d9ff] text-[#6e2fd6]' }
   }
   if (doc.source === 'task') {
     return { text: `Task: ${doc.taskTitle}`, cls: 'bg-amber-100 text-amber-800' }
@@ -61,7 +61,7 @@ function sourceBadge(doc) {
     return { text: `Task: ${doc.taskTitle}`, cls: 'bg-amber-100 text-amber-800' }
   }
   if (phaseLabel) {
-    return { text: `${phaseLabel} phase`, cls: 'bg-indigo-100 text-indigo-700' }
+    return { text: `${phaseLabel} phase`, cls: 'bg-[#e6d9ff] text-[#6e2fd6]' }
   }
   return { text: 'General', cls: 'bg-slate-200 text-slate-600' }
 }
@@ -185,7 +185,7 @@ export default function DocumentLibrary({ campaignId, live }) {
     }
   }
 
-  const inputCls = 'w-full px-3 py-2 text-sm rounded-lg border border-slate-200 bg-white text-slate-900 outline-none focus:border-teal-500'
+  const inputCls = 'w-full px-3 py-2 text-sm rounded-lg border border-slate-200 bg-white text-slate-900 outline-none focus:border-[#0085ff]'
 
   return (
     <div className="max-w-5xl mx-auto">
@@ -200,7 +200,7 @@ export default function DocumentLibrary({ campaignId, live }) {
           onClick={() => live && setUploadOpen(v => !v)}
           disabled={!live}
           title={live ? 'Upload a document' : 'Upload needs the live database'}
-          className="px-4 py-2 text-sm font-medium rounded-lg bg-teal-600 text-white hover:bg-teal-700 transition disabled:opacity-40 disabled:cursor-not-allowed"
+          className="px-4 py-2 text-sm font-medium rounded-lg bg-[#0073ea] text-white hover:bg-[#0060c9] transition disabled:opacity-40 disabled:cursor-not-allowed"
         >
           + Upload
         </button>
@@ -220,7 +220,7 @@ export default function DocumentLibrary({ campaignId, live }) {
                 ref={fileRef}
                 type="file"
                 onChange={e => setUpFile(e.target.files?.[0] || null)}
-                className="text-sm text-slate-600 file:mr-3 file:px-3 file:py-1.5 file:rounded-lg file:border-0 file:text-xs file:font-medium file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100"
+                className="text-sm text-slate-600 file:mr-3 file:px-3 file:py-1.5 file:rounded-lg file:border-0 file:text-xs file:font-medium file:bg-[#e8f1fd] file:text-[#0060c9] hover:file:bg-[#cfe3fb]"
               />
               <p className="text-[11px] text-slate-400 mt-1">Max {MAX_FILE_BYTES / 1024 / 1024} MB per file.</p>
             </div>
@@ -258,7 +258,7 @@ export default function DocumentLibrary({ campaignId, live }) {
             <button
               onClick={handleUpload}
               disabled={uploading}
-              className="px-4 py-1.5 text-xs font-medium rounded-lg bg-teal-600 text-white hover:bg-teal-700 disabled:opacity-50"
+              className="px-4 py-1.5 text-xs font-medium rounded-lg bg-[#0073ea] text-white hover:bg-[#0060c9] disabled:opacity-50"
             >
               {uploading ? 'Uploading…' : 'Upload document'}
             </button>
@@ -272,7 +272,7 @@ export default function DocumentLibrary({ campaignId, live }) {
             value={search}
             onChange={e => setSearch(e.target.value)}
             placeholder="Search documents…"
-            className="px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-white text-slate-900 outline-none focus:border-teal-500 w-52"
+            className="px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-white text-slate-900 outline-none focus:border-[#0085ff] w-52"
           />
           <div className="flex flex-wrap gap-1.5">
             {FILTERS.map(f => (
@@ -325,7 +325,7 @@ export default function DocumentLibrary({ campaignId, live }) {
                   <button
                     onClick={() => handleDownload(doc)}
                     disabled={!doc.path || busy}
-                    className="shrink-0 px-2.5 py-1 text-xs font-medium rounded-lg border border-slate-200 text-slate-600 hover:border-teal-500 hover:text-teal-700 transition disabled:opacity-40"
+                    className="shrink-0 px-2.5 py-1 text-xs font-medium rounded-lg border border-slate-200 text-slate-600 hover:border-[#0085ff] hover:text-[#0060c9] transition disabled:opacity-40"
                   >
                     Download
                   </button>

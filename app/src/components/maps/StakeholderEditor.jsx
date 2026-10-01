@@ -11,9 +11,9 @@ const LEVELS = [
 ]
 
 const QUADRANTS = [
-  { influence: 'high', interest: 'high', title: 'Manage closely', hint: 'High influence · High interest', cls: 'bg-teal-50 border-teal-200' },
+  { influence: 'high', interest: 'high', title: 'Manage closely', hint: 'High influence · High interest', cls: 'bg-[#e8f1fd] border-[#a9ccf7]' },
   { influence: 'high', interest: 'low', title: 'Keep satisfied', hint: 'High influence · Low interest', cls: 'bg-amber-50 border-amber-200' },
-  { influence: 'low', interest: 'high', title: 'Keep informed', hint: 'Low influence · High interest', cls: 'bg-sky-50 border-sky-200' },
+  { influence: 'low', interest: 'high', title: 'Keep informed', hint: 'Low influence · High interest', cls: 'bg-[#e8f1fd] border-[#a9ccf7]' },
   { influence: 'low', interest: 'low', title: 'Monitor', hint: 'Low influence · Low interest', cls: 'bg-slate-50 border-slate-200' },
 ]
 
@@ -66,7 +66,7 @@ function PersonForm({ initial, onSubmit, onCancel }) {
         <textarea value={notes} onChange={e => setNotes(e.target.value)} rows={2} placeholder="What do they need? What worries them?" className={inputCls} />
       </Field>
       <div className="flex gap-2">
-        <button onClick={submit} className="px-3 py-1.5 text-xs font-medium rounded-lg bg-teal-600 text-white hover:bg-teal-700 transition">
+        <button onClick={submit} className="px-3 py-1.5 text-xs font-medium rounded-lg bg-[#0073ea] text-white hover:bg-[#0060c9] transition">
           {initial ? 'Save' : 'Add person'}
         </button>
         <button onClick={onCancel} className="px-3 py-1.5 text-xs font-medium rounded-lg border border-slate-300 text-slate-600 hover:border-slate-400 transition">
@@ -95,7 +95,7 @@ export default function StakeholderEditor({ content, onChange }) {
       <SectionTitle
         action={
           !adding && (
-            <button onClick={() => setAdding(true)} className="text-xs font-medium text-teal-700 hover:text-teal-800">
+            <button onClick={() => setAdding(true)} className="text-xs font-medium text-[#0060c9] hover:text-[#0053a6]">
               + Add person
             </button>
           )
@@ -119,7 +119,7 @@ export default function StakeholderEditor({ content, onChange }) {
                   <button
                     key={p.id}
                     onClick={() => setEditingId(p.id)}
-                    className="text-left px-2.5 py-1.5 rounded-lg bg-white border border-slate-200 shadow-sm hover:border-teal-400 transition max-w-full"
+                    className="text-left px-2.5 py-1.5 rounded-lg bg-white border border-slate-200 shadow-sm hover:border-[#4d97ec] transition max-w-full"
                     title={p.notes || p.name}
                   >
                     <div className="text-xs font-medium text-slate-900 truncate">{p.name}</div>

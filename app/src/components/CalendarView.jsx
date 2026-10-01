@@ -52,21 +52,21 @@ function monthCells(cursor) {
 }
 
 const CHIP = {
-  manual: 'bg-teal-100 text-teal-800 border-teal-200',
+  manual: 'bg-[#cfe3fb] text-[#0053a6] border-[#a9ccf7]',
   task: 'bg-amber-100 text-amber-800 border-amber-200',
-  milestone: 'bg-indigo-100 text-indigo-800 border-indigo-200',
+  milestone: 'bg-[#e6d9ff] text-[#5b21b6] border-[#cdb0ff]',
   google: 'bg-blue-100 text-blue-800 border-blue-200',
 }
 
 const LEGEND = [
-  { id: 'manual', label: 'My events', cls: 'bg-teal-500' },
+  { id: 'manual', label: 'My events', cls: 'bg-[#0085ff]' },
   { id: 'task', label: 'Task due dates', cls: 'bg-amber-500' },
-  { id: 'milestone', label: 'Milestones', cls: 'bg-indigo-500' },
+  { id: 'milestone', label: 'Milestones', cls: 'bg-[#8a3ffc]' },
   { id: 'google', label: 'Google Calendar', cls: 'bg-blue-500' },
 ]
 
 const inputCls =
-  'px-3 py-1.5 text-xs rounded-lg bg-white border border-slate-300 text-slate-900 placeholder-slate-400 outline-none focus:border-teal-500'
+  'px-3 py-1.5 text-xs rounded-lg bg-white border border-slate-300 text-slate-900 placeholder-slate-400 outline-none focus:border-[#0085ff]'
 
 export default function CalendarView({ campaignId, live, milestones = [], onSelectModality }) {
   const [cursor, setCursor] = useState(() => {
@@ -241,14 +241,14 @@ export default function CalendarView({ campaignId, live, milestones = [], onSele
           {gStatus === 'unconfigured' ? (
             <button
               onClick={() => setShowHelp(v => !v)}
-              className="px-3 py-1.5 text-xs rounded-lg bg-white border border-slate-300 text-slate-700 hover:border-teal-500 transition"
+              className="px-3 py-1.5 text-xs rounded-lg bg-white border border-slate-300 text-slate-700 hover:border-[#0085ff] transition"
             >
               {showHelp ? 'Hide setup steps' : 'Set up Google Calendar'}
             </button>
           ) : gStatus === 'connected' ? (
             <button
               onClick={handleDisconnect}
-              className="px-3 py-1.5 text-xs rounded-lg bg-white border border-slate-300 text-slate-700 hover:border-teal-500 transition"
+              className="px-3 py-1.5 text-xs rounded-lg bg-white border border-slate-300 text-slate-700 hover:border-[#0085ff] transition"
               title="Disconnect Google Calendar"
             >
               Disconnect Google
@@ -257,7 +257,7 @@ export default function CalendarView({ campaignId, live, milestones = [], onSele
             <button
               onClick={handleConnect}
               disabled={gStatus === 'connecting'}
-              className="px-3 py-1.5 text-xs rounded-lg bg-teal-600 text-white hover:bg-teal-700 disabled:opacity-50 transition"
+              className="px-3 py-1.5 text-xs rounded-lg bg-[#0073ea] text-white hover:bg-[#0060c9] disabled:opacity-50 transition"
             >
               {gStatus === 'connecting' ? 'Connecting…' : gStatus === 'expired' ? 'Reconnect Google Calendar' : 'Connect Google Calendar'}
             </button>
@@ -288,9 +288,9 @@ export default function CalendarView({ campaignId, live, milestones = [], onSele
       {/* Month header */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-1">
-          <button onClick={() => goMonth(-1)} className="px-2.5 py-1.5 text-sm rounded-lg bg-white border border-slate-300 text-slate-700 hover:border-teal-500 transition" title="Previous month">←</button>
-          <button onClick={goToday} className="px-3 py-1.5 text-xs rounded-lg bg-white border border-slate-300 text-slate-700 hover:border-teal-500 transition">Today</button>
-          <button onClick={() => goMonth(1)} className="px-2.5 py-1.5 text-sm rounded-lg bg-white border border-slate-300 text-slate-700 hover:border-teal-500 transition" title="Next month">→</button>
+          <button onClick={() => goMonth(-1)} className="px-2.5 py-1.5 text-sm rounded-lg bg-white border border-slate-300 text-slate-700 hover:border-[#0085ff] transition" title="Previous month">←</button>
+          <button onClick={goToday} className="px-3 py-1.5 text-xs rounded-lg bg-white border border-slate-300 text-slate-700 hover:border-[#0085ff] transition">Today</button>
+          <button onClick={() => goMonth(1)} className="px-2.5 py-1.5 text-sm rounded-lg bg-white border border-slate-300 text-slate-700 hover:border-[#0085ff] transition" title="Next month">→</button>
         </div>
         <h3 className="text-base font-semibold text-slate-900">{fmtMonthYear(cursor)}</h3>
         <div className="w-24" />
@@ -324,13 +324,13 @@ export default function CalendarView({ campaignId, live, milestones = [], onSele
               <button
                 key={i}
                 onClick={() => openDay(d)}
-                className={`min-h-[88px] p-1.5 text-left border-b border-r border-slate-100 align-top transition hover:bg-teal-50/50 ${
+                className={`min-h-[88px] p-1.5 text-left border-b border-r border-slate-100 align-top transition hover:bg-[#e8f1fd]/50 ${
                   (i % 7 === 6) ? 'border-r-0' : ''
-                } ${!inMonth ? 'bg-slate-50/60' : ''} ${isSelected ? 'bg-teal-50' : ''}`}
+                } ${!inMonth ? 'bg-slate-50/60' : ''} ${isSelected ? 'bg-[#e8f1fd]' : ''}`}
               >
                 <span className={`inline-flex items-center justify-center w-6 h-6 text-xs rounded-full ${
                   isToday
-                    ? 'bg-teal-600 text-white font-semibold'
+                    ? 'bg-[#0073ea] text-white font-semibold'
                     : inMonth ? 'text-slate-700' : 'text-slate-400'
                 }`}>
                   {d.getDate()}
@@ -383,7 +383,7 @@ export default function CalendarView({ campaignId, live, milestones = [], onSele
                           href={item.meeting_url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="mt-1 inline-block text-[11px] font-medium text-teal-700 underline hover:text-teal-900"
+                          className="mt-1 inline-block text-[11px] font-medium text-[#0060c9] underline hover:text-[#0b3d6e]"
                         >
                           Join meeting ↗
                         </a>
@@ -457,7 +457,7 @@ export default function CalendarView({ campaignId, live, milestones = [], onSele
             <button
               type="submit"
               disabled={saving}
-              className="px-4 py-1.5 text-xs rounded-lg bg-teal-600 text-white hover:bg-teal-700 disabled:opacity-50 transition"
+              className="px-4 py-1.5 text-xs rounded-lg bg-[#0073ea] text-white hover:bg-[#0060c9] disabled:opacity-50 transition"
             >
               {saving ? 'Adding…' : 'Add event'}
             </button>

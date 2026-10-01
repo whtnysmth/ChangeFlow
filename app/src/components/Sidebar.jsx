@@ -110,7 +110,7 @@ export default function Sidebar({ activeTab, onTab, mode, onMode }) {
           <path d="M26 5v6h-6" fill="none" stroke="url(#cf-logo)" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
         <span className="text-xl font-bold tracking-tight">
-          Change<span className="text-teal-300">Flow</span>
+          Change<span className="text-[#7db3f2]">Flow</span>
         </span>
       </div>
 
@@ -125,11 +125,11 @@ export default function Sidebar({ activeTab, onTab, mode, onMode }) {
               onClick={() => onTab(t.id)}
               className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition ${
                 active
-                  ? 'bg-teal-400/15 text-white font-medium'
+                  ? 'bg-[#4d97ec]/15 text-white font-medium'
                   : 'text-white/60 hover:text-white hover:bg-white/5'
               }`}
             >
-              <span className={active ? 'text-teal-300' : 'text-white/40'}>{ICONS[t.id]}</span>
+              <span className={active ? 'text-[#7db3f2]' : 'text-white/40'}>{ICONS[t.id]}</span>
               <span className="flex-1 text-left">{t.label}</span>
               {mode === 'guided' && t.step && (
                 <span className="text-[10px] text-white/30">Phase {t.step}</span>
@@ -153,7 +153,7 @@ export default function Sidebar({ activeTab, onTab, mode, onMode }) {
               onClick={() => onMode(m.id)}
               className={`flex-1 px-2 py-1.5 text-xs rounded-full transition ${
                 mode === m.id
-                  ? 'bg-indigo-400/25 text-indigo-100 border border-indigo-300/30'
+                  ? 'bg-[#a253ff]/25 text-[#e6d9ff] border border-[#b183ff]/30'
                   : 'text-white/50 hover:text-white'
               }`}
               title={m.id === 'guided' ? 'Plain-language, phase-by-phase' : 'Full practitioner depth'}

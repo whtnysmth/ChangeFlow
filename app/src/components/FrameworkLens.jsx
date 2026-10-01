@@ -10,7 +10,7 @@ export default function FrameworkLens({ lens, onChange }) {
       <select
         value={lens}
         onChange={e => onChange(e.target.value)}
-        className="bg-white border border-slate-300 rounded-full px-3 py-1.5 text-xs text-slate-700 outline-none focus:border-teal-500 cursor-pointer [&>option]:bg-white"
+        className="bg-white border border-slate-300 rounded-full px-3 py-1.5 text-xs text-slate-700 outline-none focus:border-[#0085ff] cursor-pointer [&>option]:bg-white"
         aria-label="Framework lens — adjusts terminology only"
       >
         {LENSES.map(l => (

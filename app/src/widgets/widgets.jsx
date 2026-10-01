@@ -8,7 +8,7 @@ function Card({ title, tooltip, children, footer }) {
         <InfoIcon tooltip={tooltip} />
       </div>
       {children}
-      {footer && <div className="mt-2 text-xs text-teal-700">{footer}</div>}
+      {footer && <div className="mt-2 text-xs text-[#0060c9]">{footer}</div>}
     </div>
   )
 }
@@ -18,7 +18,7 @@ export function AdoptionRate({ data, tooltip, title }) {
     <Card title={title || "Adoption Rate"} tooltip={tooltip} footer={data.delta}>
       <div className="text-4xl font-bold text-slate-900">{data.value}%</div>
       <div className="mt-2 h-2 bg-slate-200 rounded-full overflow-hidden">
-        <div className="h-full bg-teal-500 rounded-full" style={{ width: `${data.value}%` }} />
+        <div className="h-full bg-[#0085ff] rounded-full" style={{ width: `${data.value}%` }} />
       </div>
     </Card>
   )
@@ -29,7 +29,7 @@ export function TrainingCompletion({ data, tooltip, title }) {
     <Card title={title || "Training Completion"} tooltip={tooltip} footer={data.delta}>
       <div className="text-4xl font-bold text-slate-900">{data.value}%</div>
       <div className="mt-2 h-2 bg-slate-200 rounded-full overflow-hidden">
-        <div className="h-full bg-indigo-500 rounded-full" style={{ width: `${data.value}%` }} />
+        <div className="h-full bg-[#8a3ffc] rounded-full" style={{ width: `${data.value}%` }} />
       </div>
     </Card>
   )
@@ -62,7 +62,7 @@ export function StakeholderEngagement({ groups, tooltip, title }) {
               <span className="text-slate-500">{g.percent}% • {g.engaged} engaged</span>
             </div>
             <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
-              <div className="h-full bg-gradient-to-r from-teal-500 to-indigo-500 rounded-full" style={{ width: `${g.percent}%` }} />
+              <div className="h-full bg-gradient-to-r from-[#0085ff] to-[#8a3ffc] rounded-full" style={{ width: `${g.percent}%` }} />
             </div>
           </div>
         ))}
@@ -72,7 +72,7 @@ export function StakeholderEngagement({ groups, tooltip, title }) {
 }
 
 export function SponsorCoalitionHealth({ data, tooltip, title }) {
-  const dot = s => s === 'Active' ? 'bg-emerald-400' : s === 'At Risk' ? 'bg-amber-400' : 'bg-slate-300'
+  const dot = s => s === 'Active' ? 'bg-[#33d17a]' : s === 'At Risk' ? 'bg-amber-400' : 'bg-slate-300'
   return (
     <Card title={title || "Sponsor Coalition Health"} tooltip={tooltip} footer={`${data.score}% health`}>
       <div className="text-4xl font-bold text-slate-900 mb-3">{data.score}%</div>
@@ -102,7 +102,7 @@ export function BarrierAnalysis({ data, tooltip, title }) {
               <span className="text-slate-500">{d.percent}%</span>
             </div>
             <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
-              <div className={`h-full rounded-full ${d.percent === min ? 'bg-amber-500' : 'bg-teal-500'}`} style={{ width: `${d.percent}%` }} />
+              <div className={`h-full rounded-full ${d.percent === min ? 'bg-amber-500' : 'bg-[#0085ff]'}`} style={{ width: `${d.percent}%` }} />
             </div>
           </div>
         ))}
@@ -147,7 +147,7 @@ export function SustainmentHealth({ data, tooltip, title }) {
     <Card title={title || "Sustainment Health"} tooltip={tooltip} footer={data.trend}>
       <div className="text-4xl font-bold text-slate-900">{data.value}%</div>
       <div className="mt-2 h-2 bg-slate-200 rounded-full overflow-hidden">
-        <div className="h-full bg-emerald-500 rounded-full" style={{ width: `${data.value}%` }} />
+        <div className="h-full bg-[#00c875] rounded-full" style={{ width: `${data.value}%` }} />
       </div>
       <div className="mt-2 text-xs text-slate-500">Reversion rate: {data.reversionRate}%</div>
     </Card>
@@ -156,9 +156,9 @@ export function SustainmentHealth({ data, tooltip, title }) {
 
 export function Milestones({ data, tooltip, title }) {
   const pill = s => s === 'Scheduled'
-    ? 'bg-teal-100 text-teal-700'
+    ? 'bg-[#cfe3fb] text-[#0060c9]'
     : s === 'In Progress'
-      ? 'bg-indigo-100 text-indigo-700'
+      ? 'bg-[#e6d9ff] text-[#6e2fd6]'
       : 'bg-slate-100 text-slate-500'
   return (
     <Card title={title || "Milestones"} tooltip={tooltip}>
@@ -179,8 +179,8 @@ export function Milestones({ data, tooltip, title }) {
 
 export function RecentActivity({ data, tooltip, title }) {
   const dot = t => ({
-    purple: 'bg-purple-400', teal: 'bg-teal-400',
-    yellow: 'bg-amber-400', green: 'bg-emerald-400'
+    purple: 'bg-purple-400', teal: 'bg-[#4d97ec]',
+    yellow: 'bg-amber-400', green: 'bg-[#33d17a]'
   }[t] || 'bg-slate-300')
   return (
     <Card title={title || "Recent Activity"} tooltip={tooltip} footer="Last 24 hours">

@@ -50,7 +50,7 @@ export default function App() {
 
   const campaign = data.campaign
   const sourceBadge = source === 'supabase'
-    ? <span className="text-xs font-normal px-2 py-0.5 rounded-full bg-teal-100 text-teal-700 border border-teal-200">● Live data</span>
+    ? <span className="text-xs font-normal px-2 py-0.5 rounded-full bg-[#cfe3fb] text-[#0060c9] border border-[#a9ccf7]">● Live data</span>
     : <span className="text-xs font-normal px-2 py-0.5 rounded-full bg-slate-200 text-slate-600 border border-slate-300">○ Mock data</span>
 
   return (
@@ -63,7 +63,7 @@ export default function App() {
             <div>
               <div className="flex items-center gap-2 text-xl font-bold text-slate-900">
                 <span>{campaign.name}</span>
-                <span className="text-xs font-normal px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 border border-emerald-200">
+                <span className="text-xs font-normal px-2 py-0.5 rounded-full bg-[#c9f3dc] text-[#00854d] border border-[#9ae6b8]">
                   • {campaign.status}
                 </span>
                 {sourceBadge}
