@@ -101,6 +101,7 @@ const TOOL_TABS = [
 ]
 
 const PHASES_OPEN_KEY = 'changeflow:phases-open'
+const SIDEBAR_ORDER_KEY = 'changeflow:sidebar-order'
 
 export default function Sidebar({ activeTab, onTab, mode, onMode }) {
   const [phasesOpen, setPhasesOpen] = useState(() => {
@@ -110,6 +111,20 @@ export default function Sidebar({ activeTab, onTab, mode, onMode }) {
       return true
     }
   })
+  // Customizable order of the workspace tool tabs (persisted per browser).
+  const [toolOrder, setToolOrder] = useState(() => {
+    try {
+      const valid = TOOL_TABS.map(t => t.id)
+      const stored = JSON.parse(localStorage.getItem(SIDEBAR_ORDER_KEY) || '[]')
+      const kept = stored.filter(id => valid.includes(id))
+      return [...kept, ...valid.filter(id => !kept.includes(id))]
+    } catch {
+      return TOOL_TABS.map(t => t.id)
+    }
+  })
+  const [editing, setEditing] = useState(false)
+  const [dragId, setDragId] = useState(null)
+  const [dropId, setDropId] = useState(null)
 
   // Never strand the user: selecting a phase always expands the section.
   useEffect(() => {
@@ -123,6 +138,30 @@ export default function Sidebar({ activeTab, onTab, mode, onMode }) {
       } catch { /* private mode */ }
       return !prev
     })
+  }
+
+  const persistOrder = (order) => {
+    setToolOrder(order)
+    try {
+      localStorage.setItem(SIDEBAR_ORDER_KEY, JSON.stringify(order))
+    } catch { /* private mode */ }
+  }
+
+  const moveBefore = (fromId, toId) => {
+    if (!fromId || !toId || fromId === toId) return
+    const order = toolOrder.filter(id => id !== fromId)
+    order.splice(order.indexOf(toId), 0, fromId)
+    persistOrder(order)
+  }
+
+  const moveToEnd = (fromId) => {
+    if (!fromId || toolOrder[toolOrder.length - 1] === fromId) return
+    persistOrder([...toolOrder.filter(id => id !== fromId), fromId])
+  }
+
+  const endDrag = () => {
+    setDragId(null)
+    setDropId(null)
   }
 
   const tabButton = (t) => {
@@ -145,6 +184,44 @@ export default function Sidebar({ activeTab, onTab, mode, onMode }) {
       </button>
     )
   }
+
+  // Reorderable workspace tab (drag-and-drop in edit mode).
+  const toolButton = (t) => {
+    const active = activeTab === t.id
+    const isDropTarget = editing && dropId === t.id && dragId && dragId !== t.id
+    return (
+      <button
+        key={t.id}
+        draggable={editing}
+        onDragStart={() => setDragId(t.id)}
+        onDragEnd={endDrag}
+        onDragOver={(e) => { if (editing) { e.preventDefault(); setDropId(t.id) } }}
+        onDrop={(e) => { e.preventDefault(); moveBefore(dragId, t.id); endDrag() }}
+        onClick={() => { if (!editing) onTab(t.id) }}
+        className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[17px] font-bold transition border select-none ${
+          active
+            ? 'tab-neon bg-[#4d97ec]/15 text-white'
+            : 'border-transparent text-white/60 hover:text-white hover:bg-white/5'
+        } ${editing ? 'cursor-grab active:cursor-grabbing' : ''} ${
+          isDropTarget ? 'drop-target' : ''
+        } ${dragId === t.id ? 'opacity-40' : ''}`}
+      >
+        {editing && (
+          <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-white/30 shrink-0">
+            <circle cx="7" cy="5" r="1.4" /><circle cx="13" cy="5" r="1.4" />
+            <circle cx="7" cy="10" r="1.4" /><circle cx="13" cy="10" r="1.4" />
+            <circle cx="7" cy="15" r="1.4" /><circle cx="13" cy="15" r="1.4" />
+          </svg>
+        )}
+        <span className={active ? 'text-[#7db3f2]' : 'text-white/40'}>{ICONS[t.id]}</span>
+        <span className="flex-1 text-left">{t.label}</span>
+      </button>
+    )
+  }
+
+  const orderedTools = toolOrder
+    .map(id => TOOL_TABS.find(t => t.id === id))
+    .filter(Boolean)
 
   return (
     <aside className="no-print w-60 shrink-0 min-h-screen bg-[#0b1120] border-r border-white/10 flex flex-col sticky top-0 h-screen">
@@ -181,7 +258,28 @@ export default function Sidebar({ activeTab, onTab, mode, onMode }) {
         )}
 
         <div className="pt-2 space-y-1">
-          {TOOL_TABS.map(tabButton)}
+          <div className="flex items-center justify-between px-3 pb-1">
+            <span className="text-[12px] font-semibold uppercase tracking-widest text-white/40">Workspace</span>
+            <button
+              onClick={() => setEditing(e => !e)}
+              className="text-[11px] font-medium text-white/40 hover:text-white/80 hover:underline"
+            >
+              {editing ? 'Done' : 'Edit'}
+            </button>
+          </div>
+          {editing && (
+            <p className="px-3 pb-1 text-[11px] text-white/35">Drag tabs to reorder.</p>
+          )}
+          {orderedTools.map(toolButton)}
+          {editing && (
+            <div
+              onDragOver={(e) => { e.preventDefault(); setDropId('__end') }}
+              onDrop={(e) => { e.preventDefault(); moveToEnd(dragId); endDrag() }}
+              className={`h-8 rounded-lg border border-dashed transition ${
+                dropId === '__end' ? 'border-[#38bdf8] bg-[#38bdf8]/10' : 'border-white/10'
+              }`}
+            />
+          )}
         </div>
       </nav>
 
