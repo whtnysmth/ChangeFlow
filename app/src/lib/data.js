@@ -380,3 +380,102 @@ export async function deleteTask({ campaignId, id }) {
   }
   writeLocalTasks(campaignId, readLocalTasks(campaignId).filter(t => t.id !== id))
 }
+
+// ---------------------------------------------------------------------------
+// Events: practitioner calendar events for the Calendar tab.
+// Same Supabase-then-localStorage discipline as tasks: live rows when
+// reachable, local-only items in mock mode. Graceful when the table
+// doesn't exist yet (Whitney runs migration-004 in the SQL editor).
+// ---------------------------------------------------------------------------
+
+const eventsKey = (campaignId) => `changeflow:events:${campaignId || 'mock'}`
+
+function readLocalEvents(campaignId) {
+  try {
+    return JSON.parse(localStorage.getItem(eventsKey(campaignId)) || '[]')
+  } catch {
+    return []
+  }
+}
+
+function writeLocalEvents(campaignId, items) {
+  try {
+    localStorage.setItem(eventsKey(campaignId), JSON.stringify(items))
+  } catch (err) {
+    console.warn('Could not persist events locally:', err.message)
+  }
+}
+
+export async function getEvents(campaignId, startISO, endISO) {
+  if (supabase) {
+    try {
+      let q = supabase
+        .from('events')
+        .select('*')
+        .eq('campaign_id', campaignId)
+        .order('starts_at', { ascending: true })
+      if (startISO) q = q.gte('starts_at', startISO)
+      if (endISO) q = q.lt('starts_at', endISO)
+      const { data, error } = await q
+      if (error) throw error
+      return { items: data || [], live: true }
+    } catch (err) {
+      console.warn('events unreachable, using local events:', err.message)
+    }
+  }
+  const items = readLocalEvents(campaignId)
+    .filter(e => (!startISO || e.starts_at >= startISO) && (!endISO || e.starts_at < endISO))
+    .sort((a, b) => (a.starts_at || '').localeCompare(b.starts_at || ''))
+  return { items, live: false }
+}
+
+export async function createEvent({ campaignId, title, modality, description, startsAt, endsAt }) {
+  const cleanTitle = (title || '').trim()
+  if (!cleanTitle) throw new Error('Give this event a title.')
+  if (!startsAt) throw new Error('Pick a date for this event.')
+  const row = {
+    title: cleanTitle,
+    modality: modality || null,
+    description: (description || '').trim() || null,
+    starts_at: startsAt,
+    ends_at: endsAt || null,
+  }
+
+  if (supabase) {
+    try {
+      const { data, error } = await supabase
+        .from('events')
+        .insert({ campaign_id: campaignId, ...row })
+        .select()
+        .single()
+      if (error) throw error
+      return data
+    } catch (err) {
+      console.warn('events insert failed, saving locally:', err.message)
+    }
+  }
+
+  const item = {
+    id: localId(),
+    campaign_id: campaignId,
+    ...row,
+    created_at: new Date().toISOString(),
+    local: true,
+  }
+  const items = readLocalEvents(campaignId)
+  writeLocalEvents(campaignId, [...items, item])
+  return item
+}
+
+export async function deleteEvent({ campaignId, id }) {
+  if (supabase) {
+    try {
+      const { error } = await supabase.from('events').delete().eq('id', id)
+      if (error) throw error
+      return
+    } catch (err) {
+      console.warn('events delete failed, deleting locally:', err.message)
+    }
+  }
+  writeLocalEvents(campaignId, readLocalEvents(campaignId).filter(e => e.id !== id))
+}
