@@ -9,7 +9,7 @@ import { MODALITIES, modalityById, widgetsForModality, guidedWidgetsForModality 
 export default function DashboardEngine({
   tab, data, registry, mode, lens, onSelectModality,
   customWidgetIds, onToggleCustomWidget, onResetCustomWidgets,
-  campaignId, onApplyTemplate,
+  campaignId, onApplyTemplate, source,
 }) {
   if (tab === 'dashboard') {
     return (
@@ -44,6 +44,8 @@ export default function DashboardEngine({
       lens={lens}
       mode={mode}
       stepIndex={stepIndex}
+      campaignId={campaignId}
+      live={source === 'supabase'}
     />
   )
 }

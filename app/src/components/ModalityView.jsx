@@ -1,9 +1,10 @@
 // One modality tab: coaching banner (Guided), lens terminology note,
 // and the modality's widgets. Modes are views over the same data model.
 import WidgetRenderer from '../widgets/WidgetRenderer.jsx'
+import PhaseDocuments from './PhaseDocuments.jsx'
 import { lensModalityNote } from '../lib/modalities.js'
 
-export default function ModalityView({ modality, widgetIds, registry, data, lens, mode, stepIndex }) {
+export default function ModalityView({ modality, widgetIds, registry, data, lens, mode, stepIndex, campaignId, live }) {
   const lensNote = lensModalityNote(modality.id, lens)
   return (
     <div className="space-y-5">
@@ -37,6 +38,8 @@ export default function ModalityView({ modality, widgetIds, registry, data, lens
           ))}
         </div>
       )}
+
+      <PhaseDocuments campaignId={campaignId} modality={modality} live={live} />
     </div>
   )
 }

@@ -17,6 +17,8 @@ export const MODALITIES = [
     coaching:
       'Before you change anything, understand what the change will ask of each group. ' +
       'Readiness and stakeholder insight keep you from flying blind.',
+    docsHint:
+      'e.g. readiness interview notes, stakeholder maps, impact assessment drafts',
   },
   {
     id: 'mobilize',
@@ -25,6 +27,8 @@ export const MODALITIES = [
     coaching:
       'Change needs visible backing. Get sponsors active and communications planned ' +
       'before the rollout starts — this is the most skipped step in failed transformations.',
+    docsHint:
+      'e.g. sponsor meeting notes, comms plans, stakeholder messaging drafts',
   },
   {
     id: 'enable',
@@ -32,6 +36,8 @@ export const MODALITIES = [
     tagline: 'Build capability',
     coaching:
       "People can't adopt what they can't do. Training and clear communication turn the plan into ability.",
+    docsHint:
+      'e.g. training decks, how-to guides, session recordings, comms sent',
   },
   {
     id: 'adopt',
@@ -39,6 +45,8 @@ export const MODALITIES = [
     tagline: 'Make it real',
     coaching:
       'This is where the change lives or dies. Watch where people get stuck, and make early wins visible to build momentum.',
+    docsHint:
+      'e.g. resistance logs, barrier analysis write-ups, quick-win evidence',
   },
   {
     id: 'sustain',
@@ -46,6 +54,8 @@ export const MODALITIES = [
     tagline: 'Make it stick',
     coaching:
       "Go-live isn't the finish line. Track whether the new way of working holds — and catch backsliding early.",
+    docsHint:
+      'e.g. sustainment checklists, risk reviews, reinforcement plans',
   },
 ]
 

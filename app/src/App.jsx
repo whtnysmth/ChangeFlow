@@ -93,6 +93,7 @@ export default function App() {
             onResetCustomWidgets={() => setCustomHomeIds([])}
             campaignId={campaignId}
             onApplyTemplate={setCustomHomeIds}
+            source={source}
           />
 
           <footer className="mt-10 text-xs text-white/30">
