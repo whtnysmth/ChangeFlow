@@ -1,11 +1,17 @@
 import { supabase } from './supabase.js'
 import * as mock from '../data/mockData.js'
 
+const MOCK_NAME_KEY = 'changeflow:mock-campaign-name'
+
+export function getMockCampaignName() {
+  try { return localStorage.getItem(MOCK_NAME_KEY) || null } catch { return null }
+}
+
 // The bundle shape every widget expects. Supabase rows are reshaped
 // to match mockData.js exactly, so widgets never care where data came from.
 function mockBundle() {
   return {
-    campaign: mock.campaign,
+    campaign: { ...mock.campaign, name: getMockCampaignName() || mock.campaign.name },
     healthMetrics: mock.healthMetrics,
     stakeholderGroups: mock.stakeholderGroups,
     milestones: mock.milestones,
@@ -273,7 +279,7 @@ export async function listCampaigns() {
     return [
       {
         id: 'mock',
-        name: mock.campaign.name,
+        name: getMockCampaignName() || mock.campaign.name,
         status: mock.campaign.status,
         state: 'Active',
         start_date: null,
@@ -304,6 +310,26 @@ export async function createCampaign({ name, status, start_date, target_date }) 
     .single()
   if (error) throw error
   return data
+}
+
+// Rename a campaign. The name is a single record, so every surface that
+// shows it (header, campaign cards, switcher) updates from one write.
+// Supabase when live; a localStorage override for the mock campaign.
+export async function renameCampaign(campaignId, name) {
+  const clean = String(name || '').trim()
+  if (!clean) throw new Error('Campaign name cannot be empty.')
+  if (supabase && campaignId && campaignId !== 'mock') {
+    const { data, error } = await supabase
+      .from('campaigns')
+      .update({ name: clean })
+      .eq('id', campaignId)
+      .select()
+      .single()
+    if (error) throw error
+    return data
+  }
+  try { localStorage.setItem(MOCK_NAME_KEY, clean) } catch { /* private mode */ }
+  return { id: 'mock', name: clean }
 }
 
 // ---------------------------------------------------------------------------
