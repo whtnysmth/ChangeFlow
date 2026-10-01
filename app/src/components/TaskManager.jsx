@@ -10,6 +10,7 @@ import {
   getTaskFiles, getTaskFileCounts, attachTaskFile, deleteTaskFile,
   getDocumentUrl, MAX_FILE_BYTES, TASK_STATUSES, TASK_PRIORITIES,
 } from '../lib/data.js'
+import { MODALITIES } from '../lib/modalities.js'
 
 const STATUS_META = {
   todo:        { label: 'To do',         pill: 'bg-slate-100 text-slate-600 border-slate-200' },
@@ -413,6 +414,7 @@ function GroupSection({
                   <th className="px-3 py-2 font-medium">Due date</th>
                   <th className="px-3 py-2 font-medium min-w-[140px]">Notes</th>
                   <th className="px-3 py-2 font-medium">Priority</th>
+                  <th className="px-3 py-2 font-medium">Phase</th>
                   <th className="px-3 py-2 font-medium">Files</th>
                   <th className="px-3 py-2 font-medium whitespace-nowrap">Last updated</th>
                   {columns.map(col => (
@@ -443,7 +445,7 @@ function GroupSection({
               <tbody>
                 {tasks.length === 0 ? (
                   <tr>
-                    <td colSpan={10 + columns.length} className="px-4 py-6 text-center">
+                    <td colSpan={11 + columns.length} className="px-4 py-6 text-center">
                       <p className="text-xs text-slate-400 border border-dashed border-slate-200 rounded-lg py-4">
                         Nothing here yet — add the first task below.
                       </p>
@@ -499,6 +501,17 @@ function GroupSection({
                       </td>
                       <td className="px-3 py-2">
                         <PriorityPill value={task.priority} onChange={v => onField(task, { priority: v })} />
+                      </td>
+                      <td className="px-3 py-2">
+                        <select
+                          value={task.modality || ''}
+                          onChange={e => onField(task, { modality: e.target.value || null })}
+                          className="text-[11px] rounded-full px-2 py-1 border outline-none cursor-pointer appearance-none bg-teal-50 text-teal-700 border-teal-200"
+                          title="Phase"
+                        >
+                          <option value="">—</option>
+                          {MODALITIES.map(m => <option key={m.id} value={m.id}>{m.label}</option>)}
+                        </select>
                       </td>
                       <td className="px-3 py-2">
                         <FilesCell
