@@ -3,6 +3,12 @@
 import { MODALITIES } from '../lib/modalities.js'
 
 const ICONS = {
+  home: (
+    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.6" className="w-5 h-5">
+      <path d="M3 10.5 10 3.5l7 7" />
+      <path d="M5.5 9.5V16.5h9V9.5" />
+    </svg>
+  ),
   dashboard: (
     <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.6" className="w-5 h-5">
       <rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1.5" />
@@ -73,6 +79,7 @@ const ICONS = {
 }
 
 const TABS = [
+  { id: 'home', label: 'Home' },
   { id: 'dashboard', label: 'Dashboard' },
   ...MODALITIES.map((m, i) => ({ id: m.id, label: m.label, step: i + 1 })),
   { id: 'tasks', label: 'Tasks' },

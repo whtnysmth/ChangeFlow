@@ -11,7 +11,7 @@ import registry from '../../widgets/registry.json'
 const MODE_KEY = 'changeflow_mode'
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('dashboard')
+  const [activeTab, setActiveTab] = useState('home')
   const [mode, setMode] = useState(() => {
     try { return localStorage.getItem(MODE_KEY) || 'guided' } catch { return 'guided' }
   })

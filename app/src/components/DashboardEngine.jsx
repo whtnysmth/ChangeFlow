@@ -3,6 +3,7 @@
 // widgets are organized by modality, and the framework control is now a
 // terminology lens applied at render time (see FrameworkLens).
 import DashboardHome from './DashboardHome.jsx'
+import Home from './Home.jsx'
 import ModalityView from './ModalityView.jsx'
 import TaskManager from './TaskManager.jsx'
 import CalendarView from './CalendarView.jsx'
@@ -15,6 +16,15 @@ export default function DashboardEngine({
   customWidgetIds, onToggleCustomWidget, onResetCustomWidgets,
   campaignId, onApplyTemplate, source,
 }) {
+  if (tab === 'home') {
+    return (
+      <Home
+        campaignId={campaignId}
+        bundle={data}
+        onSelectModality={onSelectModality}
+      />
+    )
+  }
   if (tab === 'dashboard') {
     return (
       <DashboardHome
