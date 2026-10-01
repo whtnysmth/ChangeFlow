@@ -89,6 +89,7 @@ export default function CalendarView({ campaignId, live, milestones = [], onSele
   const [fEnd, setFEnd] = useState('')
   const [fPhase, setFPhase] = useState('')
   const [fDesc, setFDesc] = useState('')
+  const [fLink, setFLink] = useState('')
   const [saving, setSaving] = useState(false)
 
   const monthStart = useMemo(() => new Date(cursor.getFullYear(), cursor.getMonth(), 1), [cursor])
@@ -194,11 +195,12 @@ export default function CalendarView({ campaignId, live, milestones = [], onSele
         title: cleanTitle,
         modality: fPhase || null,
         description: fDesc,
+        meetingUrl: fLink,
         startsAt,
         endsAt,
       })
       setManualEvents(prev => [...prev, item].sort((a, b) => (a.starts_at || '').localeCompare(b.starts_at || '')))
-      setFTitle(''); setFStart(''); setFEnd(''); setFPhase(''); setFDesc('')
+      setFTitle(''); setFStart(''); setFEnd(''); setFPhase(''); setFDesc(''); setFLink('')
     } catch (err) {
       setError(err.message)
     } finally {
@@ -376,6 +378,16 @@ export default function CalendarView({ campaignId, live, milestones = [], onSele
                       {[fmtTime(item.starts_at), item.ends_at ? `– ${fmtTime(item.ends_at)}` : '', item.modality ? modalityLabel(item.modality) : '']
                         .filter(Boolean).join(' · ')}
                       {item.description && <div className="mt-0.5 whitespace-pre-wrap">{item.description}</div>}
+                      {item.meeting_url && (
+                        <a
+                          href={item.meeting_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="mt-1 inline-block text-[11px] font-medium text-teal-700 underline hover:text-teal-900"
+                        >
+                          Join meeting ↗
+                        </a>
+                      )}
                     </div>
                   )}
                   {item.kind === 'task' && (
@@ -425,6 +437,13 @@ export default function CalendarView({ campaignId, live, milestones = [], onSele
             <input type="date" value={fDate} onChange={e => setFDate(e.target.value)} className={`${inputCls} text-slate-700`} />
             <input type="time" value={fStart} onChange={e => setFStart(e.target.value)} className={`${inputCls} text-slate-700`} title="Start time (optional)" />
             <input type="time" value={fEnd} onChange={e => setFEnd(e.target.value)} className={`${inputCls} text-slate-700`} title="End time (optional)" />
+            <input
+              type="url"
+              value={fLink}
+              onChange={e => setFLink(e.target.value)}
+              placeholder="Meeting link — Zoom, Google Meet, Teams…"
+              className={`${inputCls} md:col-span-3`}
+            />
           </div>
           <textarea
             value={fDesc}

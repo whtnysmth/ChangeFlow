@@ -742,14 +742,16 @@ export async function getEvents(campaignId, startISO, endISO) {
   return { items, live: false }
 }
 
-export async function createEvent({ campaignId, title, modality, description, startsAt, endsAt }) {
+export async function createEvent({ campaignId, title, modality, description, startsAt, endsAt, meetingUrl }) {
   const cleanTitle = (title || '').trim()
   if (!cleanTitle) throw new Error('Give this event a title.')
   if (!startsAt) throw new Error('Pick a date for this event.')
+  const cleanLink = (meetingUrl || '').trim()
   const row = {
     title: cleanTitle,
     modality: modality || null,
     description: (description || '').trim() || null,
+    meeting_url: cleanLink ? (/^https?:\/\//i.test(cleanLink) ? cleanLink : `https://${cleanLink}`) : null,
     starts_at: startsAt,
     ends_at: endsAt || null,
   }
