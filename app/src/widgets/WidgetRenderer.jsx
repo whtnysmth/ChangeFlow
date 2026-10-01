@@ -7,13 +7,12 @@ import {
 import { lensWidgetLabel } from '../lib/modalities.js'
 
 // Renders a widget by ID. `data` is the dashboard bundle (Supabase or mock);
-// tooltip translations come from the widget registry. `lens` adjusts the
-// displayed label via the framework translation layer — data is untouched.
+// the ⓘ tooltip shows a plain-language definition of the principle the widget
+// represents (registry `plain_english`). Framework translations stay in the
+// registry for later but are no longer shown — principles first.
 export default function WidgetRenderer({ id, registry, data, lens = 'adkar' }) {
   const meta = registry?.widgets?.find(w => w.id === id)
-  const tooltip = meta?.info_icon
-    ? `ADKAR: ${meta.info_icon.adkar} | Kotter: ${meta.info_icon.kotter} | Lewin: ${meta.info_icon.lewin}`
-    : undefined
+  const tooltip = meta?.plain_english || undefined
   const title = lensWidgetLabel(id, lens)
   const hm = data.healthMetrics
 

@@ -76,7 +76,7 @@ export default function App() {
           </header>
 
           <div className="no-print text-xs text-slate-600 mb-6">
-            Hover any ⓘ for cross-framework translations.
+            Hover any ⓘ for a plain-English explanation of what each measure means.
           </div>
 
           <DashboardEngine

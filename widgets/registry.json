@@ -16,7 +16,7 @@
         "lewin": "Core metric of Change phase"
       },
       "label": "Adoption Rate",
-      "plain_english": "What percent of people are actually using the new way.",
+      "plain_english": "The share of people actually using the new way of working \u2014 the bottom-line measure of whether the change took hold.",
       "modality": "adopt"
     },
     {
@@ -27,7 +27,7 @@
         "lewin": "Part of Change"
       },
       "label": "Training Completion",
-      "plain_english": "Who finished the training they were assigned.",
+      "plain_english": "Whether people finished the training they need to work the new way \u2014 a readiness signal, not the outcome itself.",
       "modality": "enable"
     },
     {
@@ -38,7 +38,7 @@
         "lewin": "Part of Unfreeze and Change"
       },
       "label": "Communications Sent",
-      "plain_english": "Messages sent, opened, and pending.",
+      "plain_english": "The reach of change communications: what has been sent, what has been seen, and what is still pending.",
       "modality": "mobilize"
     },
     {
@@ -49,7 +49,7 @@
         "lewin": "Risks to Refreeze"
       },
       "label": "Open Risks",
-      "plain_english": "What could derail the change, and how severe.",
+      "plain_english": "Threats to the change effort and their severity \u2014 what needs a mitigation plan before it becomes an issue.",
       "modality": "sustain"
     },
     {
@@ -60,7 +60,7 @@
         "lewin": "Readiness and adoption by group"
       },
       "label": "Stakeholder Engagement",
-      "plain_english": "How engaged each group is, by group.",
+      "plain_english": "How informed, involved, and bought in each stakeholder group is \u2014 engagement is what turns awareness into support.",
       "modality": "assess"
     },
     {
@@ -71,7 +71,7 @@
         "lewin": "Champion coverage"
       },
       "label": "Sponsor Coalition Health",
-      "plain_english": "Are your sponsors / coalition active and aligned.",
+      "plain_english": "Whether the leaders sponsoring the change are visible, active, and aligned \u2014 sponsorship is the single biggest predictor of success.",
       "modality": "mobilize"
     },
     {
@@ -82,7 +82,7 @@
         "lewin": "Maps to Unfreeze gaps"
       },
       "label": "Barrier Analysis",
-      "plain_english": "Where people are stuck, and why.",
+      "plain_english": "What is getting in people's way \u2014 the obstacles, resistance points, and friction slowing adoption.",
       "modality": "adopt"
     },
     {
@@ -93,7 +93,7 @@
         "lewin": "Momentum in Change"
       },
       "label": "Quick Wins Log",
-      "plain_english": "Early successes logged and communicated.",
+      "plain_english": "Early, visible successes that prove the change is working \u2014 momentum builders worth celebrating loudly.",
       "modality": "adopt"
     },
     {
@@ -104,7 +104,7 @@
         "lewin": "Core metric of Unfreeze"
       },
       "label": "Readiness Score",
-      "plain_english": "How ready the org is before the change starts.",
+      "plain_english": "How prepared the organization is to absorb the change \u2014 capacity, willingness, and conditions before you begin.",
       "modality": "assess"
     },
     {
@@ -115,7 +115,7 @@
         "lewin": "Core metric of Refreeze"
       },
       "label": "Sustainment Health",
-      "plain_english": "Is the change sticking after go-live.",
+      "plain_english": "Whether the change is holding after go-live \u2014 reinforcement, ownership, and results over time.",
       "modality": "sustain"
     },
     {
@@ -126,7 +126,7 @@
         "lewin": "Milestones per 3 phases"
       },
       "label": "Milestones",
-      "plain_english": "Upcoming key dates and their status.",
+      "plain_english": "The key dates and deliverables marking the change journey \u2014 and whether each is on track.",
       "modality": "sustain"
     },
     {
@@ -137,7 +137,7 @@
         "lewin": "Activity feeds phase progress"
       },
       "label": "Recent Activity",
-      "plain_english": "What happened in the last 24 hours.",
+      "plain_english": "The latest movement across the change effort \u2014 what has been happening recently.",
       "modality": null
     }
   ]

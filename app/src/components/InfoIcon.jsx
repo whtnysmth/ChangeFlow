@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 // ⓘ Info icon with hover / tap / keyboard tooltip
-// Shows cross-framework translation per docs/translation-guide.md
+// Shows a plain-language definition of the principle the labeled thing represents.
 export default function InfoIcon({ tooltip }) {
   const [open, setOpen] = useState(false)
   if (!tooltip) return null
