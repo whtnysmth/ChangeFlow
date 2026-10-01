@@ -12,9 +12,9 @@ export function CoachTipReopen({ onReopen }) {
   return (
     <button
       onClick={onReopen}
-      className="mt-2 text-xs font-medium text-[#0073ea] hover:text-[#0060c9] hover:underline"
+      className="no-print text-xs font-semibold text-[#0060c9] bg-[#f0f7ff] border border-[#cfe3fb] rounded-full px-3 py-1 hover:bg-[#e0efff]"
     >
-      Show tip: why this matters
+      Why this matters
     </button>
   )
 }

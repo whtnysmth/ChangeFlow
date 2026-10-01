@@ -108,6 +108,7 @@ export default function DashboardEngine({
       campaignId={campaignId}
       live={source === 'supabase'}
       onRefreshData={onRefreshData}
+      onJumpPhase={onSelectModality}
     />
   )
 }

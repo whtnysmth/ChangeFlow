@@ -5,11 +5,12 @@
 import { useState } from 'react'
 import WidgetRenderer from '../widgets/WidgetRenderer.jsx'
 import PhaseDocuments from './PhaseDocuments.jsx'
+import PhaseHeader from './PhaseHeader.jsx'
 import CoachTip from './CoachTip.jsx'
 import { AssessSourceDrawer } from './SourceDrawer.jsx'
 import { saveStakeholderGroups, saveReadinessScore } from '../lib/data.js'
 
-export default function ModalityView({ modality, widgetIds, registry, data, lens, mode, stepIndex, campaignId, live, onRefreshData }) {
+export default function ModalityView({ modality, widgetIds, registry, data, lens, mode, stepIndex, campaignId, live, onRefreshData, onJumpPhase }) {
   const [sourceId, setSourceId] = useState(null)
 
   const handleSourceSave = async (widgetId, payload) => {
@@ -23,18 +24,12 @@ export default function ModalityView({ modality, widgetIds, registry, data, lens
 
   return (
     <div className="space-y-5">
-      <div>
-        <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-          <h2 className="text-xl font-semibold text-slate-900">
-            {mode === 'guided' && <span className="text-[#0073ea]">Phase {stepIndex}: </span>}
-            {modality.label}
-          </h2>
-          <span className="text-sm text-slate-500">{modality.tagline}</span>
-        </div>
-        {mode === 'guided' && (
-          <CoachTip modalityId={modality.id} coaching={modality.coaching} />
-        )}
-      </div>
+      <PhaseHeader
+        modality={modality}
+        currentId={modality.id}
+        onJumpPhase={onJumpPhase}
+        tipNode={mode === 'guided' ? <CoachTip modalityId={modality.id} coaching={modality.coaching} /> : null}
+      />
 
       {widgetIds.length === 0 ? (
         <div className="text-sm text-slate-500 border border-dashed border-slate-300 rounded-xl p-8 text-center">
