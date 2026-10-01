@@ -2,7 +2,7 @@ import InfoIcon from '../components/InfoIcon.jsx'
 
 function Card({ title, tooltip, children, footer, sourceAction }) {
   return (
-    <div className="bg-white border border-slate-200 shadow-sm rounded-xl p-5">
+    <div className="midnight-card">
       <div className="text-sm font-medium text-slate-900 mb-3 flex items-center gap-2">
         <span className="flex-1 min-w-0">
           {title}
