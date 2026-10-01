@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import Sidebar from './components/Sidebar.jsx'
-import FrameworkLens from './components/FrameworkLens.jsx'
+// Framework lens hidden 2026-09-30 per Whitney ("hide for now — simplify").
+// To restore: uncomment the import and the <FrameworkLens> element in the header.
+// import FrameworkLens from './components/FrameworkLens.jsx'
 import DashboardEngine from './components/DashboardEngine.jsx'
 import { getDashboardData } from './lib/data.js'
 
@@ -70,14 +72,10 @@ export default function App() {
                 {campaign.type || 'Campaign'} • {campaign.state} • Started {campaign.start} • Target: {campaign.target}
               </div>
             </div>
-            <FrameworkLens lens={lens} onChange={setLens} />
+            {/* Framework lens hidden 2026-09-30 — restore: <FrameworkLens lens={lens} onChange={setLens} /> */}
           </header>
 
           <div className="no-print text-xs text-slate-600 mb-6">
-            {mode === 'guided'
-              ? 'Guided mode: plain language, step-by-step. Switch to Expert in the sidebar for the full practitioner view.'
-              : 'Expert mode: full widget library and framework terminology.'}
-            {' '}The framework lens only adjusts terminology — your data never moves.
             Hover any ⓘ for cross-framework translations.
           </div>
 

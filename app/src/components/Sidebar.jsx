@@ -116,6 +116,8 @@ export default function Sidebar({ activeTab, onTab, mode, onMode }) {
         })}
       </nav>
 
+      {/* Mode switch hidden 2026-09-30 per Whitney ("hide for now — simplify").
+          Restore the block below to re-enable Guided/Expert switching.
       <div className="p-4 border-t border-white/10">
         <div className="text-[11px] uppercase tracking-widest text-white/35 mb-2">Mode</div>
         <div className="flex bg-white/5 border border-white/10 rounded-full p-1">
@@ -143,6 +145,7 @@ export default function Sidebar({ activeTab, onTab, mode, onMode }) {
             : 'Expert: full library, framework terms.'}
         </div>
       </div>
+      */}
     </aside>
   )
 }
