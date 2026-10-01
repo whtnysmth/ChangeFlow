@@ -40,7 +40,7 @@ export default function App() {
 
   if (!data) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-white/50 text-sm">
+      <div className="min-h-screen flex items-center justify-center text-slate-500 text-sm bg-[#d9ede4]">
         Loading ChangeFlow…
       </div>
     )
@@ -48,32 +48,32 @@ export default function App() {
 
   const campaign = data.campaign
   const sourceBadge = source === 'supabase'
-    ? <span className="text-xs font-normal px-2 py-0.5 rounded-full bg-teal-400/20 text-teal-200 border border-teal-300/30">● Live data</span>
-    : <span className="text-xs font-normal px-2 py-0.5 rounded-full bg-white/10 text-white/50 border border-white/10">○ Mock data</span>
+    ? <span className="text-xs font-normal px-2 py-0.5 rounded-full bg-teal-100 text-teal-700 border border-teal-200">● Live data</span>
+    : <span className="text-xs font-normal px-2 py-0.5 rounded-full bg-slate-200 text-slate-600 border border-slate-300">○ Mock data</span>
 
   return (
-    <div className="min-h-screen flex bg-slate-950 text-white">
+    <div className="min-h-screen flex bg-[#d9ede4] text-slate-900">
       <Sidebar activeTab={activeTab} onTab={setActiveTab} mode={mode} onMode={handleMode} />
 
       <div className="flex-1 min-w-0">
         <div className="max-w-7xl mx-auto p-6">
           <header className="flex flex-wrap items-center justify-between gap-4 mb-2">
             <div>
-              <div className="flex items-center gap-2 text-xl font-bold">
+              <div className="flex items-center gap-2 text-xl font-bold text-slate-900">
                 <span>{campaign.name}</span>
-                <span className="text-xs font-normal px-2 py-0.5 rounded-full bg-emerald-400/20 text-emerald-200 border border-emerald-300/30">
+                <span className="text-xs font-normal px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 border border-emerald-200">
                   • {campaign.status}
                 </span>
                 {sourceBadge}
               </div>
-              <div className="text-sm text-white/60 mt-1">
+              <div className="text-sm text-slate-600 mt-1">
                 {campaign.type || 'Campaign'} • {campaign.state} • Started {campaign.start} • Target: {campaign.target}
               </div>
             </div>
             <FrameworkLens lens={lens} onChange={setLens} />
           </header>
 
-          <div className="no-print text-xs text-white/40 mb-6">
+          <div className="no-print text-xs text-slate-600 mb-6">
             {mode === 'guided'
               ? 'Guided mode: plain language, step-by-step. Switch to Expert in the sidebar for the full practitioner view.'
               : 'Expert mode: full widget library and framework terminology.'}
@@ -96,7 +96,7 @@ export default function App() {
             source={source}
           />
 
-          <footer className="mt-10 text-xs text-white/30">
+          <footer className="mt-10 text-xs text-slate-500">
             ChangeFlow — {source === 'supabase' ? 'Connected to Supabase.' : 'Mock data — connect Supabase to go live.'} Free-first stack: Vite + React + Tailwind + Supabase.
           </footer>
         </div>

@@ -10,25 +10,25 @@ export default function ModalityView({ modality, widgetIds, registry, data, lens
     <div className="space-y-5">
       <div>
         <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-          <h2 className="text-xl font-semibold">
-            {mode === 'guided' && <span className="text-teal-300">Phase {stepIndex}: </span>}
+          <h2 className="text-xl font-semibold text-slate-900">
+            {mode === 'guided' && <span className="text-teal-600">Phase {stepIndex}: </span>}
             {modality.label}
           </h2>
-          <span className="text-sm text-white/50">{modality.tagline}</span>
+          <span className="text-sm text-slate-500">{modality.tagline}</span>
         </div>
         {mode === 'guided' && (
-          <div className="mt-3 p-4 rounded-xl bg-teal-400/[0.06] border border-teal-300/20 text-sm text-white/75 leading-relaxed">
-            <span className="text-teal-200 font-medium">Why this matters: </span>
+          <div className="mt-3 p-4 rounded-xl bg-white border border-teal-200 shadow-sm text-sm text-slate-700 leading-relaxed">
+            <span className="text-teal-700 font-medium">Why this matters: </span>
             {modality.coaching}
           </div>
         )}
         {lensNote && (
-          <div className="mt-2 text-xs text-white/40">{lensNote}</div>
+          <div className="mt-2 text-xs text-slate-500">{lensNote}</div>
         )}
       </div>
 
       {widgetIds.length === 0 ? (
-        <div className="text-sm text-white/40 border border-dashed border-white/15 rounded-xl p-8 text-center">
+        <div className="text-sm text-slate-500 border border-dashed border-slate-300 rounded-xl p-8 text-center">
           No widgets assigned to this modality yet.
         </div>
       ) : (

@@ -10,7 +10,7 @@ export default function InfoIcon({ tooltip }) {
       <button
         type="button"
         aria-label="More info"
-        className="w-4 h-4 inline-flex items-center justify-center rounded-full bg-white/10 text-white/60 text-[10px] hover:bg-white/20 hover:text-white focus:outline-none focus:ring-1 focus:ring-teal-300"
+        className="w-4 h-4 inline-flex items-center justify-center rounded-full bg-slate-200 text-slate-500 text-[10px] hover:bg-slate-300 hover:text-slate-700 focus:outline-none focus:ring-1 focus:ring-teal-500"
         onMouseEnter={() => setOpen(true)}
         onMouseLeave={() => setOpen(false)}
         onFocus={() => setOpen(true)}

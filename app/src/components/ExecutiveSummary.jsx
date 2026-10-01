@@ -49,12 +49,12 @@ export default function ExecutiveSummary({ data }) {
   }
 
   return (
-    <div className="bg-white/[0.03] border border-white/10 rounded-xl p-5">
-      <div className="text-sm font-medium text-white/90 mb-3">Executive summary</div>
+    <div className="bg-white border border-slate-200 shadow-sm rounded-xl p-5">
+      <div className="text-sm font-medium text-slate-900 mb-3">Executive summary</div>
       <ul className="space-y-2">
         {lines.map((l, i) => (
-          <li key={i} className="text-sm text-white/70 leading-relaxed flex gap-2">
-            <span className="text-teal-300 mt-0.5">▸</span>
+          <li key={i} className="text-sm text-slate-600 leading-relaxed flex gap-2">
+            <span className="text-teal-600 mt-0.5">▸</span>
             <span>{l}</span>
           </li>
         ))}

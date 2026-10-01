@@ -9,16 +9,16 @@ import {
 } from '../lib/data.js'
 
 const STATUS_META = {
-  todo: { label: 'To do', pill: 'bg-white/10 text-white/70 border-white/15' },
-  in_progress: { label: 'In progress', pill: 'bg-blue-400/15 text-blue-200 border-blue-300/30' },
-  stuck: { label: 'Stuck', pill: 'bg-rose-400/15 text-rose-200 border-rose-300/30' },
-  done: { label: 'Done', pill: 'bg-teal-400/15 text-teal-200 border-teal-300/30' },
+  todo: { label: 'To do', pill: 'bg-slate-100 text-slate-600 border-slate-200' },
+  in_progress: { label: 'In progress', pill: 'bg-blue-100 text-blue-700 border-blue-200' },
+  stuck: { label: 'Stuck', pill: 'bg-rose-100 text-rose-700 border-rose-200' },
+  done: { label: 'Done', pill: 'bg-teal-100 text-teal-700 border-teal-200' },
 }
 
 const PRIORITY_META = {
-  low: { label: 'Low', pill: 'bg-white/5 text-white/50 border-white/10' },
-  medium: { label: 'Medium', pill: 'bg-amber-400/15 text-amber-200 border-amber-300/30' },
-  high: { label: 'High', pill: 'bg-rose-400/15 text-rose-200 border-rose-300/30' },
+  low: { label: 'Low', pill: 'bg-slate-100 text-slate-500 border-slate-200' },
+  medium: { label: 'Medium', pill: 'bg-amber-100 text-amber-700 border-amber-200' },
+  high: { label: 'High', pill: 'bg-rose-100 text-rose-700 border-rose-200' },
 }
 
 const fmtDate = (iso) => {
@@ -146,27 +146,27 @@ export default function TaskManager({ campaignId, live }) {
   }
 
   const inputCls =
-    'px-3 py-1.5 text-xs rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/30 outline-none focus:border-teal-300/40'
+    'px-3 py-1.5 text-xs rounded-lg bg-white border border-slate-300 text-slate-900 placeholder-slate-400 outline-none focus:border-teal-500 [&>option]:bg-white'
 
   return (
     <div>
       <div className="flex flex-wrap items-baseline justify-between gap-2 mb-1">
-        <h2 className="text-lg font-bold">Task manager</h2>
-        <div className="text-xs text-white/40">
+        <h2 className="text-lg font-bold text-slate-900">Task manager</h2>
+        <div className="text-xs text-slate-500">
           {openCount} open{overdueCount > 0 && (
-            <span className="text-rose-300"> · {overdueCount} overdue</span>
+            <span className="text-rose-600"> · {overdueCount} overdue</span>
           )}
-          {!live && <span className="text-amber-200/70"> · Sample data — tasks save on this device</span>}
+          {!live && <span className="text-amber-700"> · Sample data — tasks save on this device</span>}
         </div>
       </div>
-      <p className="text-sm text-white/55 mb-6">
+      <p className="text-sm text-slate-600 mb-6">
         The practitioner's action list — who owns what, when it's due, where it's stuck.
         Not a project plan; just the work that keeps the change moving.
       </p>
 
       {/* Add task */}
-      <form onSubmit={handleAdd} className="rounded-xl bg-white/[0.03] border border-white/10 p-4 mb-4">
-        <div className="text-[11px] uppercase tracking-widest text-white/35 mb-2">Add a task</div>
+      <form onSubmit={handleAdd} className="rounded-xl bg-white border border-slate-200 shadow-sm p-4 mb-4">
+        <div className="text-[11px] uppercase tracking-widest text-slate-400 mb-2">Add a task</div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-2">
           <input
             value={title}
@@ -174,7 +174,7 @@ export default function TaskManager({ campaignId, live }) {
             placeholder="Task — e.g. Confirm sponsor kickoff date"
             className={`${inputCls} lg:col-span-2`}
           />
-          <select value={phase} onChange={e => setPhase(e.target.value)} className={`${inputCls} text-white/70`}>
+          <select value={phase} onChange={e => setPhase(e.target.value)} className={inputCls}>
             <option value="">Phase: none</option>
             {MODALITIES.map(m => <option key={m.id} value={m.id}>{m.label}</option>)}
           </select>
@@ -188,10 +188,10 @@ export default function TaskManager({ campaignId, live }) {
             type="date"
             value={dueDate}
             onChange={e => setDueDate(e.target.value)}
-            className={`${inputCls} text-white/70`}
+            className={inputCls}
           />
           <div className="flex gap-2">
-            <select value={priority} onChange={e => setPriority(e.target.value)} className={`${inputCls} flex-1 text-white/70`}>
+            <select value={priority} onChange={e => setPriority(e.target.value)} className={`${inputCls} flex-1`}>
               {TASK_PRIORITIES.map(p => (
                 <option key={p} value={p}>{p[0].toUpperCase() + p.slice(1)} priority</option>
               ))}
@@ -199,23 +199,23 @@ export default function TaskManager({ campaignId, live }) {
             <button
               type="submit"
               disabled={saving}
-              className="px-4 py-1.5 text-xs rounded-lg bg-teal-400/20 text-teal-200 border border-teal-300/30 disabled:opacity-40 hover:bg-teal-400/30 transition"
+              className="px-4 py-1.5 text-xs rounded-lg bg-teal-600 text-white border border-teal-600 disabled:opacity-40 hover:bg-teal-700 transition"
             >
               {saving ? 'Adding…' : 'Add'}
             </button>
           </div>
         </div>
-        {error && <p className="mt-2 text-xs text-red-300">{error}</p>}
+        {error && <p className="mt-2 text-xs text-red-600">{error}</p>}
       </form>
 
       {/* Filters */}
       <div className="flex flex-wrap items-center gap-2 mb-3">
-        <select value={phaseFilter} onChange={e => setPhaseFilter(e.target.value)} className={`${inputCls} text-white/70`}>
+        <select value={phaseFilter} onChange={e => setPhaseFilter(e.target.value)} className={inputCls}>
           <option value="all">All phases</option>
           <option value="none">No phase</option>
           {MODALITIES.map(m => <option key={m.id} value={m.id}>{m.label}</option>)}
         </select>
-        <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)} className={`${inputCls} text-white/70`}>
+        <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)} className={inputCls}>
           <option value="all">All statuses</option>
           {TASK_STATUSES.map(s => <option key={s} value={s}>{STATUS_META[s].label}</option>)}
         </select>
@@ -223,24 +223,24 @@ export default function TaskManager({ campaignId, live }) {
 
       {/* Task table */}
       {loading ? (
-        <p className="text-xs text-white/40">Loading…</p>
+        <p className="text-xs text-slate-500">Loading…</p>
       ) : visible.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-white/15 p-8 text-center">
-          <p className="text-sm text-white/60 mb-1">
+        <div className="rounded-xl border border-dashed border-slate-300 bg-white/60 p-8 text-center">
+          <p className="text-sm text-slate-600 mb-1">
             {items.length === 0 ? 'No tasks yet.' : 'Nothing matches these filters.'}
           </p>
-          <p className="text-xs text-white/40">
+          <p className="text-xs text-slate-500">
             {items.length === 0
               ? 'Add the first one above — a sponsor follow-up, a training slot to book, a comms draft to review. Small tasks, moved steadily, are what carry a change.'
               : 'Try clearing the filters to see everything.'}
           </p>
         </div>
       ) : (
-        <div className="rounded-xl border border-white/10 overflow-hidden">
+        <div className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm min-w-[760px]">
               <thead>
-                <tr className="text-left text-[11px] uppercase tracking-widest text-white/35 border-b border-white/10">
+                <tr className="text-left text-[11px] uppercase tracking-widest text-slate-500 border-b border-slate-200">
                   <th className="px-3 py-2.5 font-medium">Status</th>
                   <th className="px-3 py-2.5 font-medium">Task</th>
                   <th className="px-3 py-2.5 font-medium">Phase</th>
@@ -257,7 +257,7 @@ export default function TaskManager({ campaignId, live }) {
                   return (
                     <tr
                       key={task.id}
-                      className={`border-b border-white/5 last:border-0 ${overdue ? 'bg-rose-400/[0.07]' : ''}`}
+                      className={`border-b border-slate-100 last:border-0 ${overdue ? 'bg-rose-50' : ''}`}
                     >
                       <td className="px-3 py-2">
                         <select
@@ -283,7 +283,7 @@ export default function TaskManager({ campaignId, live }) {
                         ) : (
                           <button
                             onClick={() => startEditTitle(task)}
-                            className={`text-left hover:text-teal-200 transition ${done ? 'line-through text-white/35' : 'text-white/85'}`}
+                            className={`text-left hover:text-teal-700 transition ${done ? 'line-through text-slate-400' : 'text-slate-800'}`}
                             title="Click to edit"
                           >
                             {task.title}
@@ -294,7 +294,7 @@ export default function TaskManager({ campaignId, live }) {
                         <select
                           value={task.modality || ''}
                           onChange={e => handleField(task, { modality: e.target.value || null })}
-                          className={`${inputCls} !py-1 text-[11px] text-white/70`}
+                          className={`${inputCls} !py-1 text-[11px]`}
                         >
                           <option value="">—</option>
                           {MODALITIES.map(m => <option key={m.id} value={m.id}>{m.label}</option>)}
@@ -314,10 +314,10 @@ export default function TaskManager({ campaignId, live }) {
                           type="date"
                           value={task.due_date || ''}
                           onChange={e => handleField(task, { due_date: e.target.value || null })}
-                          className={`${inputCls} !py-1 !px-2 text-[11px] ${overdue ? 'text-rose-200 border-rose-300/40' : 'text-white/70'}`}
+                          className={`${inputCls} !py-1 !px-2 text-[11px] ${overdue ? '!text-rose-700 !border-rose-300' : ''}`}
                         />
                         {overdue && (
-                          <div className="text-[10px] text-rose-300 mt-0.5">Overdue · due {fmtDate(task.due_date)}</div>
+                          <div className="text-[10px] text-rose-600 mt-0.5">Overdue · due {fmtDate(task.due_date)}</div>
                         )}
                       </td>
                       <td className="px-3 py-2">
@@ -334,7 +334,7 @@ export default function TaskManager({ campaignId, live }) {
                       <td className="px-3 py-2">
                         <button
                           onClick={() => handleDelete(task)}
-                          className="text-white/35 hover:text-red-300 text-xs"
+                          className="text-slate-400 hover:text-red-600 text-xs"
                           title="Delete"
                         >
                           Delete

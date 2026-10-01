@@ -16,17 +16,17 @@ export default function DashboardHome({
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold">Campaign Health Overview</h2>
+        <h2 className="text-xl font-semibold text-slate-900">Campaign Health Overview</h2>
         <div className="flex items-center gap-3">
           <button
             onClick={() => window.print()}
-            className="no-print text-sm text-teal-300 hover:text-teal-200 underline underline-offset-4"
+            className="no-print text-sm text-teal-700 hover:text-teal-800 underline underline-offset-4"
           >
             View full report →
           </button>
           <button
             onClick={() => window.print()}
-            className="no-print px-3 py-1.5 text-xs rounded-lg bg-white/5 border border-white/10 text-white/70 hover:text-white hover:border-white/25 transition"
+            className="no-print px-3 py-1.5 text-xs rounded-lg bg-white border border-slate-300 text-slate-700 hover:text-slate-900 hover:border-slate-400 transition"
           >
             Export / Print
           </button>
@@ -46,7 +46,7 @@ export default function DashboardHome({
         <div className="space-y-4">
           {customWidgetIds.length > 0 && (
             <div>
-              <div className="text-sm font-medium text-white/80 mb-3">Custom widgets</div>
+              <div className="text-sm font-medium text-slate-700 mb-3">Custom widgets</div>
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
                 {customWidgetIds.map(id => (
                   <WidgetRenderer key={id} id={id} registry={registry} data={data} lens={lens} />

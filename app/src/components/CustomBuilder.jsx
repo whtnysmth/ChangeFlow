@@ -53,8 +53,8 @@ export default function CustomBuilder({ registry, activeIds, onToggle, onReset, 
             onClick={() => onToggle(w.id)}
             className={`px-3 py-1.5 text-xs rounded-full border transition ${
               on
-                ? 'bg-teal-400/20 text-teal-200 border-teal-300/30'
-                : 'bg-white/5 text-white/60 border-white/10 hover:text-white'
+                ? 'bg-teal-600 text-white border-teal-600'
+                : 'bg-slate-50 text-slate-600 border-slate-200 hover:text-slate-900 hover:border-slate-300'
             }`}
           >
             {on ? '✓ ' : '+ '}{w.label}
@@ -65,26 +65,26 @@ export default function CustomBuilder({ registry, activeIds, onToggle, onReset, 
   )
 
   return (
-    <div className="no-print mt-6 p-4 rounded-xl bg-white/[0.03] border border-white/10">
+    <div className="no-print mt-6 p-4 rounded-xl bg-white border border-slate-200 shadow-sm">
       <div className="flex items-center justify-between mb-1">
-        <div className="text-sm font-medium">Custom home widgets <span className="text-white/40 font-normal">• Expert</span></div>
-        <button onClick={onReset} className="text-xs text-white/60 hover:text-white underline">
+        <div className="text-sm font-medium">Custom home widgets <span className="text-slate-400 font-normal">• Expert</span></div>
+        <button onClick={onReset} className="text-xs text-slate-500 hover:text-slate-900 underline">
           Clear custom widgets
         </button>
       </div>
-      <p className="text-xs text-white/40 mb-4">
+      <p className="text-xs text-slate-500 mb-4">
         Add any widgets below your reporting sections on the Dashboard home. Layouts are organized by change modality — no framework base.
       </p>
 
       {byModality.map(m => (
         <div key={m.id} className="mb-3">
-          <div className="text-[11px] uppercase tracking-widest text-white/35 mb-1.5">{m.label}</div>
+          <div className="text-[11px] uppercase tracking-widest text-slate-400 mb-1.5">{m.label}</div>
           {renderChips(m.widgets)}
         </div>
       ))}
       {unassigned.length > 0 && (
         <div className="mb-3">
-          <div className="text-[11px] uppercase tracking-widest text-white/35 mb-1.5">General</div>
+          <div className="text-[11px] uppercase tracking-widest text-slate-400 mb-1.5">General</div>
           {renderChips(unassigned)}
         </div>
       )}
@@ -95,12 +95,12 @@ export default function CustomBuilder({ registry, activeIds, onToggle, onReset, 
           onChange={e => setName(e.target.value)}
           onKeyDown={e => { if (e.key === 'Enter') handleSave() }}
           placeholder="Name this layout (e.g. Exec view)"
-          className="px-3 py-1.5 text-xs rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/30 outline-none focus:border-teal-300/40 w-52"
+          className="px-3 py-1.5 text-xs rounded-lg bg-white border border-slate-300 text-slate-900 placeholder-slate-400 outline-none focus:border-teal-500 w-52"
         />
         <button
           onClick={handleSave}
           disabled={!name.trim() || saving}
-          className="px-3 py-1.5 text-xs rounded-lg bg-teal-400/20 text-teal-200 border border-teal-300/30 disabled:opacity-40 hover:bg-teal-400/30 transition"
+          className="px-3 py-1.5 text-xs rounded-lg bg-teal-600 text-white border border-teal-600 disabled:opacity-40 hover:bg-teal-700 transition"
         >
           {saving ? 'Saving…' : 'Save layout'}
         </button>
@@ -108,18 +108,18 @@ export default function CustomBuilder({ registry, activeIds, onToggle, onReset, 
 
       {templates.length > 0 && (
         <div className="mt-3 space-y-1.5">
-          <div className="text-xs text-white/40">Saved layouts</div>
+          <div className="text-xs text-slate-500">Saved layouts</div>
           {templates.map(t => (
-            <div key={t.id} className="flex items-center justify-between text-xs bg-white/[0.02] border border-white/10 rounded-lg px-3 py-1.5">
+            <div key={t.id} className="flex items-center justify-between text-xs bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5">
               <button
                 onClick={() => onApplyTemplate(validIds(t.widget_ids, registry))}
-                className="text-white/80 hover:text-white text-left"
+                className="text-slate-800 hover:text-slate-900 text-left"
               >
-                {t.name} <span className="text-white/35">• {validIds(t.widget_ids, registry).length} widgets</span>
+                {t.name} <span className="text-slate-400">• {validIds(t.widget_ids, registry).length} widgets</span>
               </button>
               <button
                 onClick={() => handleDelete(t.id)}
-                className="text-white/35 hover:text-white/80 ml-3"
+                className="text-slate-400 hover:text-slate-700 ml-3"
                 title="Delete layout"
               >
                 ✕
@@ -129,7 +129,7 @@ export default function CustomBuilder({ registry, activeIds, onToggle, onReset, 
         </div>
       )}
 
-      <div className="mt-2 text-xs text-white/40">
+      <div className="mt-2 text-xs text-slate-500">
         Layouts persist {campaignId ? 'to the database' : 'in this browser'} and can be reapplied anytime.
       </div>
     </div>

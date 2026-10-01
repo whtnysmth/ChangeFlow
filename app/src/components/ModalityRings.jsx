@@ -2,16 +2,16 @@
 // SVG ring metrics in the approved mockup's visual language.
 import { MODALITIES, modalityHealth, healthBand } from '../lib/modalities.js'
 
-const BAND_STROKE = { teal: '#2dd4bf', amber: '#fbbf24', rose: '#fb7185', white: '#ffffff' }
+const BAND_STROKE = { teal: '#0d9488', amber: '#f59e0b', rose: '#f43f5e', white: '#94a3b8' }
 
-export function Ring({ value, size = 120, stroke = 10, color = '#2dd4bf', children }) {
+export function Ring({ value, size = 120, stroke = 10, color = '#0d9488', children }) {
   const r = (size - stroke) / 2
   const c = 2 * Math.PI * r
   const pct = value == null ? 0 : Math.max(0, Math.min(100, value))
   return (
     <div className="relative inline-flex items-center justify-center" style={{ width: size, height: size }}>
       <svg width={size} height={size} className="-rotate-90">
-        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth={stroke} />
+        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="#e2e8f0" strokeWidth={stroke} />
         <circle
           cx={size / 2} cy={size / 2} r={r} fill="none"
           stroke={color} strokeWidth={stroke} strokeLinecap="round"
@@ -34,22 +34,22 @@ export default function ModalityRings({ data, onSelect }) {
           <button
             key={m.id}
             onClick={() => onSelect && onSelect(m.id)}
-            className="bg-white/[0.03] border border-white/10 rounded-xl p-5 flex flex-col items-center gap-2 hover:border-white/20 transition text-center"
+            className="bg-white border border-slate-200 shadow-sm rounded-xl p-5 flex flex-col items-center gap-2 hover:border-teal-300 transition text-center"
             title={`${m.label}: ${band.label}${score != null ? ` (${score}%)` : ''} — open ${m.label} tab`}
           >
             <Ring value={score} color={stroke}>
-              <span className="text-3xl font-bold">{score != null ? `${score}%` : '–'}</span>
+              <span className="text-3xl font-bold text-slate-900">{score != null ? `${score}%` : '–'}</span>
             </Ring>
-            <div className="text-sm font-medium text-white/90">{i + 1}. {m.label}</div>
+            <div className="text-sm font-medium text-slate-900">{i + 1}. {m.label}</div>
             <div
               className={`text-xs px-2 py-0.5 rounded-full border ${
                 band.color === 'teal'
-                  ? 'bg-teal-400/15 text-teal-200 border-teal-300/30'
+                  ? 'bg-teal-100 text-teal-700 border-teal-200'
                   : band.color === 'amber'
-                    ? 'bg-amber-400/15 text-amber-200 border-amber-300/30'
+                    ? 'bg-amber-100 text-amber-700 border-amber-200'
                     : band.color === 'rose'
-                      ? 'bg-rose-400/15 text-rose-200 border-rose-300/30'
-                      : 'bg-white/10 text-white/50 border-white/10'
+                      ? 'bg-rose-100 text-rose-700 border-rose-200'
+                      : 'bg-slate-100 text-slate-500 border-slate-200'
               }`}
             >
               {band.label}

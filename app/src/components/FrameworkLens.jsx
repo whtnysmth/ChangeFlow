@@ -5,12 +5,12 @@ import { LENSES } from '../lib/modalities.js'
 
 export default function FrameworkLens({ lens, onChange }) {
   return (
-    <label className="no-print inline-flex items-center gap-2 text-xs text-white/50">
+    <label className="no-print inline-flex items-center gap-2 text-xs text-slate-600">
       <span>Framework lens</span>
       <select
         value={lens}
         onChange={e => onChange(e.target.value)}
-        className="bg-white/5 border border-white/10 rounded-full px-3 py-1.5 text-xs text-white/80 outline-none focus:border-teal-300/40 cursor-pointer [&>option]:bg-slate-900"
+        className="bg-white border border-slate-300 rounded-full px-3 py-1.5 text-xs text-slate-700 outline-none focus:border-teal-500 cursor-pointer [&>option]:bg-white"
         aria-label="Framework lens — adjusts terminology only"
       >
         {LENSES.map(l => (
