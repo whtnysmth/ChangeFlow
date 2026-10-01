@@ -67,6 +67,14 @@ export default function App() {
     setCampaignId(cid)
   }
 
+  // Re-fetch the dashboard bundle (e.g. after source-data edits).
+  const reloadData = async () => {
+    const { source, bundle, campaignId: cid } = await getDashboardData(campaignId || undefined)
+    setData(bundle)
+    setSource(source)
+    setCampaignId(cid)
+  }
+
   const handleCreateCampaign = async (fields) => {
     const row = await createCampaign(fields)
     const list = await listCampaigns()
@@ -142,6 +150,7 @@ export default function App() {
             campaigns={campaigns}
             onSelectCampaign={selectCampaign}
             onCreateCampaign={handleCreateCampaign}
+            onRefreshData={reloadData}
           />
 
           <footer className="mt-10 text-xs text-slate-500">

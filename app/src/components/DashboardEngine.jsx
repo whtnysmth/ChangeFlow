@@ -16,7 +16,7 @@ export default function DashboardEngine({
   tab, data, registry, mode, lens, onSelectModality,
   customWidgetIds, onToggleCustomWidget, onResetCustomWidgets,
   campaignId, onApplyTemplate, source,
-  campaigns, onSelectCampaign, onCreateCampaign,
+  campaigns, onSelectCampaign, onCreateCampaign, onRefreshData,
 }) {
   if (tab === 'home') {
     return (
@@ -103,6 +103,7 @@ export default function DashboardEngine({
       stepIndex={stepIndex}
       campaignId={campaignId}
       live={source === 'supabase'}
+      onRefreshData={onRefreshData}
     />
   )
 }

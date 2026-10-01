@@ -1,11 +1,22 @@
 import InfoIcon from '../components/InfoIcon.jsx'
 
-function Card({ title, tooltip, children, footer }) {
+function Card({ title, tooltip, children, footer, sourceAction }) {
   return (
     <div className="bg-white border border-slate-200 shadow-sm rounded-xl p-5">
-      <div className="text-sm font-medium text-slate-900 mb-3">
-        {title}
-        <InfoIcon tooltip={tooltip} />
+      <div className="text-sm font-medium text-slate-900 mb-3 flex items-center gap-2">
+        <span className="flex-1 min-w-0">
+          {title}
+          <InfoIcon tooltip={tooltip} />
+        </span>
+        {sourceAction && (
+          <button
+            onClick={sourceAction.onClick}
+            className="no-print shrink-0 text-xs font-normal text-[#0060c9] hover:underline"
+            title="See where this data comes from — and edit it"
+          >
+            {sourceAction.label} ↗
+          </button>
+        )}
       </div>
       {children}
       {footer && <div className="mt-2 text-xs text-[#0060c9]">{footer}</div>}
@@ -51,9 +62,9 @@ export function OpenRisks({ data, tooltip, title }) {
   )
 }
 
-export function StakeholderEngagement({ groups, tooltip, title }) {
+export function StakeholderEngagement({ groups, tooltip, title, sourceAction }) {
   return (
-    <Card title={title || "Stakeholder Engagement"} tooltip={tooltip} footer="Overall engagement +6% this month">
+    <Card title={title || "Stakeholder Engagement"} tooltip={tooltip} footer="Overall engagement +6% this month" sourceAction={sourceAction}>
       <div className="space-y-3">
         {groups.map(g => (
           <div key={g.group}>
@@ -126,9 +137,9 @@ export function QuickWinsLog({ data, tooltip, title }) {
   )
 }
 
-export function ReadinessScore({ data, tooltip, title }) {
+export function ReadinessScore({ data, tooltip, title, sourceAction }) {
   return (
-    <Card title={title || "Readiness Score"} tooltip={tooltip} footer={data.note}>
+    <Card title={title || "Readiness Score"} tooltip={tooltip} footer={data.note} sourceAction={sourceAction}>
       <div className="text-4xl font-bold text-slate-900">{data.value}%</div>
       <div className="mt-3 space-y-1.5">
         {data.dimensions.map(d => (

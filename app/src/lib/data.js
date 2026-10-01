@@ -81,7 +81,7 @@ async function supabaseBundle(campaignId) {
       }
     },
     stakeholderGroups: (groups || []).map(g => ({
-      name: g.group_name, percent: g.engagement_percent, count: g.engaged_count
+      id: g.id, group: g.group_name, percent: g.engagement_percent, engaged: g.engaged_count
     })),
     milestones: (miles || []).map(x => ({
       title: x.title, date: x.milestone_date, status: x.status
@@ -114,14 +114,132 @@ async function supabaseBundle(campaignId) {
 }
 
 export async function getDashboardData(campaignId) {
-  if (!supabase) return { source: 'mock', bundle: mockBundle(), campaignId: null }
+  if (!supabase) {
+    const bundle = mockBundle()
+    return { source: 'mock', bundle: applyOverrides(bundle, 'mock'), campaignId: null }
+  }
   try {
     const bundle = await supabaseBundle(campaignId)
-    return { source: 'supabase', bundle, campaignId: bundle.campaignId }
+    const key = bundle.campaignId || 'mock'
+    return { source: 'supabase', bundle: applyOverrides(bundle, key), campaignId: bundle.campaignId }
   } catch (err) {
     console.warn('Supabase unreachable, falling back to mock data:', err.message)
-    return { source: 'mock', bundle: mockBundle(), campaignId: null }
+    const bundle = mockBundle()
+    return { source: 'mock', bundle: applyOverrides(bundle, 'mock'), campaignId: null }
   }
+}
+
+// ---------------------------------------------------------------------------
+// Assess pilot: source-data editing. Widgets are no longer read-only — the
+// stakeholder groups and readiness score behind the Assess widgets can be
+// inspected and edited in-app. Writes go to Supabase when live; a
+// localStorage override is written first so edits survive offline and are
+// applied on top of the bundle at load. The override clears once the
+// Supabase write succeeds.
+// ---------------------------------------------------------------------------
+const OVERRIDES_KEY = 'changeflow:data-overrides'
+
+function readOverrides() {
+  try {
+    return JSON.parse(localStorage.getItem(OVERRIDES_KEY) || '{}')
+  } catch {
+    return {}
+  }
+}
+
+function writeOverride(campaignKey, key, value) {
+  try {
+    const o = readOverrides()
+    o[campaignKey] = { ...(o[campaignKey] || {}), [key]: value }
+    localStorage.setItem(OVERRIDES_KEY, JSON.stringify(o))
+  } catch { /* private mode */ }
+}
+
+function clearOverride(campaignKey, key) {
+  try {
+    const o = readOverrides()
+    if (o[campaignKey]) {
+      delete o[campaignKey][key]
+      localStorage.setItem(OVERRIDES_KEY, JSON.stringify(o))
+    }
+  } catch { /* private mode */ }
+}
+
+function applyOverrides(bundle, campaignKey) {
+  const o = readOverrides()[campaignKey] || {}
+  if (o.stakeholderGroups) bundle.stakeholderGroups = o.stakeholderGroups
+  if (o.readinessScore) bundle.readinessScore = o.readinessScore
+  return bundle
+}
+
+export async function saveStakeholderGroups(campaignId, groups) {
+  const key = campaignKeyOf(campaignId)
+  const clean = groups
+    .map((g, i) => ({
+      id: g.id || `local-${Date.now()}-${i}`,
+      group: String(g.group || '').trim(),
+      percent: Math.max(0, Math.min(100, Number(g.percent) || 0)),
+      engaged: Math.max(0, Math.round(Number(g.engaged) || 0))
+    }))
+    .filter(g => g.group)
+  writeOverride(key, 'stakeholderGroups', clean)
+  if (supabase && campaignId) {
+    const { error: delErr } = await supabase.from('stakeholder_groups').delete().eq('campaign_id', campaignId)
+    if (delErr) throw delErr
+    if (clean.length) {
+      const { error: insErr } = await supabase.from('stakeholder_groups').insert(
+        clean.map(g => ({
+          campaign_id: campaignId,
+          group_name: g.group,
+          engagement_percent: g.percent,
+          engaged_count: g.engaged
+        }))
+      )
+      if (insErr) throw insErr
+    }
+    clearOverride(key, 'stakeholderGroups')
+  }
+  return clean
+}
+
+export async function saveReadinessScore(campaignId, { value, note, dimensions }) {
+  const key = campaignKeyOf(campaignId)
+  const clean = {
+    value: Math.max(0, Math.min(100, Number(value) || 0)),
+    note: String(note || '').trim(),
+    dimensions: (dimensions || [])
+      .map(d => ({
+        label: String(d.label || '').trim(),
+        value: Math.max(0, Math.min(100, Number(d.value) || 0))
+      }))
+      .filter(d => d.label)
+  }
+  writeOverride(key, 'readinessScore', clean)
+  if (supabase && campaignId) {
+    const row = {
+      campaign_id: campaignId,
+      metric_key: 'readiness_score',
+      value: clean.value,
+      delta_text: clean.note,
+      extra: { dimensions: clean.dimensions }
+    }
+    const { data: existing } = await supabase
+      .from('metrics')
+      .select('id')
+      .eq('campaign_id', campaignId)
+      .eq('metric_key', 'readiness_score')
+      .maybeSingle()
+    const { error } = existing
+      ? await supabase.from('metrics').update(row).eq('id', existing.id)
+      : await supabase.from('metrics').insert(row)
+    if (error) throw error
+    clearOverride(key, 'readinessScore')
+  }
+  return clean
+}
+
+function campaignKeyOf(campaignId) {
+  return campaignId || 'mock'
 }
 
 // ---------------------------------------------------------------------------

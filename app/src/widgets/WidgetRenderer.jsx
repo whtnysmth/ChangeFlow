@@ -10,11 +10,14 @@ import { lensWidgetLabel } from '../lib/modalities.js'
 // the ⓘ tooltip shows a plain-language definition of the principle the widget
 // represents (registry `plain_english`). Framework translations stay in the
 // registry for later but are no longer shown — principles first.
-export default function WidgetRenderer({ id, registry, data, lens = 'adkar' }) {
+export default function WidgetRenderer({ id, registry, data, lens = 'adkar', onSource }) {
   const meta = registry?.widgets?.find(w => w.id === id)
   const tooltip = meta?.plain_english || undefined
   const title = lensWidgetLabel(id, lens)
   const hm = data.healthMetrics
+  // Assess pilot: these two widgets expose their source data for
+  // inspection and editing. Other widgets stay read-only for now.
+  const sourceAction = (label) => onSource ? { label, onClick: () => onSource(id) } : null
 
   switch (id) {
     case 'adoption_rate':
@@ -26,7 +29,7 @@ export default function WidgetRenderer({ id, registry, data, lens = 'adkar' }) {
     case 'open_risks':
       return <OpenRisks data={hm.openRisks} tooltip={tooltip} title={title} />
     case 'stakeholder_engagement':
-      return <StakeholderEngagement groups={data.stakeholderGroups} tooltip={tooltip} title={title} />
+      return <StakeholderEngagement groups={data.stakeholderGroups} tooltip={tooltip} title={title} sourceAction={sourceAction(`Source: ${data.stakeholderGroups.length} groups`)} />
     case 'sponsor_coalition_health':
       return <SponsorCoalitionHealth data={data.sponsorCoalition} tooltip={tooltip} title={title} />
     case 'barrier_analysis':
@@ -34,7 +37,7 @@ export default function WidgetRenderer({ id, registry, data, lens = 'adkar' }) {
     case 'quick_wins_log':
       return <QuickWinsLog data={data.quickWins} tooltip={tooltip} title={title} />
     case 'readiness_score':
-      return <ReadinessScore data={data.readinessScore} tooltip={tooltip} title={title} />
+      return <ReadinessScore data={data.readinessScore} tooltip={tooltip} title={title} sourceAction={sourceAction(`Source: ${data.readinessScore.dimensions.length} dimensions`)} />
     case 'sustainment_health':
       return <SustainmentHealth data={data.sustainmentHealth} tooltip={tooltip} title={title} />
     case 'milestones':
