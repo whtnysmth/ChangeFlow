@@ -4,6 +4,7 @@ import Sidebar from './components/Sidebar.jsx'
 // To restore: uncomment the import and the <FrameworkLens> element in the header.
 // import FrameworkLens from './components/FrameworkLens.jsx'
 import DashboardEngine from './components/DashboardEngine.jsx'
+import CampaignStrip from './components/CampaignStrip.jsx'
 import { getDashboardData, listCampaigns, createCampaign, renameCampaign, getStoredCampaignId, setStoredCampaignId } from './lib/data.js'
 
 import registry from '../../widgets/registry.json'
@@ -21,9 +22,6 @@ export default function App() {
   const [source, setSource] = useState('loading')
   const [campaignId, setCampaignId] = useState(null)
   const [campaigns, setCampaigns] = useState([])
-  const [editingName, setEditingName] = useState(false)
-  const [nameDraft, setNameDraft] = useState('')
-  const [nameError, setNameError] = useState('')
 
   useEffect(() => {
     let cancelled = false
@@ -86,30 +84,13 @@ export default function App() {
   }
 
   // Rename the active campaign. The name is a single record, so saving here
-  // updates it everywhere it appears (header, campaign cards, switcher).
-  // The header — and this edit control — renders on every tab.
-  const startRename = () => {
-    setNameDraft(campaign.name || '')
-    setNameError('')
-    setEditingName(true)
-  }
-
-  const saveName = async () => {
-    const clean = nameDraft.trim()
-    if (!clean) {
-      setNameError('Name cannot be empty.')
-      return
-    }
-    try {
-      const id = source === 'supabase' && campaignId ? campaignId : 'mock'
-      await renameCampaign(id, clean)
-      const list = await listCampaigns()
-      setCampaigns(list)
-      await reloadData()
-      setEditingName(false)
-    } catch (e) {
-      setNameError(e.message || 'Could not rename campaign.')
-    }
+  // updates it everywhere it appears (strip, campaign cards, switcher).
+  const handleRenameCampaign = async (name) => {
+    const id = source === 'supabase' && campaignId ? campaignId : 'mock'
+    await renameCampaign(id, name)
+    const list = await listCampaigns()
+    setCampaigns(list)
+    await reloadData()
   }
 
   if (!data) {
@@ -131,79 +112,18 @@ export default function App() {
 
       <div className="flex-1 min-w-0">
         <div className="max-w-7xl mx-auto p-6">
-          <header className="flex flex-wrap items-center justify-between gap-4 mb-2">
-            <div>
-              <div className="flex items-center gap-2 text-xl font-bold text-slate-900">
-                {editingName ? (
-                  <span className="flex items-center gap-1.5">
-                    <input
-                      autoFocus
-                      value={nameDraft}
-                      onChange={e => setNameDraft(e.target.value)}
-                      onKeyDown={e => {
-                        if (e.key === 'Enter') saveName()
-                        if (e.key === 'Escape') setEditingName(false)
-                      }}
-                      className="text-xl font-bold text-slate-900 bg-white border border-[#7db3f2] rounded-lg px-2 py-1 focus:outline-none focus:ring-2 focus:ring-[#0073ea]/40 max-w-md"
-                      aria-label="Campaign name"
-                    />
-                    <button
-                      onClick={saveName}
-                      className="no-print w-7 h-7 rounded-full bg-[#0073ea] text-white text-sm hover:bg-[#0060c9]"
-                      title="Save name"
-                      aria-label="Save campaign name"
-                    >
-                      ✓
-                    </button>
-                    <button
-                      onClick={() => setEditingName(false)}
-                      className="no-print w-7 h-7 rounded-full text-slate-500 hover:bg-slate-100 text-sm"
-                      title="Cancel"
-                      aria-label="Cancel rename"
-                    >
-                      ×
-                    </button>
-                  </span>
-                ) : (
-                  <>
-                    {source === 'supabase' && campaigns.length > 0 ? (
-                      <select
-                        value={campaignId || ''}
-                        onChange={e => selectCampaign(e.target.value)}
-                        className="max-w-md truncate text-xl font-bold text-slate-900 bg-white border border-slate-300 rounded-lg px-2 py-1 hover:border-[#7db3f2] focus:outline-none focus:ring-2 focus:ring-[#0073ea]/40 cursor-pointer"
-                        title="Switch campaign"
-                      >
-                        {campaigns.map(c => (
-                          <option key={c.id} value={c.id}>{c.name}</option>
-                        ))}
-                      </select>
-                    ) : (
-                      <span>{campaign.name}</span>
-                    )}
-                    <button
-                      onClick={startRename}
-                      className="no-print text-slate-400 hover:text-[#0060c9] text-base leading-none px-0.5 -scale-x-100"
-                      title="Rename campaign"
-                      aria-label="Rename campaign"
-                    >
-                      ✎
-                    </button>
-                  </>
-                )}
-                <span className="text-xs font-normal px-2 py-0.5 rounded-full bg-[#c9f3dc] text-[#00854d] border border-[#9ae6b8]">
-                  • {campaign.status}
-                </span>
-                {sourceBadge}
-              </div>
-              {editingName && nameError && (
-                <div className="text-xs text-rose-600 mt-1">{nameError}</div>
-              )}
-              <div className="mt-2 inline-block text-sm text-slate-600 bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5">
-                {campaign.type || 'Campaign'} • {campaign.state} • Started {campaign.start} • Target: {campaign.target}
-              </div>
-            </div>
-            {/* Framework lens hidden 2026-09-30 — restore: <FrameworkLens lens={lens} onChange={setLens} /> */}
-          </header>
+          {/* Framework lens hidden 2026-09-30 — restore: <FrameworkLens lens={lens} onChange={setLens} /> */}
+          <CampaignStrip
+            campaign={campaign}
+            campaignId={campaignId}
+            campaigns={campaigns}
+            source={source}
+            sourceBadge={sourceBadge}
+            onSelectCampaign={selectCampaign}
+            onJumpTab={setActiveTab}
+            onRename={handleRenameCampaign}
+            data={data}
+          />
 
           <DashboardEngine
             tab={activeTab}

@@ -4,8 +4,8 @@
 export const campaign = {
   name: 'Q4 Platform Migration — Change Management',
   status: 'On Track',
-  start: 'Oct 1, 2024',
-  target: 'Jan 31, 2025',
+  start: 'Oct 1, 2026',
+  target: 'Jan 31, 2027',
   type: 'Campaign',
   state: 'Active'
 }
@@ -25,9 +25,9 @@ export const stakeholderGroups = [
 ]
 
 export const milestones = [
-  { title: 'Training Cohort 3 Launch', date: 'Nov 15, 2024', status: 'Scheduled' },
-  { title: 'Go-Live Readiness Review', date: 'Nov 25, 2024', status: 'In Progress' },
-  { title: 'Comms: Executive Announcement Email', date: 'Nov 18, 2024', status: 'Planned' }
+  { title: 'Training Cohort 3 Launch', date: 'Nov 15, 2026', status: 'Scheduled' },
+  { title: 'Go-Live Readiness Review', date: 'Nov 25, 2026', status: 'In Progress' },
+  { title: 'Comms: Executive Announcement Email', date: 'Nov 18, 2026', status: 'Planned' }
 ]
 
 export const recentActivity = [
