@@ -6,6 +6,7 @@ import Sidebar from './components/Sidebar.jsx'
 import DashboardEngine from './components/DashboardEngine.jsx'
 import CampaignStrip from './components/CampaignStrip.jsx'
 import { getDashboardData, listCampaigns, createCampaign, renameCampaign, getStoredCampaignId, setStoredCampaignId } from './lib/data.js'
+import { softTap } from './lib/feedback.js'
 
 import registry from '../../widgets/registry.json'
 
@@ -22,6 +23,19 @@ export default function App() {
   const [source, setSource] = useState('loading')
   const [campaignId, setCampaignId] = useState(null)
   const [campaigns, setCampaigns] = useState([])
+
+  // Click feedback: a soft tap sound + light haptic on every clickable
+  // element (buttons, links, selects, checkboxes). One delegated listener.
+  useEffect(() => {
+    const onClick = (e) => {
+      if (e.target && e.target.closest &&
+          e.target.closest('button, a, select, input[type="checkbox"], [role="button"]')) {
+        softTap()
+      }
+    }
+    document.addEventListener('click', onClick)
+    return () => document.removeEventListener('click', onClick)
+  }, [])
 
   useEffect(() => {
     let cancelled = false
