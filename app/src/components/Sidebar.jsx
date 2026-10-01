@@ -84,6 +84,17 @@ const ICONS = {
       <path d="M8 6.5h4M8 9.5h4M8 12.5h2.5" strokeLinecap="round" />
     </svg>
   ),
+  sun: (
+    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.6" className="w-5 h-5">
+      <circle cx="10" cy="10" r="3.5" />
+      <path d="M10 2v2.5M10 15.5V18M2 10h2.5M15.5 10H18M4.3 4.3l1.8 1.8M13.9 13.9l1.8 1.8M15.7 4.3l-1.8 1.8M6.1 13.9l-1.8 1.8" strokeLinecap="round" />
+    </svg>
+  ),
+  moon: (
+    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.6" className="w-5 h-5">
+      <path d="M16.5 12.5A7 7 0 017.5 3.5a7 7 0 109 9z" strokeLinejoin="round" />
+    </svg>
+  ),
   knowledge: (
     <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.6" className="w-5 h-5">
       <path d="M4 4.5A1.5 1.5 0 015.5 3H16v13.5H5.7A1.7 1.7 0 004 18.2V4.5z" strokeLinejoin="round" />
@@ -112,7 +123,7 @@ const TOOL_TABS = [
 const PHASES_OPEN_KEY = 'changeflow:phases-open'
 const SIDEBAR_ORDER_KEY = 'changeflow:sidebar-order'
 
-export default function Sidebar({ activeTab, onTab, mode, onMode }) {
+export default function Sidebar({ activeTab, onTab, mode, onMode, darkMode, onToggleDarkMode }) {
   const [phasesOpen, setPhasesOpen] = useState(() => {
     try {
       return localStorage.getItem(PHASES_OPEN_KEY) !== '0'
@@ -291,6 +302,22 @@ export default function Sidebar({ activeTab, onTab, mode, onMode }) {
           )}
         </div>
       </nav>
+
+      {/* Settings — dark mode toggle lives here until the full settings panel is built. */}
+      <div className="p-4 border-t border-white/10">
+        <div className="text-[11px] uppercase tracking-widest text-white/35 mb-1 px-3">Settings</div>
+        <button
+          onClick={onToggleDarkMode}
+          aria-pressed={!!darkMode}
+          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-white/60 hover:text-white hover:bg-white/5 transition"
+        >
+          <span className="text-white/40">{darkMode ? ICONS.moon : ICONS.sun}</span>
+          <span className="flex-1 text-left">Dark mode</span>
+          <span className={`w-9 h-5 rounded-full p-0.5 transition shrink-0 ${darkMode ? 'bg-[#38bdf8]/60' : 'bg-white/15'}`}>
+            <span className={`block w-4 h-4 rounded-full bg-white shadow transition-transform ${darkMode ? 'translate-x-4' : ''}`} />
+          </span>
+        </button>
+      </div>
 
       {/* Mode switch hidden 2026-09-30 per Whitney ("hide for now — simplify").
           Restore the block below to re-enable Guided/Expert switching.

@@ -11,9 +11,17 @@ import { softTap } from './lib/feedback.js'
 import registry from '../../widgets/registry.json'
 
 const MODE_KEY = 'changeflow_mode'
+const DARK_KEY = 'changeflow:dark-mode'
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('home')
+  const [darkMode, setDarkMode] = useState(() => {
+    try { return localStorage.getItem(DARK_KEY) === '1' } catch { return false }
+  })
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', darkMode)
+    try { localStorage.setItem(DARK_KEY, darkMode ? '1' : '0') } catch { /* private mode */ }
+  }, [darkMode])
   const [mode, setMode] = useState(() => {
     try { return localStorage.getItem(MODE_KEY) || 'guided' } catch { return 'guided' }
   })
@@ -122,7 +130,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen flex bg-[#edf1f7] text-slate-900">
-      <Sidebar activeTab={activeTab} onTab={setActiveTab} mode={mode} onMode={handleMode} />
+      <Sidebar activeTab={activeTab} onTab={setActiveTab} mode={mode} onMode={handleMode} darkMode={darkMode} onToggleDarkMode={() => setDarkMode(v => !v)} />
 
       <div className="flex-1 min-w-0">
         <div className="max-w-7xl mx-auto p-6">

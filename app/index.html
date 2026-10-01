@@ -42,6 +42,23 @@
         border: 1px solid rgba(56,224,255,0.5);
         box-shadow: 0 10px 26px rgba(10,25,45,0.35), 0 0 10px rgba(56,189,248,0.15);
       }
+      /* Dark mode (toggle in sidebar Settings). Remaps the light-theme surfaces;
+         midnight cards, coach popup, and sidebar are already dark and untouched. */
+      html.dark { color-scheme: dark; }
+      html.dark .bg-\[\#edf1f7\] { background-color: #0a1220 !important; }
+      html.dark .bg-white { background-color: #101c33 !important; }
+      html.dark .bg-slate-50 { background-color: #0d1728 !important; }
+      html.dark .bg-slate-100 { background-color: rgba(148,184,220,0.10) !important; }
+      html.dark .bg-slate-200 { background-color: rgba(148,184,220,0.14) !important; }
+      html.dark .text-slate-900 { color: #f1f5f9 !important; }
+      html.dark .text-slate-800 { color: #e8eef6 !important; }
+      html.dark .text-slate-700 { color: #c6d8ec !important; }
+      html.dark .text-slate-600 { color: #a9c3de !important; }
+      html.dark .text-slate-500 { color: #93a9c4 !important; }
+      html.dark .border-slate-200 { border-color: rgba(148,184,220,0.16) !important; }
+      html.dark .border-slate-300 { border-color: rgba(148,184,220,0.25) !important; }
+      html.dark .text-\[\#0060c9\] { color: #7dd3fc !important; }
+      html.dark .shadow-sm { box-shadow: 0 4px 14px rgba(0,0,0,0.35) !important; }
       @media print {
         aside, .no-print { display: none !important; }
         body { background: #fff !important; }
