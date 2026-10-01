@@ -1,5 +1,7 @@
-// Sidebar navigation: Dashboard + the five change modalities.
-// Dark navy panel with teal/purple accents, per the approved mockup.
+// Sidebar navigation: Home, Dashboard, a collapsible "Change Phases" section
+// holding the five phase tabs, then the workspace tool tabs.
+// Dark navy panel with neon blue-teal accents, per the approved mockup.
+import { useState, useEffect } from 'react'
 import { MODALITIES } from '../lib/modalities.js'
 
 const ICONS = {
@@ -84,10 +86,13 @@ const ICONS = {
   ),
 }
 
-const TABS = [
+const TOP_TABS = [
   { id: 'home', label: 'Home' },
   { id: 'dashboard', label: 'Dashboard' },
-  ...MODALITIES.map((m, i) => ({ id: m.id, label: m.label, step: i + 1 })),
+]
+const PHASE_TABS = MODALITIES.map((m, i) => ({ id: m.id, label: m.label, step: i + 1 }))
+const PHASE_IDS = new Set(PHASE_TABS.map(t => t.id))
+const TOOL_TABS = [
   { id: 'tasks', label: 'Tasks' },
   { id: 'calendar', label: 'Calendar' },
   { id: 'documents', label: 'Documents' },
@@ -95,7 +100,52 @@ const TABS = [
   { id: 'surveys', label: 'Surveys' },
 ]
 
+const PHASES_OPEN_KEY = 'changeflow:phases-open'
+
 export default function Sidebar({ activeTab, onTab, mode, onMode }) {
+  const [phasesOpen, setPhasesOpen] = useState(() => {
+    try {
+      return localStorage.getItem(PHASES_OPEN_KEY) !== '0'
+    } catch {
+      return true
+    }
+  })
+
+  // Never strand the user: selecting a phase always expands the section.
+  useEffect(() => {
+    if (PHASE_IDS.has(activeTab)) setPhasesOpen(true)
+  }, [activeTab])
+
+  const togglePhases = () => {
+    setPhasesOpen(prev => {
+      try {
+        localStorage.setItem(PHASES_OPEN_KEY, prev ? '0' : '1')
+      } catch { /* private mode */ }
+      return !prev
+    })
+  }
+
+  const tabButton = (t) => {
+    const active = activeTab === t.id
+    return (
+      <button
+        key={t.id}
+        onClick={() => onTab(t.id)}
+        className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[17px] font-bold transition border ${
+          active
+            ? 'tab-neon bg-[#4d97ec]/15 text-white'
+            : 'border-transparent text-white/60 hover:text-white hover:bg-white/5'
+        }`}
+      >
+        <span className={active ? 'text-[#7db3f2]' : 'text-white/40'}>{ICONS[t.id]}</span>
+        <span className="flex-1 text-left">{t.label}</span>
+        {mode === 'guided' && t.step && (
+          <span className="text-[10px] text-white/30">Phase {t.step}</span>
+        )}
+      </button>
+    )
+  }
+
   return (
     <aside className="no-print w-60 shrink-0 min-h-screen bg-[#0b1120] border-r border-white/10 flex flex-col sticky top-0 h-screen">
       <div className="px-5 pt-6 pb-5">
@@ -105,26 +155,34 @@ export default function Sidebar({ activeTab, onTab, mode, onMode }) {
       <div className="px-3 text-[11px] uppercase tracking-widest text-white/35 px-5 mb-2">Campaign</div>
 
       <nav className="flex-1 px-3 space-y-1 overflow-y-auto">
-        {TABS.map(t => {
-          const active = activeTab === t.id
-          return (
-            <button
-              key={t.id}
-              onClick={() => onTab(t.id)}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[17px] font-bold transition border ${
-                active
-                  ? 'tab-neon bg-[#4d97ec]/15 text-white'
-                  : 'border-transparent text-white/60 hover:text-white hover:bg-white/5'
-              }`}
-            >
-              <span className={active ? 'text-[#7db3f2]' : 'text-white/40'}>{ICONS[t.id]}</span>
-              <span className="flex-1 text-left">{t.label}</span>
-              {mode === 'guided' && t.step && (
-                <span className="text-[10px] text-white/30">Phase {t.step}</span>
-              )}
-            </button>
-          )
-        })}
+        {TOP_TABS.map(tabButton)}
+
+        {/* Change Phases — collapsible section */}
+        <button
+          onClick={togglePhases}
+          className="w-full flex items-center gap-2 px-3 pt-3 pb-1 text-[12px] font-semibold uppercase tracking-widest text-white/40 hover:text-white/70 transition"
+          aria-expanded={phasesOpen}
+        >
+          <svg
+            viewBox="0 0 20 20"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            className={`w-3.5 h-3.5 transition-transform ${phasesOpen ? 'rotate-90' : ''}`}
+          >
+            <path d="M7 4l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+          <span className="flex-1 text-left">Change Phases</span>
+        </button>
+        {phasesOpen && (
+          <div className="ml-4 pl-2 border-l border-white/10 space-y-1">
+            {PHASE_TABS.map(tabButton)}
+          </div>
+        )}
+
+        <div className="pt-2 space-y-1">
+          {TOOL_TABS.map(tabButton)}
+        </div>
       </nav>
 
       {/* Mode switch hidden 2026-09-30 per Whitney ("hide for now — simplify").
