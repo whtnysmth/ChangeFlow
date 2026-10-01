@@ -111,10 +111,10 @@ export default function Sidebar({ activeTab, onTab, mode, onMode }) {
             <button
               key={t.id}
               onClick={() => onTab(t.id)}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[17px] font-bold transition ${
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[17px] font-bold transition border ${
                 active
-                  ? 'bg-[#4d97ec]/15 text-white'
-                  : 'text-white/60 hover:text-white hover:bg-white/5'
+                  ? 'tab-neon bg-[#4d97ec]/15 text-white'
+                  : 'border-transparent text-white/60 hover:text-white hover:bg-white/5'
               }`}
             >
               <span className={active ? 'text-[#7db3f2]' : 'text-white/40'}>{ICONS[t.id]}</span>
