@@ -2,6 +2,7 @@
 // and the modality's widgets. Modes are views over the same data model.
 import WidgetRenderer from '../widgets/WidgetRenderer.jsx'
 import PhaseDocuments from './PhaseDocuments.jsx'
+import CoachTip from './CoachTip.jsx'
 import { lensModalityNote } from '../lib/modalities.js'
 
 export default function ModalityView({ modality, widgetIds, registry, data, lens, mode, stepIndex, campaignId, live }) {
@@ -17,13 +18,7 @@ export default function ModalityView({ modality, widgetIds, registry, data, lens
           <span className="text-sm text-slate-500">{modality.tagline}</span>
         </div>
         {mode === 'guided' && (
-          <div className="mt-3 p-4 rounded-xl bg-white border border-[#a9ccf7] shadow-sm text-sm text-slate-700 leading-relaxed">
-            <span className="text-[#0060c9] font-medium">Why this matters: </span>
-            {modality.coaching}
-          </div>
-        )}
-        {lensNote && (
-          <div className="mt-2 text-xs text-slate-500">{lensNote}</div>
+          <CoachTip modalityId={modality.id} coaching={modality.coaching} lensNote={lensNote} />
         )}
       </div>
 
