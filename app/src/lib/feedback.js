@@ -18,13 +18,8 @@ function audio() {
 }
 
 export function softTap() {
-  // Haptic: a light 8ms tap. Works on Android Chrome; iOS Safari does not
-  // expose haptics to the web, so this silently no-ops there.
-  try {
-    if (navigator.vibrate) navigator.vibrate(8)
-  } catch {}
-
-  // Sound: parked for now — Whitney will revisit. (Previous winner of the
-  // sound audition was "Bubble": sine 480→920Hz, ~90ms.)
-  void audio
+  // Click feedback parked 2026-09-30 — Whitney removed both the sound and
+  // the haptic for now. Wiring in App.jsx stays so either can return later.
+  // Sound audition winner was "Bubble" (sine 480→920Hz, ~90ms); haptic was
+  // navigator.vibrate(8).
 }
