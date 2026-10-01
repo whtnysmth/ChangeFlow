@@ -9,6 +9,7 @@ import TaskManager from './TaskManager.jsx'
 import CalendarView from './CalendarView.jsx'
 import DocumentLibrary from './DocumentLibrary.jsx'
 import MappingHub from './MappingHub.jsx'
+import SurveyHub from './SurveyHub.jsx'
 import { MODALITIES, modalityById, widgetsForModality, guidedWidgetsForModality } from '../lib/modalities.js'
 
 export default function DashboardEngine({
@@ -67,6 +68,14 @@ export default function DashboardEngine({
   if (tab === 'mapping') {
     return (
       <MappingHub
+        campaignId={campaignId}
+        live={source === 'supabase'}
+      />
+    )
+  }
+  if (tab === 'surveys') {
+    return (
+      <SurveyHub
         campaignId={campaignId}
         live={source === 'supabase'}
       />

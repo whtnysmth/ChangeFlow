@@ -1116,3 +1116,263 @@ export async function deleteMap({ campaignId, id, filePath }) {
   }
   writeLocalMaps(campaignId, readLocalMaps(campaignId).filter(m => m.id !== id))
 }
+
+// ============================================================================
+// Surveys hub: link live surveys, import CSV responses.
+// Supabase first, localStorage fallback — same discipline as the rest of the app.
+// ============================================================================
+
+export const SURVEY_SOURCES = ['link', 'csv']
+export const SURVEY_TOOLS = ['google_forms', 'ms_forms', 'surveymonkey', 'typeform', 'other']
+
+export const SURVEY_TOOL_LABELS = {
+  google_forms: 'Google Forms',
+  ms_forms: 'Microsoft Forms',
+  surveymonkey: 'SurveyMonkey',
+  typeform: 'Typeform',
+  other: 'Other',
+}
+
+const surveysKey = (campaignId) => `changeflow:surveys:${campaignId || 'mock'}`
+const surveyResponsesKey = (surveyId) => `changeflow:survey-responses:${surveyId}`
+
+function readLocalSurveys(campaignId) {
+  try {
+    return JSON.parse(localStorage.getItem(surveysKey(campaignId)) || '[]')
+  } catch { return [] }
+}
+
+function writeLocalSurveys(campaignId, items) {
+  localStorage.setItem(surveysKey(campaignId), JSON.stringify(items))
+}
+
+function readLocalResponses(surveyId) {
+  try {
+    return JSON.parse(localStorage.getItem(surveyResponsesKey(surveyId)) || '[]')
+  } catch { return [] }
+}
+
+function writeLocalResponses(surveyId, items) {
+  localStorage.setItem(surveyResponsesKey(surveyId), JSON.stringify(items))
+}
+
+export async function getSurveys(campaignId) {
+  if (supabase) {
+    try {
+      const { data, error } = await supabase
+        .from('surveys')
+        .select('*')
+        .eq('campaign_id', campaignId)
+        .order('created_at', { ascending: false })
+      if (error) throw error
+      return { items: data || [], live: true }
+    } catch (err) {
+      console.warn('surveys unreachable, using local surveys:', err.message)
+    }
+  }
+  return { items: readLocalSurveys(campaignId), live: false }
+}
+
+export async function createSurvey({ campaignId, title, description, source, url, tool, modality }) {
+  const cleanTitle = (title || '').trim()
+  if (!cleanTitle) throw new Error('Give this survey a title.')
+  if (!SURVEY_SOURCES.includes(source)) throw new Error('Pick a survey source.')
+  const row = {
+    title: cleanTitle,
+    description: (description || '').trim() || null,
+    source,
+    url: (url || '').trim() || null,
+    tool: SURVEY_TOOLS.includes(tool) ? tool : null,
+    modality: modality || null,
+    response_count: 0,
+  }
+
+  if (supabase) {
+    try {
+      const { data, error } = await supabase
+        .from('surveys')
+        .insert({ campaign_id: campaignId, ...row })
+        .select()
+        .single()
+      if (error) throw error
+      return data
+    } catch (err) {
+      console.warn('survey create failed, saving locally:', err.message)
+    }
+  }
+
+  const now = new Date().toISOString()
+  const local = { id: localId(), campaign_id: campaignId, ...row, created_at: now, updated_at: now }
+  const items = readLocalSurveys(campaignId)
+  items.unshift(local)
+  writeLocalSurveys(campaignId, items)
+  return local
+}
+
+const ALLOWED_SURVEY_FIELDS = ['title', 'description', 'url', 'tool', 'modality']
+
+export async function updateSurvey({ campaignId, id, patch }) {
+  const clean = {}
+  for (const k of ALLOWED_SURVEY_FIELDS) {
+    if (patch[k] !== undefined) clean[k] = patch[k] === '' ? null : patch[k]
+  }
+  if (clean.title !== undefined && !(clean.title || '').trim()) {
+    throw new Error('Give this survey a title.')
+  }
+  clean.updated_at = new Date().toISOString()
+
+  if (supabase) {
+    try {
+      const { data, error } = await supabase
+        .from('surveys')
+        .update(clean)
+        .eq('id', id)
+        .select()
+        .single()
+      if (error) throw error
+      return data
+    } catch (err) {
+      console.warn('survey update failed, applying locally:', err.message)
+    }
+  }
+
+  const items = readLocalSurveys(campaignId)
+  const next = items.map(s => (s.id === id ? { ...s, ...clean } : s))
+  writeLocalSurveys(campaignId, next)
+  return next.find(s => s.id === id)
+}
+
+export async function deleteSurvey({ campaignId, id }) {
+  if (supabase) {
+    const { error } = await supabase.from('surveys').delete().eq('id', id)
+    if (error) throw new Error(`Could not delete survey: ${error.message}`)
+    return
+  }
+  writeLocalSurveys(campaignId, readLocalSurveys(campaignId).filter(s => s.id !== id))
+  try { localStorage.removeItem(surveyResponsesKey(id)) } catch { /* noop */ }
+}
+
+async function setSurveyResponseCount({ campaignId, surveyId, count }) {
+  const stamp = new Date().toISOString()
+  if (supabase) {
+    try {
+      await supabase.from('surveys').update({ response_count: count, updated_at: stamp }).eq('id', surveyId)
+    } catch (err) {
+      console.warn('response count update failed:', err.message)
+    }
+  }
+  const items = readLocalSurveys(campaignId)
+  writeLocalSurveys(campaignId, items.map(s => (s.id === surveyId ? { ...s, response_count: count, updated_at: stamp } : s)))
+}
+
+export async function getSurveyResponses({ campaignId, surveyId }) {
+  if (supabase) {
+    try {
+      const { data, error } = await supabase
+        .from('survey_responses')
+        .select('*')
+        .eq('survey_id', surveyId)
+        .order('submitted_at', { ascending: true })
+      if (error) throw error
+      return { items: data || [], live: true }
+    } catch (err) {
+      console.warn('survey responses unreachable, using local:', err.message)
+    }
+  }
+  return { items: readLocalResponses(surveyId), live: false }
+}
+
+// rows: array of plain objects (answers keyed by column header, values as strings).
+// Appends to existing responses and refreshes response_count.
+export async function importSurveyResponses({ campaignId, surveyId, rows }) {
+  if (!rows.length) throw new Error('No rows to import.')
+  const now = new Date().toISOString()
+  const payload = rows.map(r => ({
+    survey_id: surveyId,
+    campaign_id: campaignId,
+    respondent: (r.respondent || '').trim() || null,
+    answers: r.answers || {},
+    submitted_at: now,
+  }))
+
+  if (supabase) {
+    try {
+      const { error } = await supabase.from('survey_responses').insert(payload)
+      if (error) throw error
+      const { count } = await supabase
+        .from('survey_responses')
+        .select('id', { count: 'exact', head: true })
+        .eq('survey_id', surveyId)
+      await setSurveyResponseCount({ campaignId, surveyId, count: count || 0 })
+      return { imported: rows.length, live: true }
+    } catch (err) {
+      console.warn('response import failed, saving locally:', err.message)
+    }
+  }
+
+  const items = readLocalResponses(surveyId)
+  const next = [...items, ...payload.map(p => ({ id: localId(), ...p }))]
+  writeLocalResponses(surveyId, next)
+  await setSurveyResponseCount({ campaignId, surveyId, count: next.length })
+  return { imported: rows.length, live: false }
+}
+
+// Deletes all existing responses for the survey, then imports the new rows.
+export async function replaceSurveyResponses({ campaignId, surveyId, rows }) {
+  if (!rows.length) throw new Error('No rows to import.')
+  if (supabase) {
+    try {
+      const { error } = await supabase.from('survey_responses').delete().eq('survey_id', surveyId)
+      if (error) throw error
+    } catch (err) {
+      console.warn('response replace (delete) failed, replacing locally:', err.message)
+    }
+  }
+  writeLocalResponses(surveyId, [])
+  return importSurveyResponses({ campaignId, surveyId, rows })
+}
+
+// Small, dependency-free CSV parser: handles quoted fields, escaped quotes,
+// commas inside quotes, and CRLF/LF line endings. Returns { headers, rows }
+// where rows are arrays of strings aligned to headers.
+export function parseCSV(text) {
+  const rows = []
+  let row = []
+  let field = ''
+  let inQuotes = false
+  const pushField = () => { row.push(field); field = '' }
+  const pushRow = () => { rows.push(row); row = [] }
+
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i]
+    if (inQuotes) {
+      if (c === '"') {
+        if (text[i + 1] === '"') { field += '"'; i++ }
+        else inQuotes = false
+      } else {
+        field += c
+      }
+    } else if (c === '"') {
+      inQuotes = true
+    } else if (c === ',') {
+      pushField()
+    } else if (c === '\r') {
+      // skip; \n handles the break
+    } else if (c === '\n') {
+      pushField(); pushRow()
+    } else {
+      field += c
+    }
+  }
+  // trailing field/row without a final newline
+  if (field !== '' || row.length > 0) { pushField(); pushRow() }
+
+  // drop fully-empty rows (blank lines)
+  const nonEmpty = rows.filter(r => r.some(cell => (cell || '').trim() !== ''))
+  if (!nonEmpty.length) return { headers: [], rows: [] }
+  const headers = nonEmpty[0].map(h => (h || '').trim())
+  const dataRows = nonEmpty.slice(1).map(r =>
+    headers.map((_, idx) => (r[idx] !== undefined ? String(r[idx]).trim() : ''))
+  )
+  return { headers, rows: dataRows }
+}
