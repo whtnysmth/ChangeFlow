@@ -298,7 +298,7 @@ export async function getTasks(campaignId) {
   return { items: readLocalTasks(campaignId), live: false }
 }
 
-export async function createTask({ campaignId, title, modality, status, owner, dueDate, priority, notes }) {
+export async function createTask({ campaignId, title, modality, status, owner, dueDate, priority, notes, groupName }) {
   const cleanTitle = (title || '').trim()
   if (!cleanTitle) throw new Error('Give this task a title.')
   const row = {
@@ -309,6 +309,7 @@ export async function createTask({ campaignId, title, modality, status, owner, d
     due_date: dueDate || null,
     priority: TASK_PRIORITIES.includes(priority) ? priority : 'medium',
     notes: (notes || '').trim() || null,
+    group_name: groupName || 'To-Do',
   }
 
   if (supabase) {
@@ -329,7 +330,9 @@ export async function createTask({ campaignId, title, modality, status, owner, d
     id: localId(),
     campaign_id: campaignId,
     ...row,
+    custom: {},
     created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
     local: true,
   }
   const items = readLocalTasks(campaignId)
@@ -338,7 +341,7 @@ export async function createTask({ campaignId, title, modality, status, owner, d
 }
 
 export async function updateTask({ campaignId, id, patch }) {
-  const allowed = ['title', 'modality', 'status', 'owner', 'due_date', 'priority', 'notes']
+  const allowed = ['title', 'modality', 'status', 'owner', 'due_date', 'priority', 'notes', 'group_name', 'custom']
   const clean = {}
   for (const k of allowed) {
     if (patch[k] !== undefined) clean[k] = patch[k] === '' ? null : patch[k]
@@ -346,6 +349,8 @@ export async function updateTask({ campaignId, id, patch }) {
   if (clean.title !== undefined && !(clean.title || '').trim()) {
     throw new Error('Give this task a title.')
   }
+  // Last updated is automatic: every edit stamps the row.
+  clean.updated_at = new Date().toISOString()
 
   if (supabase) {
     try {
@@ -370,6 +375,19 @@ export async function updateTask({ campaignId, id, patch }) {
 
 export async function deleteTask({ campaignId, id }) {
   if (supabase) {
+    // Remove attached files from storage first (task_files rows cascade).
+    try {
+      const { data: files } = await supabase
+        .from('task_files')
+        .select('file_path')
+        .eq('task_id', id)
+      const paths = (files || []).map(f => f.file_path).filter(Boolean)
+      if (paths.length) {
+        await supabase.storage.from(DOCS_BUCKET).remove(paths).catch(() => {})
+      }
+    } catch {
+      // task_files may not exist yet (pre-migration-005) — still delete the row.
+    }
     try {
       const { error } = await supabase.from('tasks').delete().eq('id', id)
       if (error) throw error
@@ -379,6 +397,301 @@ export async function deleteTask({ campaignId, id }) {
     }
   }
   writeLocalTasks(campaignId, readLocalTasks(campaignId).filter(t => t.id !== id))
+}
+
+// Move every task in one group to another (used when deleting a custom group).
+export async function moveGroupTasks({ campaignId, from, to }) {
+  const stamp = new Date().toISOString()
+  if (supabase) {
+    try {
+      const { error } = await supabase
+        .from('tasks')
+        .update({ group_name: to, updated_at: stamp })
+        .eq('campaign_id', campaignId)
+        .eq('group_name', from)
+      if (error) throw error
+      return
+    } catch (err) {
+      console.warn('moveGroupTasks failed remotely, applying locally:', err.message)
+    }
+  }
+  writeLocalTasks(campaignId,
+    readLocalTasks(campaignId).map(t =>
+      t.group_name === from ? { ...t, group_name: to, updated_at: stamp } : t))
+}
+
+// ---------------------------------------------------------------------------
+// Task board: custom columns, custom groups, task file attachments.
+// Same Supabase-then-localStorage discipline. Graceful when migration-005
+// hasn't been run yet (Whitney runs it in the SQL editor).
+// ---------------------------------------------------------------------------
+
+export const TASK_COLUMN_TYPES = ['status', 'text', 'people', 'date', 'numbers', 'files', 'checkbox', 'priority']
+
+const taskColsKey = (campaignId) => `changeflow:task-columns:${campaignId || 'mock'}`
+
+function readLocalTaskCols(campaignId) {
+  try {
+    return JSON.parse(localStorage.getItem(taskColsKey(campaignId)) || '[]')
+  } catch {
+    return []
+  }
+}
+
+function writeLocalTaskCols(campaignId, items) {
+  try {
+    localStorage.setItem(taskColsKey(campaignId), JSON.stringify(items))
+  } catch (err) {
+    console.warn('Could not persist task columns locally:', err.message)
+  }
+}
+
+export async function getTaskColumns(campaignId) {
+  if (supabase) {
+    try {
+      const { data, error } = await supabase
+        .from('task_columns')
+        .select('*')
+        .eq('campaign_id', campaignId)
+        .order('position', { ascending: true })
+      if (error) throw error
+      return { items: data || [], live: true }
+    } catch (err) {
+      console.warn('task_columns unreachable, using local:', err.message)
+    }
+  }
+  return { items: readLocalTaskCols(campaignId), live: false }
+}
+
+export async function createTaskColumn({ campaignId, name, type }) {
+  const cleanName = (name || '').trim()
+  if (!cleanName) throw new Error('Name this column.')
+  if (!TASK_COLUMN_TYPES.includes(type)) throw new Error('Unknown column type.')
+
+  if (supabase) {
+    try {
+      const { data: existing } = await supabase
+        .from('task_columns')
+        .select('position')
+        .eq('campaign_id', campaignId)
+        .order('position', { ascending: false })
+        .limit(1)
+      const position = existing && existing.length ? (existing[0].position || 0) + 1 : 0
+      const { data, error } = await supabase
+        .from('task_columns')
+        .insert({ campaign_id: campaignId, name: cleanName, type, position })
+        .select()
+        .single()
+      if (error) throw error
+      return data
+    } catch (err) {
+      console.warn('task_columns insert failed, saving locally:', err.message)
+    }
+  }
+
+  const items = readLocalTaskCols(campaignId)
+  const item = {
+    id: localId(),
+    campaign_id: campaignId,
+    name: cleanName,
+    type,
+    options: {},
+    position: items.length,
+    created_at: new Date().toISOString(),
+    local: true,
+  }
+  writeLocalTaskCols(campaignId, [...items, item])
+  return item
+}
+
+export async function deleteTaskColumn({ campaignId, id }) {
+  if (supabase) {
+    try {
+      const { error } = await supabase.from('task_columns').delete().eq('id', id)
+      if (error) throw error
+      return
+    } catch (err) {
+      console.warn('task_columns delete failed, deleting locally:', err.message)
+    }
+  }
+  writeLocalTaskCols(campaignId, readLocalTaskCols(campaignId).filter(c => c.id !== id))
+}
+
+const taskGroupsKey = (campaignId) => `changeflow:task-groups:${campaignId || 'mock'}`
+
+function readLocalTaskGroups(campaignId) {
+  try {
+    return JSON.parse(localStorage.getItem(taskGroupsKey(campaignId)) || '[]')
+  } catch {
+    return []
+  }
+}
+
+function writeLocalTaskGroups(campaignId, items) {
+  try {
+    localStorage.setItem(taskGroupsKey(campaignId), JSON.stringify(items))
+  } catch (err) {
+    console.warn('Could not persist task groups locally:', err.message)
+  }
+}
+
+export async function getTaskGroups(campaignId) {
+  if (supabase) {
+    try {
+      const { data, error } = await supabase
+        .from('task_groups')
+        .select('*')
+        .eq('campaign_id', campaignId)
+        .order('position', { ascending: true })
+      if (error) throw error
+      return { items: data || [], live: true }
+    } catch (err) {
+      console.warn('task_groups unreachable, using local:', err.message)
+    }
+  }
+  return { items: readLocalTaskGroups(campaignId), live: false }
+}
+
+export async function createTaskGroup({ campaignId, name }) {
+  const cleanName = (name || '').trim()
+  if (!cleanName) throw new Error('Name this group.')
+  if (['To-Do', 'Completed'].includes(cleanName)) {
+    throw new Error('That group already exists.')
+  }
+
+  if (supabase) {
+    try {
+      const { data: existing } = await supabase
+        .from('task_groups')
+        .select('position')
+        .eq('campaign_id', campaignId)
+        .order('position', { ascending: false })
+        .limit(1)
+      const position = existing && existing.length ? (existing[0].position || 0) + 1 : 0
+      const { data, error } = await supabase
+        .from('task_groups')
+        .insert({ campaign_id: campaignId, name: cleanName, position })
+        .select()
+        .single()
+      if (error) throw error
+      return data
+    } catch (err) {
+      console.warn('task_groups insert failed, saving locally:', err.message)
+    }
+  }
+
+  const items = readLocalTaskGroups(campaignId)
+  if (items.some(g => g.name === cleanName)) throw new Error('That group already exists.')
+  const item = {
+    id: localId(),
+    campaign_id: campaignId,
+    name: cleanName,
+    position: items.length,
+    created_at: new Date().toISOString(),
+    local: true,
+  }
+  writeLocalTaskGroups(campaignId, [...items, item])
+  return item
+}
+
+export async function deleteTaskGroup({ campaignId, id, name }) {
+  // Its tasks fall back to To-Do rather than being deleted.
+  await moveGroupTasks({ campaignId, from: name, to: 'To-Do' })
+  if (supabase) {
+    try {
+      const { error } = await supabase.from('task_groups').delete().eq('id', id)
+      if (error) throw error
+      return
+    } catch (err) {
+      console.warn('task_groups delete failed, deleting locally:', err.message)
+    }
+  }
+  writeLocalTaskGroups(campaignId, readLocalTaskGroups(campaignId).filter(g => g.id !== id))
+}
+
+// ---------------------------------------------------------------------------
+// Task file attachments. Files live in the changeflow-documents bucket under
+// {campaignId}/tasks/{taskId}/… and are downloaded via signed URLs.
+// In mock mode file upload is unavailable (needs the live database).
+// ---------------------------------------------------------------------------
+
+export async function getTaskFiles(taskId, columnId = null) {
+  if (!supabase || !taskId) return []
+  try {
+    let q = supabase
+      .from('task_files')
+      .select('*')
+      .eq('task_id', taskId)
+      .order('created_at', { ascending: true })
+    q = columnId ? q.eq('column_id', columnId) : q.is('column_id', null)
+    const { data, error } = await q
+    if (error) throw error
+    return data || []
+  } catch (err) {
+    console.warn('task_files unreachable:', err.message)
+    return []
+  }
+}
+
+export async function getTaskFileCounts(campaignId) {
+  if (!supabase) return {}
+  try {
+    const { data, error } = await supabase
+      .from('task_files')
+      .select('task_id, column_id')
+      .eq('campaign_id', campaignId)
+    if (error) throw error
+    // Keyed `${taskId}:${columnId || ''}` so built-in and custom Files
+    // columns each show their own count badge.
+    const counts = {}
+    for (const r of data || []) {
+      const k = `${r.task_id}:${r.column_id || ''}`
+      counts[k] = (counts[k] || 0) + 1
+    }
+    return counts
+  } catch {
+    return {}
+  }
+}
+
+export async function attachTaskFile({ campaignId, taskId, columnId = null, file }) {
+  if (!supabase) throw new Error('File upload needs the live database.')
+  if (!file) throw new Error('Choose a file first.')
+  if (file.size > MAX_FILE_BYTES) {
+    throw new Error(`File is too large — the limit is ${MAX_FILE_BYTES / 1024 / 1024} MB per file.`)
+  }
+  const file_path = `${campaignId}/tasks/${taskId}/${localId()}-${sanitizeFileName(file.name)}`
+  const { error: upErr } = await supabase.storage.from(DOCS_BUCKET).upload(file_path, file)
+  if (upErr) throw new Error(`Upload failed: ${upErr.message}`)
+  const { data, error } = await supabase
+    .from('task_files')
+    .insert({
+      campaign_id: campaignId,
+      task_id: taskId,
+      column_id: columnId,
+      file_name: file.name,
+      file_path,
+      file_size: file.size,
+      mime_type: file.type || null,
+    })
+    .select()
+    .single()
+  if (error) {
+    // Roll back the orphaned file so storage doesn't fill with unlinked uploads.
+    await supabase.storage.from(DOCS_BUCKET).remove([file_path]).catch(() => {})
+    throw new Error(`Could not save file: ${error.message}`)
+  }
+  return data
+}
+
+export async function deleteTaskFile({ id, filePath }) {
+  if (supabase) {
+    if (filePath) {
+      await supabase.storage.from(DOCS_BUCKET).remove([filePath]).catch(() => {})
+    }
+    const { error } = await supabase.from('task_files').delete().eq('id', id)
+    if (error) throw new Error(`Could not delete file: ${error.message}`)
+  }
 }
 
 // ---------------------------------------------------------------------------
