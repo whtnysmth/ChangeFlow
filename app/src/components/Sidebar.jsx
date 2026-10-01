@@ -102,15 +102,15 @@ export default function Sidebar({ activeTab, onTab, mode, onMode }) {
         <svg viewBox="0 0 32 32" className="w-8 h-8">
           <defs>
             <linearGradient id="cf-logo" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0" stopColor="#2dd4bf" />
-              <stop offset="1" stopColor="#818cf8" />
+              <stop offset="0" stopColor="#0073ea" />
+              <stop offset="1" stopColor="#6161ff" />
             </linearGradient>
           </defs>
           <path d="M26 16a10 10 0 1 1-3-7.2" fill="none" stroke="url(#cf-logo)" strokeWidth="3.2" strokeLinecap="round" />
           <path d="M26 5v6h-6" fill="none" stroke="url(#cf-logo)" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
         <span className="text-xl font-bold tracking-tight">
-          Change<span className="text-[#7db3f2]">Flow</span>
+          Change<span className="text-[#4d97ec]">Flow</span>
         </span>
       </div>
 
@@ -123,9 +123,9 @@ export default function Sidebar({ activeTab, onTab, mode, onMode }) {
             <button
               key={t.id}
               onClick={() => onTab(t.id)}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition ${
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[15px] font-semibold transition ${
                 active
-                  ? 'bg-[#4d97ec]/15 text-white font-medium'
+                  ? 'bg-[#4d97ec]/15 text-white'
                   : 'text-white/60 hover:text-white hover:bg-white/5'
               }`}
             >
