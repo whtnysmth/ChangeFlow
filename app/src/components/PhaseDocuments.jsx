@@ -14,9 +14,9 @@ const fmtSize = (bytes) => {
   return `${(bytes / 1024 / 1024).toFixed(1)} MB`
 }
 
-const fmtDate = (iso) => {
+const fmtDateTime = (iso) => {
   try {
-    return new Date(iso).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })
+    return new Date(iso).toLocaleString(undefined, { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' })
   } catch {
     return ''
   }
@@ -117,7 +117,7 @@ export default function PhaseDocuments({ campaignId, modality, live }) {
                   <p className="text-xs text-white/55 mt-1 whitespace-pre-wrap break-words">{item.notes}</p>
                 )}
                 <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1.5">
-                  <span className="text-[11px] text-white/35">{fmtDate(item.created_at)}</span>
+                  <span className="text-[11px] text-white/35">{fmtDateTime(item.created_at)}</span>
                   {item.local && (
                     <span className="text-[11px] text-amber-200/70">on this device</span>
                   )}
