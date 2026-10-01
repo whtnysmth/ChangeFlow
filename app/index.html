@@ -19,6 +19,15 @@
           0 0 16px rgba(34, 211, 238, 0.45),
           inset 0 0 12px rgba(34, 211, 238, 0.12);
       }
+      /* Gentle hummingbird pulse: slight grow and shrink */
+      @keyframes bird-pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.09); }
+      }
+      .bird-pulse {
+        animation: bird-pulse 2.6s ease-in-out infinite;
+        transform-origin: center;
+      }
     </style>
   </head>
   <body class="bg-slate-950 text-white">

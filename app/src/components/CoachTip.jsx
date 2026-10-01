@@ -41,7 +41,7 @@ export default function CoachTip({ modalityId, coaching, lensNote }) {
 
   return (
     <div className="no-print fixed right-4 lg:right-10 top-36 z-30 flex items-center max-w-[calc(100vw-2rem)]">
-      <img src="/bird.png" alt="" className="h-20 w-auto mr-1 shrink-0 drop-shadow-md" />
+      <img src="/bird.png" alt="" className="bird-pulse h-20 w-auto mr-1 shrink-0 drop-shadow-md" />
       <div className="relative bg-white rounded-2xl border border-[#cfe3fb] shadow-xl max-w-md p-5">
         {/* speech-bubble pointer */}
         <div className="absolute left-[-8px] top-1/2 -translate-y-1/2 w-4 h-4 bg-white border-l border-b border-[#cfe3fb] rotate-45" />
