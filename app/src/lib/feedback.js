@@ -28,19 +28,19 @@ export function softTap() {
   if (!ac) return
   try {
     const t = ac.currentTime
-    // A gentle downward "tup": sine gliding 740 -> 520 Hz, fast soft attack,
-    // ~160ms decay. Quiet by design.
+    // "Bubble" (Whitney's pick): a short, playful upward blip —
+    // sine gliding 480 -> 920 Hz, ~90ms, quiet by design.
     const osc = ac.createOscillator()
     const gain = ac.createGain()
     osc.type = 'sine'
-    osc.frequency.setValueAtTime(740, t)
-    osc.frequency.exponentialRampToValueAtTime(520, t + 0.09)
+    osc.frequency.setValueAtTime(480, t)
+    osc.frequency.exponentialRampToValueAtTime(920, t + 0.054)
     gain.gain.setValueAtTime(0.0001, t)
-    gain.gain.exponentialRampToValueAtTime(0.16, t + 0.012)
-    gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.16)
+    gain.gain.exponentialRampToValueAtTime(0.15, t + 0.012)
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.09)
     osc.connect(gain)
     gain.connect(ac.destination)
     osc.start(t)
-    osc.stop(t + 0.18)
+    osc.stop(t + 0.12)
   } catch {}
 }
