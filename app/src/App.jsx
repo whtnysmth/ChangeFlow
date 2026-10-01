@@ -182,7 +182,7 @@ export default function App() {
                     )}
                     <button
                       onClick={startRename}
-                      className="no-print text-slate-400 hover:text-[#0060c9] text-base leading-none px-0.5"
+                      className="no-print text-slate-400 hover:text-[#0060c9] text-base leading-none px-0.5 -scale-x-100"
                       title="Rename campaign"
                       aria-label="Rename campaign"
                     >
