@@ -14,7 +14,7 @@ export default function DashboardHome({
   campaignId, onApplyTemplate,
 }) {
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 neon-frame">
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-semibold text-slate-900">Campaign Health Overview</h2>
         <div className="flex items-center gap-3">

@@ -35,6 +35,13 @@
       .midnight-card .bg-slate-100 { background-color: rgba(148,184,220,0.12) !important; }
       .midnight-card .bg-amber-500 { background-color: #f59e0b !important; }
       .midnight-card .border-slate-200 { border-color: rgba(148,184,220,0.2) !important; }
+      /* Dashboard home: thin neon borders on the midnight cards. Glow kept
+         subtler than the coach-tip popup's so the popup stays the brightest
+         neon in the room. Scope with .neon-frame on the dashboard root. */
+      .neon-frame .midnight-card {
+        border: 1px solid rgba(56,224,255,0.5);
+        box-shadow: 0 10px 26px rgba(10,25,45,0.35), 0 0 10px rgba(56,189,248,0.15);
+      }
       @media print {
         aside, .no-print { display: none !important; }
         body { background: #fff !important; }

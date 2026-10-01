@@ -109,7 +109,7 @@ export default function App() {
 
   if (!data) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-slate-500 text-sm bg-white">
+      <div className="min-h-screen flex items-center justify-center text-slate-500 text-sm bg-[#edf1f7]">
         Loading ChangeFlow…
       </div>
     )
@@ -121,7 +121,7 @@ export default function App() {
     : <span className="text-xs font-normal px-2 py-0.5 rounded-full bg-slate-200 text-slate-600 border border-slate-300">○ Mock data</span>
 
   return (
-    <div className="min-h-screen flex bg-white text-slate-900">
+    <div className="min-h-screen flex bg-[#edf1f7] text-slate-900">
       <Sidebar activeTab={activeTab} onTab={setActiveTab} mode={mode} onMode={handleMode} />
 
       <div className="flex-1 min-w-0">
