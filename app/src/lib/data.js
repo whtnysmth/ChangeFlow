@@ -792,3 +792,167 @@ export async function deleteEvent({ campaignId, id }) {
   }
   writeLocalEvents(campaignId, readLocalEvents(campaignId).filter(e => e.id !== id))
 }
+
+// ---------------------------------------------------------------------------
+// Library documents: direct uploads for the Documents tab (central library).
+// Same Supabase-then-localStorage discipline. File upload needs the live
+// database; metadata falls back to localStorage in mock mode.
+// ---------------------------------------------------------------------------
+
+const libraryDocsKey = (campaignId) => `changeflow:library-docs:${campaignId || 'mock'}`
+
+function readLocalLibraryDocs(campaignId) {
+  try {
+    return JSON.parse(localStorage.getItem(libraryDocsKey(campaignId)) || '[]')
+  } catch {
+    return []
+  }
+}
+
+function writeLocalLibraryDocs(campaignId, items) {
+  try {
+    localStorage.setItem(libraryDocsKey(campaignId), JSON.stringify(items))
+  } catch (err) {
+    console.warn('Could not persist library documents locally:', err.message)
+  }
+}
+
+export async function getLibraryDocuments(campaignId) {
+  if (supabase) {
+    try {
+      const { data, error } = await supabase
+        .from('library_documents')
+        .select('*')
+        .eq('campaign_id', campaignId)
+        .order('created_at', { ascending: false })
+      if (error) throw error
+      return { items: data || [], live: true }
+    } catch (err) {
+      console.warn('library_documents unreachable, using local library:', err.message)
+    }
+  }
+  return { items: readLocalLibraryDocs(campaignId), live: false }
+}
+
+export async function createLibraryDocument({ campaignId, file, title, modality, taskId }) {
+  if (!supabase) throw new Error('File upload needs the live database.')
+  if (!file) throw new Error('Choose a file first.')
+  if (file.size > MAX_FILE_BYTES) {
+    throw new Error(`File is too large — the limit is ${MAX_FILE_BYTES / 1024 / 1024} MB per file.`)
+  }
+  const file_path = `${campaignId}/library/${localId()}-${sanitizeFileName(file.name)}`
+  const { error: upErr } = await supabase.storage.from(DOCS_BUCKET).upload(file_path, file)
+  if (upErr) throw new Error(`Upload failed: ${upErr.message}`)
+  const { data, error } = await supabase
+    .from('library_documents')
+    .insert({
+      campaign_id: campaignId,
+      title: (title || '').trim() || file.name,
+      file_name: file.name,
+      file_path,
+      file_size: file.size,
+      mime_type: file.type || null,
+      modality: modality || null,
+      task_id: taskId || null,
+    })
+    .select()
+    .single()
+  if (error) {
+    // Roll back the orphaned file so storage doesn't fill with unlinked uploads.
+    await supabase.storage.from(DOCS_BUCKET).remove([file_path]).catch(() => {})
+    throw new Error(`Could not save document: ${error.message}`)
+  }
+  return data
+}
+
+export async function deleteLibraryDocument({ campaignId, id, filePath }) {
+  if (supabase) {
+    if (filePath) {
+      await supabase.storage.from(DOCS_BUCKET).remove([filePath]).catch(() => {})
+    }
+    const { error } = await supabase.from('library_documents').delete().eq('id', id)
+    if (error) throw new Error(`Could not delete: ${error.message}`)
+    return
+  }
+  writeLocalLibraryDocs(campaignId,
+    readLocalLibraryDocs(campaignId).filter(d => d.id !== id))
+}
+
+// All documents in the app, normalized into one list for the Documents tab.
+// Sources: library_documents (direct uploads) + phase_documents (per-phase
+// notes uploads, files only) + task_files (board attachments). Newest first.
+export async function getAllDocuments(campaignId) {
+  const docs = []
+  if (supabase) {
+    // Phase documents (only rows that actually have a file attached).
+    try {
+      const { data, error } = await supabase
+        .from('phase_documents')
+        .select('*')
+        .eq('campaign_id', campaignId)
+        .not('file_path', 'is', null)
+      if (error) throw error
+      for (const r of data || []) {
+        docs.push({
+          key: `phase:${r.id}`, source: 'phase', id: r.id,
+          name: r.title || r.file_name, size: r.file_size, mime: r.mime_type,
+          path: r.file_path, modality: r.modality, taskTitle: null,
+          createdAt: r.created_at, campaignId,
+        })
+      }
+    } catch (err) {
+      console.warn('phase_documents unavailable for library:', err.message)
+    }
+    // Task files (join the task title for the source badge).
+    try {
+      const { data, error } = await supabase
+        .from('task_files')
+        .select('*, tasks(title)')
+        .eq('campaign_id', campaignId)
+      if (error) throw error
+      for (const r of data || []) {
+        docs.push({
+          key: `task:${r.id}`, source: 'task', id: r.id,
+          name: r.file_name, size: r.file_size, mime: r.mime_type,
+          path: r.file_path, modality: null,
+          taskTitle: r.tasks?.title || 'a task',
+          createdAt: r.created_at, campaignId,
+        })
+      }
+    } catch (err) {
+      console.warn('task_files unavailable for library:', err.message)
+    }
+    // Library documents.
+    try {
+      const { data, error } = await supabase
+        .from('library_documents')
+        .select('*, tasks(title)')
+        .eq('campaign_id', campaignId)
+      if (error) throw error
+      for (const r of data || []) {
+        docs.push({
+          key: `library:${r.id}`, source: 'library', id: r.id,
+          name: r.title || r.file_name, size: r.file_size, mime: r.mime_type,
+          path: r.file_path, modality: r.modality,
+          taskTitle: r.tasks?.title || null,
+          createdAt: r.created_at, campaignId,
+        })
+      }
+    } catch (err) {
+      console.warn('library_documents unavailable:', err.message)
+    }
+  } else {
+    // Mock/offline mode: only local library metadata is known. File upload
+    // is disabled offline, so local rows carry no downloadable file.
+    for (const r of readLocalLibraryDocs(campaignId)) {
+      docs.push({
+        key: `library:${r.id}`, source: 'library', id: r.id,
+        name: r.title || r.file_name, size: r.file_size, mime: r.mime_type,
+        path: r.file_path, modality: r.modality, taskTitle: r.taskTitle || null,
+        createdAt: r.created_at, campaignId,
+      })
+    }
+  }
+  docs.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0))
+  return docs
+}

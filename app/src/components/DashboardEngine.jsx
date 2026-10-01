@@ -6,6 +6,7 @@ import DashboardHome from './DashboardHome.jsx'
 import ModalityView from './ModalityView.jsx'
 import TaskManager from './TaskManager.jsx'
 import CalendarView from './CalendarView.jsx'
+import DocumentLibrary from './DocumentLibrary.jsx'
 import { MODALITIES, modalityById, widgetsForModality, guidedWidgetsForModality } from '../lib/modalities.js'
 
 export default function DashboardEngine({
@@ -41,6 +42,14 @@ export default function DashboardEngine({
         live={source === 'supabase'}
         milestones={data?.milestones || []}
         onSelectModality={onSelectModality}
+      />
+    )
+  }
+  if (tab === 'documents') {
+    return (
+      <DocumentLibrary
+        campaignId={campaignId}
+        live={source === 'supabase'}
       />
     )
   }
