@@ -4,6 +4,7 @@
 // terminology lens applied at render time (see FrameworkLens).
 import DashboardHome from './DashboardHome.jsx'
 import ModalityView from './ModalityView.jsx'
+import TaskManager from './TaskManager.jsx'
 import { MODALITIES, modalityById, widgetsForModality, guidedWidgetsForModality } from '../lib/modalities.js'
 
 export default function DashboardEngine({
@@ -29,6 +30,9 @@ export default function DashboardEngine({
   }
 
   const modality = modalityById(tab)
+  if (tab === 'tasks') {
+    return <TaskManager campaignId={campaignId} live={source === 'supabase'} />
+  }
   if (!modality) return null
   const stepIndex = MODALITIES.findIndex(m => m.id === tab) + 1
   const widgetIds = mode === 'guided'

@@ -251,3 +251,132 @@ export async function getDocumentUrl(filePath) {
   }
   return data.signedUrl
 }
+
+// ---------------------------------------------------------------------------
+// Tasks: lightweight task manager (Monday-lite) for the change practitioner.
+// Same Supabase-then-localStorage discipline as phase documents: live rows
+// when reachable, local-only items in mock mode. Graceful when the table
+// doesn't exist yet (Whitney runs migration-003 in the SQL editor).
+// ---------------------------------------------------------------------------
+
+const tasksKey = (campaignId) => `changeflow:tasks:${campaignId || 'mock'}`
+
+function readLocalTasks(campaignId) {
+  try {
+    return JSON.parse(localStorage.getItem(tasksKey(campaignId)) || '[]')
+  } catch {
+    return []
+  }
+}
+
+function writeLocalTasks(campaignId, items) {
+  try {
+    localStorage.setItem(tasksKey(campaignId), JSON.stringify(items))
+  } catch (err) {
+    console.warn('Could not persist tasks locally:', err.message)
+  }
+}
+
+export const TASK_STATUSES = ['todo', 'in_progress', 'stuck', 'done']
+export const TASK_PRIORITIES = ['low', 'medium', 'high']
+
+export async function getTasks(campaignId) {
+  if (supabase) {
+    try {
+      const { data, error } = await supabase
+        .from('tasks')
+        .select('*')
+        .eq('campaign_id', campaignId)
+        .order('due_date', { ascending: true, nullsFirst: false })
+        .order('created_at', { ascending: true })
+      if (error) throw error
+      return { items: data || [], live: true }
+    } catch (err) {
+      console.warn('tasks unreachable, using local tasks:', err.message)
+    }
+  }
+  return { items: readLocalTasks(campaignId), live: false }
+}
+
+export async function createTask({ campaignId, title, modality, status, owner, dueDate, priority, notes }) {
+  const cleanTitle = (title || '').trim()
+  if (!cleanTitle) throw new Error('Give this task a title.')
+  const row = {
+    title: cleanTitle,
+    modality: modality || null,
+    status: TASK_STATUSES.includes(status) ? status : 'todo',
+    owner: (owner || '').trim() || null,
+    due_date: dueDate || null,
+    priority: TASK_PRIORITIES.includes(priority) ? priority : 'medium',
+    notes: (notes || '').trim() || null,
+  }
+
+  if (supabase) {
+    try {
+      const { data, error } = await supabase
+        .from('tasks')
+        .insert({ campaign_id: campaignId, ...row })
+        .select()
+        .single()
+      if (error) throw error
+      return data
+    } catch (err) {
+      console.warn('tasks insert failed, saving locally:', err.message)
+    }
+  }
+
+  const item = {
+    id: localId(),
+    campaign_id: campaignId,
+    ...row,
+    created_at: new Date().toISOString(),
+    local: true,
+  }
+  const items = readLocalTasks(campaignId)
+  writeLocalTasks(campaignId, [...items, item])
+  return item
+}
+
+export async function updateTask({ campaignId, id, patch }) {
+  const allowed = ['title', 'modality', 'status', 'owner', 'due_date', 'priority', 'notes']
+  const clean = {}
+  for (const k of allowed) {
+    if (patch[k] !== undefined) clean[k] = patch[k] === '' ? null : patch[k]
+  }
+  if (clean.title !== undefined && !(clean.title || '').trim()) {
+    throw new Error('Give this task a title.')
+  }
+
+  if (supabase) {
+    try {
+      const { data, error } = await supabase
+        .from('tasks')
+        .update(clean)
+        .eq('id', id)
+        .select()
+        .single()
+      if (error) throw error
+      return data
+    } catch (err) {
+      console.warn('tasks update failed, applying locally:', err.message)
+    }
+  }
+
+  const items = readLocalTasks(campaignId)
+  const next = items.map(t => (t.id === id ? { ...t, ...clean } : t))
+  writeLocalTasks(campaignId, next)
+  return next.find(t => t.id === id)
+}
+
+export async function deleteTask({ campaignId, id }) {
+  if (supabase) {
+    try {
+      const { error } = await supabase.from('tasks').delete().eq('id', id)
+      if (error) throw error
+      return
+    } catch (err) {
+      console.warn('tasks delete failed, deleting locally:', err.message)
+    }
+  }
+  writeLocalTasks(campaignId, readLocalTasks(campaignId).filter(t => t.id !== id))
+}

@@ -43,11 +43,18 @@ const ICONS = {
       <path d="M7.5 10l1.8 1.8L12.8 8" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   ),
+  tasks: (
+    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.6" className="w-5 h-5">
+      <path d="M3 5h14M3 10h14M3 15h14" strokeLinecap="round" />
+      <path d="M6 3.5v3M6 8.5v3M6 13.5v3" strokeLinecap="round" />
+    </svg>
+  ),
 }
 
 const TABS = [
   { id: 'dashboard', label: 'Dashboard' },
   ...MODALITIES.map((m, i) => ({ id: m.id, label: m.label, step: i + 1 })),
+  { id: 'tasks', label: 'Tasks' },
 ]
 
 export default function Sidebar({ activeTab, onTab, mode, onMode }) {
