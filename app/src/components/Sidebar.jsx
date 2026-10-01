@@ -99,18 +99,18 @@ export default function Sidebar({ activeTab, onTab, mode, onMode }) {
   return (
     <aside className="no-print w-60 shrink-0 min-h-screen bg-[#0b1120] border-r border-white/10 flex flex-col sticky top-0 h-screen">
       <div className="px-5 pt-6 pb-5 flex items-center gap-2.5">
-        <svg viewBox="0 0 32 32" className="w-8 h-8">
+        <svg viewBox="0 0 32 32" className="w-10 h-10">
           <defs>
             <linearGradient id="cf-logo" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0" stopColor="#0073ea" />
+              <stop offset="0" stopColor="#0085ff" />
               <stop offset="1" stopColor="#6161ff" />
             </linearGradient>
           </defs>
-          <path d="M26 16a10 10 0 1 1-3-7.2" fill="none" stroke="url(#cf-logo)" strokeWidth="3.2" strokeLinecap="round" />
-          <path d="M26 5v6h-6" fill="none" stroke="url(#cf-logo)" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M26 16a10 10 0 1 1-3-7.2" fill="none" stroke="url(#cf-logo)" strokeWidth="3.6" strokeLinecap="round" />
+          <path d="M26 5v6h-6" fill="none" stroke="url(#cf-logo)" strokeWidth="3.6" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
-        <span className="text-xl font-bold tracking-tight">
-          Change<span className="text-[#4d97ec]">Flow</span>
+        <span className="text-2xl font-extrabold tracking-tight">
+          Change<span className="text-[#0085ff]">Flow</span>
         </span>
       </div>
 
@@ -123,7 +123,7 @@ export default function Sidebar({ activeTab, onTab, mode, onMode }) {
             <button
               key={t.id}
               onClick={() => onTab(t.id)}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[15px] font-semibold transition ${
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[17px] font-bold transition ${
                 active
                   ? 'bg-[#4d97ec]/15 text-white'
                   : 'text-white/60 hover:text-white hover:bg-white/5'
