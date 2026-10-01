@@ -3,10 +3,8 @@
 import WidgetRenderer from '../widgets/WidgetRenderer.jsx'
 import PhaseDocuments from './PhaseDocuments.jsx'
 import CoachTip from './CoachTip.jsx'
-import { lensModalityNote } from '../lib/modalities.js'
 
 export default function ModalityView({ modality, widgetIds, registry, data, lens, mode, stepIndex, campaignId, live }) {
-  const lensNote = lensModalityNote(modality.id, lens)
   return (
     <div className="space-y-5">
       <div>
@@ -18,7 +16,7 @@ export default function ModalityView({ modality, widgetIds, registry, data, lens
           <span className="text-sm text-slate-500">{modality.tagline}</span>
         </div>
         {mode === 'guided' && (
-          <CoachTip modalityId={modality.id} coaching={modality.coaching} lensNote={lensNote} />
+          <CoachTip modalityId={modality.id} coaching={modality.coaching} />
         )}
       </div>
 

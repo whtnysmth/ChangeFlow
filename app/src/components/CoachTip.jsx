@@ -1,7 +1,13 @@
 // Floating "Why this matters" coaching tip, styled like a speech-bubble popup.
 // Dismissible per phase; dismissal persists in localStorage. A subtle
 // reopen link appears in the phase header once dismissed.
+// The top three phases (Assess, Mobilize, Enable) show translations in all
+// three frameworks; the remaining phases show the ADKAR line only.
 import { useState } from 'react'
+import { lensModalityNote } from '../lib/modalities.js'
+
+const TOP_THREE = ['assess', 'mobilize', 'enable']
+const LENSES = ['adkar', 'kotter', 'lewin']
 
 export function CoachTipReopen({ onReopen }) {
   return (
@@ -14,7 +20,7 @@ export function CoachTipReopen({ onReopen }) {
   )
 }
 
-export default function CoachTip({ modalityId, coaching, lensNote }) {
+export default function CoachTip({ modalityId, coaching }) {
   const key = `changeflow:coachtip:${modalityId}`
   const [dismissed, setDismissed] = useState(() => {
     try {
@@ -23,6 +29,9 @@ export default function CoachTip({ modalityId, coaching, lensNote }) {
       return false
     }
   })
+
+  const lenses = TOP_THREE.includes(modalityId) ? LENSES : ['adkar']
+  const notes = lenses.map(l => lensModalityNote(modalityId, l)).filter(Boolean)
 
   const dismiss = () => {
     try {
@@ -57,10 +66,14 @@ export default function CoachTip({ modalityId, coaching, lensNote }) {
           <span className="text-[#0073ea] font-bold">Why this matters: </span>
           {coaching}
         </p>
-        {lensNote && (
+        {notes.length > 0 && (
           <>
             <hr className="my-3 border-slate-200" />
-            <p className="text-sm text-slate-500 leading-relaxed">{lensNote}</p>
+            <div className="space-y-1.5">
+              {notes.map((note, i) => (
+                <p key={i} className="text-sm text-slate-500 leading-relaxed">{note}</p>
+              ))}
+            </div>
           </>
         )}
       </div>
