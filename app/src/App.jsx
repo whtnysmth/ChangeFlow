@@ -123,16 +123,12 @@ export default function App() {
                 </span>
                 {sourceBadge}
               </div>
-              <div className="text-sm text-slate-600 mt-1">
+              <div className="mt-2 inline-block text-sm text-slate-600 bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5">
                 {campaign.type || 'Campaign'} • {campaign.state} • Started {campaign.start} • Target: {campaign.target}
               </div>
             </div>
             {/* Framework lens hidden 2026-09-30 — restore: <FrameworkLens lens={lens} onChange={setLens} /> */}
           </header>
-
-          <div className="no-print text-xs text-slate-600 mb-6">
-            Hover any ⓘ for a plain-English explanation of what each measure means.
-          </div>
 
           <DashboardEngine
             tab={activeTab}
