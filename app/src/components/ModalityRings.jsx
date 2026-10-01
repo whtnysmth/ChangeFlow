@@ -1,21 +1,37 @@
 // Modality health rings for the Dashboard home / reporting hub.
 // SVG ring metrics in the approved mockup's visual language.
+import { useId } from 'react'
 import { MODALITIES, modalityHealth, healthBand } from '../lib/modalities.js'
 
 // monday.com palette: blue = on track, amber = at risk, rose = off track
 const BAND_STROKE = { teal: '#0073ea', amber: '#fdab3d', rose: '#e2445c', white: '#94a3b8' }
+// Gradient pairs per band — neon leading edge melting into the band color.
+const BAND_GRADIENT = {
+  '#0073ea': ['#38e0ff', '#0073ea'],
+  '#fdab3d': ['#ffd166', '#fdab3d'],
+  '#e2445c': ['#ff7a90', '#e2445c'],
+  '#94a3b8': ['#c3d4e8', '#94a3b8'],
+}
 
 export function Ring({ value, size = 120, stroke = 10, color = '#0d9488', children }) {
   const r = (size - stroke) / 2
   const c = 2 * Math.PI * r
   const pct = value == null ? 0 : Math.max(0, Math.min(100, value))
+  const gid = useId().replace(/:/g, 'ring')
+  const [from, to] = BAND_GRADIENT[color] || [color, color]
   return (
     <div className="relative inline-flex items-center justify-center" style={{ width: size, height: size }}>
       <svg width={size} height={size} className="-rotate-90">
+        <defs>
+          <linearGradient id={gid} x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor={from} />
+            <stop offset="100%" stopColor={to} />
+          </linearGradient>
+        </defs>
         <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="rgba(148,184,220,0.18)" strokeWidth={stroke} />
         <circle
           cx={size / 2} cy={size / 2} r={r} fill="none"
-          stroke={color} strokeWidth={stroke} strokeLinecap="round"
+          stroke={`url(#${gid})`} strokeWidth={stroke} strokeLinecap="round"
           strokeDasharray={c} strokeDashoffset={c - (c * pct) / 100}
         />
       </svg>
