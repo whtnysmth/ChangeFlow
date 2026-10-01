@@ -1,4 +1,6 @@
 // Floating "Why this matters" coaching tip, styled like a speech-bubble popup.
+// Midnight gradient bubble (Whitney's pick) with a neon edge — echoes the dark
+// sidebar and the neon hummingbird.
 // Dismissible per phase; dismissal persists in localStorage. A subtle
 // reopen link appears in the phase header once dismissed.
 // Every phase shows its translation in all three frameworks (ADKAR, Kotter,
@@ -49,27 +51,37 @@ export default function CoachTip({ modalityId, coaching }) {
   return (
     <div className="no-print fixed right-4 lg:right-10 top-36 z-30 flex items-center max-w-[calc(100vw-2rem)]">
       <img src="/bird.png" alt="" className="bird-pulse h-20 w-auto mr-1 shrink-0 drop-shadow-md" />
-      <div className="relative bg-white rounded-2xl border border-[#cfe3fb] shadow-xl max-w-md p-5">
+      <div
+        className="relative rounded-2xl max-w-md p-5"
+        style={{
+          background: 'linear-gradient(135deg, #0a1a33 0%, #10294f 60%, #0b3b4f 100%)',
+          border: '1px solid rgba(56,224,255,0.45)',
+          boxShadow: '0 12px 32px rgba(5,20,45,0.45), 0 0 18px rgba(56,189,248,0.25)',
+        }}
+      >
         {/* speech-bubble pointer */}
-        <div className="absolute left-[-8px] top-1/2 -translate-y-1/2 w-4 h-4 bg-white border-l border-b border-[#cfe3fb] rotate-45" />
+        <div
+          className="absolute left-[-8px] top-1/2 -translate-y-1/2 w-4 h-4 rotate-45"
+          style={{ background: '#0d2242', borderLeft: '1px solid rgba(56,224,255,0.45)', borderBottom: '1px solid rgba(56,224,255,0.45)' }}
+        />
         <div className="absolute left-[-21px] top-1/2 -translate-y-1/2 w-3.5 h-3.5 rounded-full bg-[#0073ea] border-[3px] border-white shadow" />
         <button
           onClick={dismiss}
           aria-label="Dismiss tip"
-          className="absolute top-2.5 right-3.5 text-slate-400 hover:text-slate-600 text-2xl leading-none"
+          className="absolute top-2.5 right-3.5 text-[#7d99b8] hover:text-slate-200 text-2xl leading-none"
         >
           ×
         </button>
-        <p className="font-fredoka text-[16px] text-slate-800 leading-relaxed pr-6">
-          <span className="text-[#0073ea] font-semibold">Why this matters: </span>
+        <p className="font-fredoka text-[16px] text-slate-100 leading-relaxed pr-6">
+          <span className="text-[#38e0ff] font-semibold">Why this matters: </span>
           {coaching}
         </p>
         {notes.length > 0 && (
           <>
-            <hr className="my-3 border-slate-200" />
+            <hr className="my-3" style={{ borderTop: '1px solid rgba(148,184,220,0.25)' }} />
             <div className="space-y-1.5">
               {notes.map((note, i) => (
-                <p key={i} className="font-fredoka text-[14px] text-slate-500 leading-relaxed">{note}</p>
+                <p key={i} className="font-fredoka text-[14px] leading-relaxed" style={{ color: '#a9c3de' }}>{note}</p>
               ))}
             </div>
           </>
