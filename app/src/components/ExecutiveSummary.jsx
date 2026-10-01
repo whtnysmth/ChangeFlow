@@ -49,7 +49,7 @@ export default function ExecutiveSummary({ data }) {
   }
 
   return (
-    <div className="bg-white border border-slate-200 shadow-sm rounded-xl p-5">
+    <div className="midnight-card">
       <div className="text-sm font-medium text-slate-900 mb-3">Executive summary</div>
       <ul className="space-y-2">
         {lines.map((l, i) => (

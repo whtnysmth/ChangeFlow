@@ -12,7 +12,7 @@ export function Ring({ value, size = 120, stroke = 10, color = '#0d9488', childr
   return (
     <div className="relative inline-flex items-center justify-center" style={{ width: size, height: size }}>
       <svg width={size} height={size} className="-rotate-90">
-        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="#e2e8f0" strokeWidth={stroke} />
+        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="rgba(148,184,220,0.18)" strokeWidth={stroke} />
         <circle
           cx={size / 2} cy={size / 2} r={r} fill="none"
           stroke={color} strokeWidth={stroke} strokeLinecap="round"
@@ -35,7 +35,7 @@ export default function ModalityRings({ data, onSelect }) {
           <button
             key={m.id}
             onClick={() => onSelect && onSelect(m.id)}
-            className="bg-white border border-slate-200 shadow-sm rounded-xl p-5 flex flex-col items-center gap-2 hover:border-[#7db3f2] transition text-center"
+            className="midnight-card flex flex-col items-center gap-2 hover:border-[#7db3f2] transition text-center"
             title={`${m.label}: ${band.label}${score != null ? ` (${score}%)` : ''} — open ${m.label} tab`}
           >
             <Ring value={score} color={stroke}>
