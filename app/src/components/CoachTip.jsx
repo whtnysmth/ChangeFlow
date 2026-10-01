@@ -1,12 +1,11 @@
 // Floating "Why this matters" coaching tip, styled like a speech-bubble popup.
 // Dismissible per phase; dismissal persists in localStorage. A subtle
 // reopen link appears in the phase header once dismissed.
-// The top three phases (Assess, Mobilize, Enable) show translations in all
-// three frameworks; the remaining phases show the ADKAR line only.
+// Every phase shows its translation in all three frameworks (ADKAR, Kotter,
+// Lewin) below the divider.
 import { useState } from 'react'
 import { lensModalityNote } from '../lib/modalities.js'
 
-const TOP_THREE = ['assess', 'mobilize', 'enable']
 const LENSES = ['adkar', 'kotter', 'lewin']
 
 export function CoachTipReopen({ onReopen }) {
@@ -30,8 +29,7 @@ export default function CoachTip({ modalityId, coaching }) {
     }
   })
 
-  const lenses = TOP_THREE.includes(modalityId) ? LENSES : ['adkar']
-  const notes = lenses.map(l => lensModalityNote(modalityId, l)).filter(Boolean)
+  const notes = LENSES.map(l => lensModalityNote(modalityId, l)).filter(Boolean)
 
   const dismiss = () => {
     try {
