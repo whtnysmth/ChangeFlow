@@ -13,7 +13,7 @@ export const MODALITIES = [
   {
     id: 'assess',
     label: 'Assess',
-    tagline: 'Diagnose before you prescribe',
+    tagline: 'Know the landscape before you change it',
     coaching:
       'Before you change anything, understand what the change will ask of each group. ' +
       'Readiness and stakeholder insight keep you from flying blind.',
