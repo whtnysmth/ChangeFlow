@@ -84,6 +84,14 @@ const ICONS = {
       <path d="M8 6.5h4M8 9.5h4M8 12.5h2.5" strokeLinecap="round" />
     </svg>
   ),
+  knowledge: (
+    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.6" className="w-5 h-5">
+      <path d="M4 4.5A1.5 1.5 0 015.5 3H16v13.5H5.7A1.7 1.7 0 004 18.2V4.5z" strokeLinejoin="round" />
+      <path d="M4 18.2V4.5" strokeLinecap="round" />
+      <path d="M16 16.5H6" strokeLinecap="round" />
+      <path d="M8 6.5h5M8 9.5h5" strokeLinecap="round" />
+    </svg>
+  ),
 }
 
 const TOP_TABS = [
@@ -98,6 +106,7 @@ const TOOL_TABS = [
   { id: 'documents', label: 'Documents' },
   { id: 'mapping', label: 'Mapping' },
   { id: 'surveys', label: 'Surveys' },
+  { id: 'knowledge', label: 'Knowledge Base' },
 ]
 
 const PHASES_OPEN_KEY = 'changeflow:phases-open'

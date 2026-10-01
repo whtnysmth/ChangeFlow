@@ -10,6 +10,7 @@ import CalendarView from './CalendarView.jsx'
 import DocumentLibrary from './DocumentLibrary.jsx'
 import MappingHub from './MappingHub.jsx'
 import SurveyHub from './SurveyHub.jsx'
+import KnowledgeBase from './KnowledgeBase.jsx'
 import { MODALITIES, modalityById, widgetsForModality, guidedWidgetsForModality } from '../lib/modalities.js'
 
 export default function DashboardEngine({
@@ -85,6 +86,9 @@ export default function DashboardEngine({
         live={source === 'supabase'}
       />
     )
+  }
+  if (tab === 'knowledge') {
+    return <KnowledgeBase />
   }
   if (!modality) return null
   const stepIndex = MODALITIES.findIndex(m => m.id === tab) + 1
