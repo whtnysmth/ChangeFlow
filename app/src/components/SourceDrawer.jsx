@@ -2,7 +2,7 @@
 // widget's numbers come from and lets the user edit them in-app.
 // Stakeholder engagement -> the stakeholder group rows.
 // Readiness score -> the overall score plus its breakdown dimensions.
-import { useState } from 'react'
+import { useState, Fragment } from 'react'
 
 function Shell({ title, explainer, onClose, onSave, saving, error, children }) {
   return (
@@ -122,6 +122,127 @@ function EditableTable({ columns, rows, setRows, addLabel }) {
   )
 }
 
+// One readiness dimension: label + score row, expandable to reveal (and
+// edit) what the dimension measures and how to score it. This is how an
+// end user learns what information determines the number.
+function DimensionEditor({ rows, setRows }) {
+  const [openId, setOpenId] = useState(null)
+  const update = (i, key, val) => setRows(rs => rs.map((r, j) => (j === i ? { ...r, [key]: val } : r)))
+  const remove = (i) => setRows(rs => rs.filter((_, j) => j !== i))
+  const add = () =>
+    setRows(rs => [...rs, { id: `dim-${Date.now()}`, label: '', value: 0, description: '', guidance: '' }])
+
+  return (
+    <div>
+      <div className="border border-slate-200 rounded-xl overflow-hidden">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="bg-slate-50 text-left">
+              <th className="px-3 py-2 text-xs font-semibold uppercase tracking-wide text-slate-500">Dimension</th>
+              <th className="px-3 py-2 text-xs font-semibold uppercase tracking-wide text-slate-500 w-28">Score %</th>
+              <th className="w-16" />
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((r, i) => {
+              const open = openId === (r.id || i)
+              return (
+                <Fragment key={r.id || i}>
+                  <tr className="border-t border-slate-100">
+                    <td className="px-3 py-2">
+                      <input
+                        type="text"
+                        value={r.label || ''}
+                        placeholder="e.g. Sponsor alignment"
+                        onChange={e => update(i, 'label', e.target.value)}
+                        className={inputCls}
+                      />
+                      {(r.description || r.guidance) && !open && (
+                        <p className="mt-1 text-xs text-slate-500 leading-snug line-clamp-1">{r.description}</p>
+                      )}
+                    </td>
+                    <td className="px-3 py-2">
+                      <input
+                        type="number"
+                        min={0}
+                        max={100}
+                        value={r.value ?? ''}
+                        onChange={e => update(i, 'value', e.target.value)}
+                        className={inputCls}
+                      />
+                    </td>
+                    <td className="pr-2 whitespace-nowrap">
+                      <button
+                        onClick={() => setOpenId(open ? null : (r.id || i))}
+                        className={`w-7 h-7 rounded-full text-xs font-medium ${open ? 'bg-[#e8f1fd] text-[#0060c9]' : 'text-slate-400 hover:bg-slate-100 hover:text-slate-600'}`}
+                        title={open ? 'Hide scoring help' : 'What is this? How do I score it?'}
+                        aria-label="Toggle scoring help"
+                      >
+                        ?
+                      </button>
+                      <button
+                        onClick={() => remove(i)}
+                        className="w-7 h-7 rounded-full text-slate-400 hover:bg-rose-50 hover:text-rose-600"
+                        title="Remove dimension"
+                        aria-label="Remove dimension"
+                      >
+                        ×
+                      </button>
+                    </td>
+                  </tr>
+                  {open && (
+                    <tr className="border-t border-slate-100 bg-slate-50/60">
+                      <td colSpan={3} className="px-3 py-3 space-y-3">
+                        <div>
+                          <label className="block text-xs font-semibold uppercase tracking-wide text-slate-500 mb-1">
+                            What this measures
+                          </label>
+                          <textarea
+                            value={r.description || ''}
+                            placeholder="One line: what does this dimension tell us?"
+                            onChange={e => update(i, 'description', e.target.value)}
+                            rows={2}
+                            className={inputCls}
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-semibold uppercase tracking-wide text-slate-500 mb-1">
+                            How to score it
+                          </label>
+                          <textarea
+                            value={r.guidance || ''}
+                            placeholder="What information should the score be based on? What does high vs low look like?"
+                            onChange={e => update(i, 'guidance', e.target.value)}
+                            rows={3}
+                            className={inputCls}
+                          />
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                </Fragment>
+              )
+            })}
+            {rows.length === 0 && (
+              <tr className="border-t border-slate-100">
+                <td colSpan={3} className="px-3 py-6 text-center text-sm text-slate-400">
+                  No dimensions yet — add the first one below.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+      <button
+        onClick={add}
+        className="mt-2 text-sm font-medium text-[#0060c9] hover:underline"
+      >
+        + Add dimension
+      </button>
+    </div>
+  )
+}
+
 function StakeholderEditor({ data, onSave, onClose }) {
   const [rows, setRows] = useState(() =>
     (data.stakeholderGroups || []).map((g, i) => ({
@@ -178,7 +299,9 @@ function ReadinessEditor({ data, onSave, onClose }) {
     (current.dimensions || []).map((d, i) => ({
       id: `dim-${i}`,
       label: d.label || '',
-      value: d.value ?? 0
+      value: d.value ?? 0,
+      description: d.description || '',
+      guidance: d.guidance || ''
     }))
   )
   const [saving, setSaving] = useState(false)
@@ -246,15 +369,7 @@ function ReadinessEditor({ data, onSave, onClose }) {
         <div className="text-xs font-semibold uppercase tracking-wide text-slate-500 mb-2">
           Dimensions
         </div>
-        <EditableTable
-          columns={[
-            { key: 'label', label: 'Dimension', type: 'text', placeholder: 'e.g. Sponsor alignment' },
-            { key: 'value', label: 'Score %', type: 'number', min: 0, max: 100 }
-          ]}
-          rows={rows}
-          setRows={setRows}
-          addLabel="Add dimension"
-        />
+        <DimensionEditor rows={rows} setRows={setRows} />
       </div>
     </Shell>
   )

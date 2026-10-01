@@ -210,7 +210,9 @@ export async function saveReadinessScore(campaignId, { value, note, dimensions }
     dimensions: (dimensions || [])
       .map(d => ({
         label: String(d.label || '').trim(),
-        value: Math.max(0, Math.min(100, Number(d.value) || 0))
+        value: Math.max(0, Math.min(100, Number(d.value) || 0)),
+        description: String(d.description || '').trim(),
+        guidance: String(d.guidance || '').trim()
       }))
       .filter(d => d.label)
   }

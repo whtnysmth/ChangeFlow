@@ -65,9 +65,24 @@ export const readinessScore = {
   value: 74,
   note: 'Assessed Oct 1, pre-launch',
   dimensions: [
-    { label: 'Leadership alignment', value: 88 },
-    { label: 'Team capacity', value: 66 },
-    { label: 'Tech readiness', value: 71 }
+    {
+      label: 'Leadership alignment',
+      value: 88,
+      description: 'Whether leaders visibly agree on why the change is happening and what success looks like.',
+      guidance: 'Score from sponsor interviews or alignment sessions. 90+: sponsors give the same answer unprompted. 70–89: mostly aligned with a few holdouts. Below 70: leaders are sending mixed signals.'
+    },
+    {
+      label: 'Team capacity',
+      value: 66,
+      description: 'Whether the people doing the work have the time and bandwidth to absorb the change.',
+      guidance: 'Score from workload review or manager input. 90+: teams have slack for change work. 70–89: tight but manageable. Below 70: people are already overloaded — the change will slip.'
+    },
+    {
+      label: 'Tech readiness',
+      value: 71,
+      description: 'Whether the systems, tools, and data are ready to support the change.',
+      guidance: 'Score from IT assessment or systems review. 90+: tested and ready. 70–89: ready with known gaps. Below 70: major blockers unresolved.'
+    }
   ]
 }
 
