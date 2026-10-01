@@ -18,14 +18,23 @@ function mockBundle() {
   }
 }
 
-async function supabaseBundle() {
-  const { data: camp, error: campErr } = await supabase
-    .from('campaigns')
-    .select('*')
-    .eq('state', 'Active')
-    .order('created_at', { ascending: false })
-    .limit(1)
-    .maybeSingle()
+async function supabaseBundle(campaignId) {
+  let camp, campErr
+  if (campaignId) {
+    ;({ data: camp, error: campErr } = await supabase
+      .from('campaigns')
+      .select('*')
+      .eq('id', campaignId)
+      .maybeSingle())
+  } else {
+    ;({ data: camp, error: campErr } = await supabase
+      .from('campaigns')
+      .select('*')
+      .eq('state', 'Active')
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle())
+  }
   if (campErr) throw campErr
   if (!camp) throw new Error('No active campaign found')
 
@@ -104,15 +113,77 @@ async function supabaseBundle() {
   }
 }
 
-export async function getDashboardData() {
+export async function getDashboardData(campaignId) {
   if (!supabase) return { source: 'mock', bundle: mockBundle(), campaignId: null }
   try {
-    const bundle = await supabaseBundle()
+    const bundle = await supabaseBundle(campaignId)
     return { source: 'supabase', bundle, campaignId: bundle.campaignId }
   } catch (err) {
     console.warn('Supabase unreachable, falling back to mock data:', err.message)
     return { source: 'mock', bundle: mockBundle(), campaignId: null }
   }
+}
+
+// ---------------------------------------------------------------------------
+// Campaign workspace: list, create, and remember the active campaign.
+// Every tab in the app re-scopes to the active campaign via campaign_id.
+// ---------------------------------------------------------------------------
+
+const ACTIVE_CAMPAIGN_KEY = 'changeflow:active-campaign'
+
+export function getStoredCampaignId() {
+  try {
+    return localStorage.getItem(ACTIVE_CAMPAIGN_KEY)
+  } catch {
+    return null
+  }
+}
+
+export function setStoredCampaignId(id) {
+  try {
+    if (id) localStorage.setItem(ACTIVE_CAMPAIGN_KEY, id)
+    else localStorage.removeItem(ACTIVE_CAMPAIGN_KEY)
+  } catch {
+    /* private mode */
+  }
+}
+
+export async function listCampaigns() {
+  if (!supabase) {
+    return [
+      {
+        id: 'mock',
+        name: mock.campaign.name,
+        status: mock.campaign.status,
+        state: 'Active',
+        start_date: null,
+        target_date: null,
+      },
+    ]
+  }
+  const { data, error } = await supabase
+    .from('campaigns')
+    .select('id,name,status,state,start_date,target_date,created_at')
+    .order('created_at', { ascending: false })
+  if (error) throw error
+  return data || []
+}
+
+export async function createCampaign({ name, status, start_date, target_date }) {
+  if (!supabase) throw new Error('Connect Supabase to create campaigns.')
+  const { data, error } = await supabase
+    .from('campaigns')
+    .insert({
+      name: name.trim(),
+      status: status || 'On Track',
+      state: 'Active',
+      start_date: start_date || null,
+      target_date: target_date || null,
+    })
+    .select()
+    .single()
+  if (error) throw error
+  return data
 }
 
 // ---------------------------------------------------------------------------

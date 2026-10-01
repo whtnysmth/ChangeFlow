@@ -1,4 +1,5 @@
-// Home: the app's front door. Answers three questions, top to bottom:
+// Home: the app's front door. Opens with the campaign workspace (view and
+// select campaigns), then answers three questions about the active campaign:
 // "What needs my attention right now?", "How healthy is this transformation?",
 // "Where did I leave off?" The Dashboard tab remains the reporting hub (untouched).
 import { useState, useEffect } from 'react'
@@ -53,9 +54,13 @@ function phaseLabel(id) {
   return m ? `${m.label} phase` : 'General'
 }
 
-export default function Home({ campaignId, bundle, onSelectModality }) {
+export default function Home({ campaignId, bundle, onSelectModality, campaigns, onSelectCampaign, onCreateCampaign, live }) {
   const [attention, setAttention] = useState(null)
   const [recent, setRecent] = useState(null)
+  const [creating, setCreating] = useState(false)
+  const [form, setForm] = useState({ name: '', status: 'On Track', start_date: '', target_date: '' })
+  const [formError, setFormError] = useState('')
+  const [saving, setSaving] = useState(false)
 
   useEffect(() => {
     let cancelled = false
@@ -140,9 +145,164 @@ export default function Home({ campaignId, bundle, onSelectModality }) {
     Map: 'bg-violet-100 text-violet-700',
     Note: 'bg-[#cfe3fb] text-[#0060c9]',
   }
+  const STATUS_PILL = {
+    'On Track': 'bg-[#c9f3dc] text-[#00854d] border-[#9ae6b8]',
+    'At Risk': 'bg-amber-100 text-amber-700 border-amber-300',
+    'Off Track': 'bg-rose-100 text-rose-700 border-rose-300',
+  }
+
+  const submitNewCampaign = async (e) => {
+    e.preventDefault()
+    if (!form.name.trim()) {
+      setFormError('Give the campaign a name.')
+      return
+    }
+    setSaving(true)
+    setFormError('')
+    try {
+      await onCreateCampaign({
+        name: form.name.trim(),
+        status: form.status,
+        start_date: form.start_date || null,
+        target_date: form.target_date || null,
+      })
+      setForm({ name: '', status: 'On Track', start_date: '', target_date: '' })
+      setCreating(false)
+    } catch (err) {
+      setFormError(err.message || 'Could not create the campaign.')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const dateRange = (c) => {
+    const s = c.start_date ? fmtDate(c.start_date) : null
+    const t = c.target_date ? fmtDate(c.target_date) : null
+    if (s && t) return `${s} → ${t}`
+    if (s) return `Started ${s}`
+    if (t) return `Target ${t}`
+    return ''
+  }
 
   return (
     <div className="space-y-6">
+      {/* 0 — Campaign workspace */}
+      <section className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+        <div className="flex items-center justify-between mb-1">
+          <h2 className="text-sm font-semibold text-slate-700">Campaign workspace</h2>
+          {live && !creating && (
+            <button
+              onClick={() => setCreating(true)}
+              className="text-xs font-semibold text-[#0073ea] hover:text-[#0060c9] hover:underline"
+            >
+              + New campaign
+            </button>
+          )}
+        </div>
+        <p className="text-xs text-slate-500 mb-4">Select a campaign — every tab re-scopes to it.</p>
+
+        {creating && (
+          <form onSubmit={submitNewCampaign} className="mb-4 p-4 rounded-xl border border-[#a9ccf7] bg-[#e8f1fd]/50 space-y-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <label className="block">
+                <span className="text-xs font-medium text-slate-600">Campaign name *</span>
+                <input
+                  value={form.name}
+                  onChange={e => setForm({ ...form, name: e.target.value })}
+                  placeholder="e.g. CRM Rollout — Change Management"
+                  className="mt-1 w-full text-sm border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#0073ea]/40"
+                />
+              </label>
+              <label className="block">
+                <span className="text-xs font-medium text-slate-600">Status</span>
+                <select
+                  value={form.status}
+                  onChange={e => setForm({ ...form, status: e.target.value })}
+                  className="mt-1 w-full text-sm border border-slate-300 rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-[#0073ea]/40"
+                >
+                  <option>On Track</option>
+                  <option>At Risk</option>
+                  <option>Off Track</option>
+                </select>
+              </label>
+              <label className="block">
+                <span className="text-xs font-medium text-slate-600">Start date</span>
+                <input
+                  type="date"
+                  value={form.start_date}
+                  onChange={e => setForm({ ...form, start_date: e.target.value })}
+                  className="mt-1 w-full text-sm border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#0073ea]/40"
+                />
+              </label>
+              <label className="block">
+                <span className="text-xs font-medium text-slate-600">Target date</span>
+                <input
+                  type="date"
+                  value={form.target_date}
+                  onChange={e => setForm({ ...form, target_date: e.target.value })}
+                  className="mt-1 w-full text-sm border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#0073ea]/40"
+                />
+              </label>
+            </div>
+            {formError && <p className="text-xs text-rose-600">{formError}</p>}
+            <div className="flex gap-2">
+              <button
+                type="submit"
+                disabled={saving}
+                className="text-xs font-semibold px-4 py-2 rounded-lg bg-[#0073ea] text-white hover:bg-[#0060c9] disabled:opacity-50"
+              >
+                {saving ? 'Creating…' : 'Create campaign'}
+              </button>
+              <button
+                type="button"
+                onClick={() => { setCreating(false); setFormError('') }}
+                className="text-xs font-medium px-4 py-2 rounded-lg border border-slate-300 text-slate-600 hover:bg-slate-50"
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        )}
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
+          {(campaigns || []).map(c => {
+            const isActive = c.id === campaignId || (campaignId === null && c.id === 'mock')
+            return (
+              <button
+                key={c.id}
+                onClick={() => onSelectCampaign && onSelectCampaign(c.id)}
+                className={`text-left rounded-xl border p-4 transition hover:shadow-sm ${
+                  isActive
+                    ? 'border-[#0073ea] ring-2 ring-[#0073ea]/20 bg-[#e8f1fd]/40'
+                    : 'border-slate-200 bg-white hover:border-[#7db3f2]'
+                }`}
+              >
+                <div className="flex items-center justify-between gap-2">
+                  <span className="font-semibold text-slate-900 text-sm truncate">{c.name}</span>
+                  {isActive && (
+                    <span className="text-[10px] font-bold uppercase tracking-wide text-[#0073ea] shrink-0">Active</span>
+                  )}
+                </div>
+                <div className="mt-2 flex items-center gap-2">
+                  <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full border ${STATUS_PILL[c.status] || 'bg-slate-100 text-slate-600 border-slate-300'}`}>
+                    {c.status}
+                  </span>
+                  {c.state && c.state !== 'Active' && (
+                    <span className="text-[11px] text-slate-500">{c.state}</span>
+                  )}
+                </div>
+                {dateRange(c) && (
+                  <div className="mt-1.5 text-xs text-slate-400">{dateRange(c)}</div>
+                )}
+              </button>
+            )
+          })}
+        </div>
+        {!live && (
+          <p className="text-xs text-slate-400 mt-3">Connect Supabase to manage multiple campaigns.</p>
+        )}
+      </section>
+
       {/* 1 — Needs your attention */}
       <section className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
         <h2 className="text-sm font-semibold text-slate-700 mb-1">Needs your attention</h2>

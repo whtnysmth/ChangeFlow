@@ -16,6 +16,7 @@ export default function DashboardEngine({
   tab, data, registry, mode, lens, onSelectModality,
   customWidgetIds, onToggleCustomWidget, onResetCustomWidgets,
   campaignId, onApplyTemplate, source,
+  campaigns, onSelectCampaign, onCreateCampaign,
 }) {
   if (tab === 'home') {
     return (
@@ -23,6 +24,10 @@ export default function DashboardEngine({
         campaignId={campaignId}
         bundle={data}
         onSelectModality={onSelectModality}
+        campaigns={campaigns || []}
+        onSelectCampaign={onSelectCampaign}
+        onCreateCampaign={onCreateCampaign}
+        live={source === 'supabase'}
       />
     )
   }

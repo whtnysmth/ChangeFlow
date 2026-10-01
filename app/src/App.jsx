@@ -4,7 +4,7 @@ import Sidebar from './components/Sidebar.jsx'
 // To restore: uncomment the import and the <FrameworkLens> element in the header.
 // import FrameworkLens from './components/FrameworkLens.jsx'
 import DashboardEngine from './components/DashboardEngine.jsx'
-import { getDashboardData } from './lib/data.js'
+import { getDashboardData, listCampaigns, createCampaign, getStoredCampaignId, setStoredCampaignId } from './lib/data.js'
 
 import registry from '../../widgets/registry.json'
 
@@ -20,13 +20,30 @@ export default function App() {
   const [data, setData] = useState(null)
   const [source, setSource] = useState('loading')
   const [campaignId, setCampaignId] = useState(null)
+  const [campaigns, setCampaigns] = useState([])
 
   useEffect(() => {
-    getDashboardData().then(({ source, bundle, campaignId }) => {
+    let cancelled = false
+    ;(async () => {
+      let list = []
+      try {
+        list = await listCampaigns()
+      } catch {
+        list = []
+      }
+      if (cancelled) return
+      const real = list.filter(c => c.id !== 'mock')
+      setCampaigns(list)
+      const stored = getStoredCampaignId()
+      const pick = real.find(c => c.id === stored) || real[0]
+      const { source, bundle, campaignId } = await getDashboardData(pick ? pick.id : undefined)
+      if (cancelled) return
       setData(bundle)
       setSource(source)
       setCampaignId(campaignId)
-    })
+      if (source === 'supabase' && campaignId) setStoredCampaignId(campaignId)
+    })()
+    return () => { cancelled = true }
   }, [])
 
   const handleMode = (m) => {
@@ -38,6 +55,23 @@ export default function App() {
     setCustomHomeIds(prev =>
       prev.includes(id) ? prev.filter(w => w !== id) : [...prev, id]
     )
+  }
+
+  const selectCampaign = async (id) => {
+    if (!id || id === campaignId) return
+    setStoredCampaignId(id)
+    setActiveTab('home')
+    const { source, bundle, campaignId: cid } = await getDashboardData(id === 'mock' ? undefined : id)
+    setData(bundle)
+    setSource(source)
+    setCampaignId(cid)
+  }
+
+  const handleCreateCampaign = async (fields) => {
+    const row = await createCampaign(fields)
+    const list = await listCampaigns()
+    setCampaigns(list)
+    await selectCampaign(row.id)
   }
 
   if (!data) {
@@ -62,7 +96,20 @@ export default function App() {
           <header className="flex flex-wrap items-center justify-between gap-4 mb-2">
             <div>
               <div className="flex items-center gap-2 text-xl font-bold text-slate-900">
-                <span>{campaign.name}</span>
+                {source === 'supabase' && campaigns.length > 0 ? (
+                  <select
+                    value={campaignId || ''}
+                    onChange={e => selectCampaign(e.target.value)}
+                    className="max-w-md truncate text-xl font-bold text-slate-900 bg-white border border-slate-300 rounded-lg px-2 py-1 hover:border-[#7db3f2] focus:outline-none focus:ring-2 focus:ring-[#0073ea]/40 cursor-pointer"
+                    title="Switch campaign"
+                  >
+                    {campaigns.map(c => (
+                      <option key={c.id} value={c.id}>{c.name}</option>
+                    ))}
+                  </select>
+                ) : (
+                  <span>{campaign.name}</span>
+                )}
                 <span className="text-xs font-normal px-2 py-0.5 rounded-full bg-[#c9f3dc] text-[#00854d] border border-[#9ae6b8]">
                   • {campaign.status}
                 </span>
@@ -92,6 +139,9 @@ export default function App() {
             campaignId={campaignId}
             onApplyTemplate={setCustomHomeIds}
             source={source}
+            campaigns={campaigns}
+            onSelectCampaign={selectCampaign}
+            onCreateCampaign={handleCreateCampaign}
           />
 
           <footer className="mt-10 text-xs text-slate-500">
