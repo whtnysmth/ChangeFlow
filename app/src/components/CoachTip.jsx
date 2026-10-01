@@ -60,8 +60,8 @@ export default function CoachTip({ modalityId, coaching }) {
         >
           ×
         </button>
-        <p className="text-[15px] text-slate-800 leading-relaxed pr-6">
-          <span className="text-[#0073ea] font-bold">Why this matters: </span>
+        <p className="font-fredoka text-[16px] text-slate-800 leading-relaxed pr-6">
+          <span className="text-[#0073ea] font-semibold">Why this matters: </span>
           {coaching}
         </p>
         {notes.length > 0 && (
@@ -69,7 +69,7 @@ export default function CoachTip({ modalityId, coaching }) {
             <hr className="my-3 border-slate-200" />
             <div className="space-y-1.5">
               {notes.map((note, i) => (
-                <p key={i} className="text-sm text-slate-500 leading-relaxed">{note}</p>
+                <p key={i} className="font-fredoka text-[14px] text-slate-500 leading-relaxed">{note}</p>
               ))}
             </div>
           </>

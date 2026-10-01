@@ -57,10 +57,7 @@ export default function PhaseHeader({ modality, currentId, onJumpPhase, tipNode 
 
       <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight">{modality.label}</h2>
       <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 mt-1">
-        <p
-          className="italic text-[15px] text-slate-600"
-          style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
-        >
+        <p className="font-fredoka text-[17px] text-slate-600">
           {modality.tagline}
         </p>
         {tipNode}
