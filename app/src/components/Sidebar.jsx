@@ -62,6 +62,14 @@ const ICONS = {
       <path d="M8 11h4.5M8 13.75h4.5" strokeLinecap="round" />
     </svg>
   ),
+  mapping: (
+    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.6" className="w-5 h-5">
+      <circle cx="6" cy="6" r="2.5" />
+      <circle cx="14" cy="6" r="2.5" />
+      <circle cx="10" cy="14" r="2.5" />
+      <path d="M8.2 7.2l1.1 4M11.8 7.2l-1.1 4M8.5 6h3" strokeLinecap="round" />
+    </svg>
+  ),
 }
 
 const TABS = [
@@ -70,6 +78,7 @@ const TABS = [
   { id: 'tasks', label: 'Tasks' },
   { id: 'calendar', label: 'Calendar' },
   { id: 'documents', label: 'Documents' },
+  { id: 'mapping', label: 'Mapping' },
 ]
 
 export default function Sidebar({ activeTab, onTab, mode, onMode }) {

@@ -956,3 +956,163 @@ export async function getAllDocuments(campaignId) {
   docs.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0))
   return docs
 }
+
+// ---------------------------------------------------------------------------
+// Maps: the Mapping tab — stakeholder / journey / process / impact maps.
+// Each map is a link (live board URL), an upload (snapshot image/PDF), or
+// native (created in ChangeFlow with a structured editor). Same
+// Supabase-then-localStorage discipline as the rest of the app. Graceful
+// when the table doesn't exist yet (Whitney runs migration-007 in the SQL
+// editor).
+// ---------------------------------------------------------------------------
+
+export const MAP_TYPES = ['stakeholder', 'journey', 'process', 'impact']
+export const MAP_SOURCES = ['link', 'upload', 'native']
+
+const mapsKey = (campaignId) => `changeflow:maps:${campaignId || 'mock'}`
+
+function readLocalMaps(campaignId) {
+  try {
+    return JSON.parse(localStorage.getItem(mapsKey(campaignId)) || '[]')
+  } catch {
+    return []
+  }
+}
+
+function writeLocalMaps(campaignId, items) {
+  try {
+    localStorage.setItem(mapsKey(campaignId), JSON.stringify(items))
+  } catch { /* private mode */ }
+}
+
+export async function getMaps(campaignId) {
+  if (supabase) {
+    try {
+      const { data, error } = await supabase
+        .from('maps')
+        .select('*')
+        .eq('campaign_id', campaignId)
+        .order('updated_at', { ascending: false })
+      if (error) throw error
+      return { items: data || [], live: true }
+    } catch (err) {
+      console.warn('maps unreachable, using local maps:', err.message)
+    }
+  }
+  return { items: readLocalMaps(campaignId), live: false }
+}
+
+const ALLOWED_MAP_FIELDS = [
+  'title', 'map_type', 'source', 'url',
+  'file_name', 'file_path', 'file_size', 'mime_type',
+  'modality', 'description', 'content',
+]
+
+function cleanMapPatch(patch) {
+  const clean = {}
+  for (const k of ALLOWED_MAP_FIELDS) {
+    if (patch[k] !== undefined) clean[k] = patch[k] === '' ? null : patch[k]
+  }
+  if (clean.title !== undefined && !(clean.title || '').trim()) {
+    throw new Error('Give this map a title.')
+  }
+  return clean
+}
+
+export async function createMap({ campaignId, title, mapType, source, url, file, modality, description, content }) {
+  if (!title || !title.trim()) throw new Error('Give this map a title.')
+  if (!MAP_TYPES.includes(mapType)) throw new Error('Pick a map type.')
+  if (!MAP_SOURCES.includes(source)) throw new Error('Pick how this map is created.')
+
+  const now = new Date().toISOString()
+  const row = {
+    campaign_id: campaignId,
+    title: title.trim(),
+    map_type: mapType,
+    source,
+    url: source === 'link' ? (url || '').trim() || null : null,
+    modality: modality || null,
+    description: (description || '').trim() || null,
+    content: content || {},
+    created_at: now,
+    updated_at: now,
+  }
+
+  // Uploads need the live connection; link/native maps work offline.
+  if (source === 'upload') {
+    if (!supabase) throw new Error('File upload needs the live database.')
+    if (!file) throw new Error('Choose a file first.')
+    if (file.size > MAX_FILE_BYTES) {
+      throw new Error(`File is too large — the limit is ${MAX_FILE_BYTES / 1024 / 1024} MB per file.`)
+    }
+    const file_path = `${campaignId}/maps/${localId()}-${sanitizeFileName(file.name)}`
+    const { error: upErr } = await supabase.storage.from(DOCS_BUCKET).upload(file_path, file)
+    if (upErr) throw new Error(`Upload failed: ${upErr.message}`)
+    row.file_name = file.name
+    row.file_path = file_path
+    row.file_size = file.size
+    row.mime_type = file.type || null
+    try {
+      const { data, error } = await supabase.from('maps').insert(row).select().single()
+      if (error) throw error
+      return data
+    } catch (err) {
+      // Roll back the orphaned file so storage doesn't fill with unlinked uploads.
+      await supabase.storage.from(DOCS_BUCKET).remove([file_path]).catch(() => {})
+      throw new Error(`Could not save map: ${err.message}`)
+    }
+  }
+
+  if (supabase) {
+    try {
+      const { data, error } = await supabase.from('maps').insert(row).select().single()
+      if (error) throw error
+      return data
+    } catch (err) {
+      console.warn('maps insert failed, saving locally:', err.message)
+    }
+  }
+
+  const local = { ...row, id: localId() }
+  const items = readLocalMaps(campaignId)
+  items.unshift(local)
+  writeLocalMaps(campaignId, items)
+  return local
+}
+
+export async function updateMap({ campaignId, id, patch }) {
+  const clean = cleanMapPatch(patch)
+  clean.updated_at = new Date().toISOString()
+
+  if (supabase) {
+    try {
+      const { data, error } = await supabase
+        .from('maps')
+        .update(clean)
+        .eq('id', id)
+        .select()
+        .single()
+      if (error) throw error
+      return data
+    } catch (err) {
+      console.warn('maps update failed, applying locally:', err.message)
+    }
+  }
+
+  const items = readLocalMaps(campaignId)
+  const next = items.map(m => (m.id === id ? { ...m, ...clean } : m))
+  writeLocalMaps(campaignId, next)
+  return next.find(m => m.id === id)
+}
+
+export async function deleteMap({ campaignId, id, filePath }) {
+  if (supabase) {
+    if (filePath) {
+      await supabase.storage.from(DOCS_BUCKET).remove([filePath]).catch(() => {})
+    }
+    const { error } = await supabase.from('maps').delete().eq('id', id)
+    if (error) throw new Error(`Could not delete map: ${error.message}`)
+    return
+  }
+  writeLocalMaps(campaignId, readLocalMaps(campaignId).filter(m => m.id !== id))
+}
